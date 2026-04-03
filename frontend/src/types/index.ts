@@ -8,26 +8,53 @@ export interface ResearchRequest {
   muc_tieu_nghien_cuu?: string[];
 }
 
-// Streaming Response Types
-export type StreamStatus = "starting" | "progress" | "completed" | "error";
-
-export interface StreamMessage {
-  status: StreamStatus;
-  message: string;
-  plan_summary?: Record<string, unknown>;
-  mongodb_id?: string;
-  report?: ResearchReport;
+// Plan Types
+export interface Plan {
+  research_questions: string[];
+  hypotheses: string[];
+  steps: string[];
+  success_criteria: string[];
 }
 
-// Research Report Types
+// Evidence Types
+export interface Evidence {
+  title: string;
+  url: string;
+  snippet: string;
+  published_date: string | null;
+  source_score: number;
+}
+
+export interface EvidenceCount {
+  raw: number;
+  filtered: number;
+}
+
+// ReAct Summary Types
+export interface IntermediateStep {
+  step: number;
+  action: "search" | "refine_query" | "summarize";
+  query: string;
+  result_count: number;
+  reason: string;
+}
+
+export interface ReactSummary {
+  tool_calls: number;
+  total_evidence_collected: number;
+  intermediate_steps: IntermediateStep[];
+}
+
+// Citation Types
 export interface Citation {
   title: string;
   url: string;
   snippet: string;
-  published_date: string;
+  published_date: string | null;
   source_score: number;
 }
 
+// Research Report Types
 export interface ResearchReport {
   tong_quan_thi_truong: string;
   phan_tich_doi_thu: string;
@@ -36,11 +63,39 @@ export interface ResearchReport {
   citations: Citation[];
 }
 
+// Streaming Response Types
+export type StreamStatus = 
+  | "starting" 
+  | "progress" 
+  | "plan_completed" 
+  | "react_completed" 
+  | "evidence_ready" 
+  | "report_ready" 
+  | "completed" 
+  | "error";
+
+export interface StreamMessage {
+  status: StreamStatus;
+  message: string;
+  plan?: Plan;
+  react_summary?: ReactSummary;
+  evidence?: Evidence[];
+  evidence_count?: EvidenceCount;
+  report?: ResearchReport;
+  markdown_report?: string;
+  mongodb_id?: string;
+}
+
 // UI State Types
 export interface UIState {
   isLoading: boolean;
   messages: string[];
+  plan?: Plan;
+  reactSummary?: ReactSummary;
+  evidence?: Evidence[];
+  evidenceCount?: EvidenceCount;
   report?: ResearchReport;
+  markdownReport?: string;
   error?: string;
   mongodbId?: string;
 }

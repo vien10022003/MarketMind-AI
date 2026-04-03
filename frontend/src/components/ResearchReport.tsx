@@ -55,7 +55,7 @@ export function ResearchReportComponent({ report, mongodbId }: ResearchReportPro
                 </h4>
                 <p className="citation-snippet">{citation.snippet}</p>
                 <div className="citation-meta">
-                  <span className="citation-date">📅 {citation.published_date}</span>
+                  {citation.published_date && <span className="citation-date">📅 {citation.published_date}</span>}
                   <span className="citation-score">⭐ {(citation.source_score * 100).toFixed(0)}%</span>
                 </div>
               </div>
