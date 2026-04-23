@@ -14,9 +14,9 @@ from .llm_config import initialize_llm
 from .clarification import clarify_user_prompt
 from .planning import planner_chain
 from .react import run_react_loop
-from .evidence_processing import normalize_and_filter_evidence, convert_evidence_to_dict
+from .evidence_processing import normalize_and_filter_evidence
 from .synthesis import synthesize_stage_a_report
-from .output_formatting import build_markdown_report
+from .output_formatting import build_markdown_report, convert_evidence_to_dict
 from .mongodb import MongoDBManager
 
 
