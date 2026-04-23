@@ -1,7 +1,8 @@
 // Research Request Types
 export interface ResearchRequest {
-  nganh_hang: string;
-  thi_truong_muc_tieu: string;
+  user_prompt: string; // Required: user's research requirement
+  nganh_hang?: string;
+  thi_truong_muc_tieu?: string;
   phan_khuc_quan_tam?: string[];
   doi_thu_seed?: string[];
   khung_thoi_gian?: string;
@@ -67,12 +68,22 @@ export interface ResearchReport {
 export type StreamStatus = 
   | "starting" 
   | "progress" 
+  | "clarification_provided"
   | "plan_completed" 
   | "react_completed" 
   | "evidence_ready" 
   | "report_ready" 
   | "completed" 
   | "error";
+
+export interface ClarificationData {
+  detected_info: string;
+  questions_for_user: string[];
+  clarified_input: ResearchRequest;
+  explanations: Record<string, string>;
+  auto_proceeding: boolean;
+  note: string;
+}
 
 export interface StreamMessage {
   status: StreamStatus;
@@ -84,12 +95,19 @@ export interface StreamMessage {
   report?: ResearchReport;
   markdown_report?: string;
   mongodb_id?: string;
+  detected_info?: string;
+  questions_for_user?: string[];
+  clarified_input?: ResearchRequest;
+  explanations?: Record<string, string>;
+  auto_proceeding?: boolean;
+  note?: string;
 }
 
 // UI State Types
 export interface UIState {
   isLoading: boolean;
   messages: string[];
+  clarification?: ClarificationData;
   plan?: Plan;
   reactSummary?: ReactSummary;
   evidence?: Evidence[];

@@ -14,6 +14,7 @@ function App() {
     setUIState({
       isLoading: true,
       messages: [],
+      clarification: undefined,
       plan: undefined,
       reactSummary: undefined,
       evidence: undefined,
@@ -33,12 +34,22 @@ function App() {
             const newState = {
               ...prev,
               messages: newMessages,
-              isLoading: streamMessage.status !== 'completed' && streamMessage.status !== 'error',
+              isLoading: streamMessage.status !== 'completed' && streamMessage.status !== 'error' && streamMessage.status !== 'clarification_provided',
               error: streamMessage.status === 'error' ? streamMessage.message : undefined,
             };
 
             // Handle different stream events
-            if (streamMessage.status === 'plan_completed' && streamMessage.plan) {
+            if (streamMessage.status === 'clarification_provided') {
+              newState.clarification = {
+                detected_info: streamMessage.detected_info || '',
+                questions_for_user: streamMessage.questions_for_user || [],
+                clarified_input: streamMessage.clarified_input || { user_prompt: '' },
+                explanations: streamMessage.explanations || {},
+                auto_proceeding: streamMessage.auto_proceeding || false,
+                note: streamMessage.note || '',
+              };
+              newState.isLoading = false; // Stop loading for clarification step
+            } else if (streamMessage.status === 'plan_completed' && streamMessage.plan) {
               newState.plan = streamMessage.plan;
             } else if (streamMessage.status === 'react_completed' && streamMessage.react_summary) {
               newState.reactSummary = streamMessage.react_summary;
@@ -72,10 +83,36 @@ function App() {
     }
   };
 
+  const handleClarificationConfirm = (overrides: Partial<ResearchRequest>) => {
+    if (uiState.clarification) {
+      // Merge with original clarified input
+      const confirmedRequest: ResearchRequest = {
+        user_prompt: uiState.clarification.clarified_input.user_prompt || '',
+        nganh_hang: overrides.nganh_hang || uiState.clarification.clarified_input.nganh_hang,
+        thi_truong_muc_tieu: overrides.thi_truong_muc_tieu || uiState.clarification.clarified_input.thi_truong_muc_tieu,
+        phan_khuc_quan_tam: overrides.phan_khuc_quan_tam || uiState.clarification.clarified_input.phan_khuc_quan_tam,
+        doi_thu_seed: overrides.doi_thu_seed || uiState.clarification.clarified_input.doi_thu_seed,
+        khung_thoi_gian: overrides.khung_thoi_gian || uiState.clarification.clarified_input.khung_thoi_gian,
+        muc_tieu_nghien_cuu: overrides.muc_tieu_nghien_cuu || uiState.clarification.clarified_input.muc_tieu_nghien_cuu,
+      };
+
+      // Continue with the confirmed research
+      setUIState((prev) => ({
+        ...prev,
+        isLoading: true,
+        clarification: undefined,
+      }));
+
+      // Resubmit with confirmed data
+      handleResearchSubmit(confirmedRequest);
+    }
+  };
+
   const handleReset = () => {
     setUIState({
       isLoading: false,
       messages: [],
+      clarification: undefined,
       plan: undefined,
       reactSummary: undefined,
       evidence: undefined,
@@ -97,7 +134,12 @@ function App() {
       <main className="app-main">
         <div className="app-grid">
           <div className="form-section">
-            <ResearchForm onSubmit={handleResearchSubmit} isLoading={uiState.isLoading} />
+            <ResearchForm 
+              onSubmit={handleResearchSubmit} 
+              isLoading={uiState.isLoading}
+              clarification={uiState.clarification}
+              onClarificationConfirm={handleClarificationConfirm}
+            />
           </div>
 
           <div className="progress-section">
