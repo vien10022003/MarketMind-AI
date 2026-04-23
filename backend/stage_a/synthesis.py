@@ -6,8 +6,8 @@ Generate final report sections using LLM
 import pandas as pd
 from rich import print as rprint
 
-from .04_data_models import StageAInput, StageAOutput, EvidenceItem
-from .03_llm_config import LocalTextGenerator
+from .data_models import StageAInput, StageAOutput, EvidenceItem
+from .llm_config import LocalTextGenerator
 
 
 def dataframe_to_compact_context(df: pd.DataFrame, top_n: int = 25) -> str:

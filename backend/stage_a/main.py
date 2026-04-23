@@ -8,18 +8,18 @@ import argparse
 from rich import print as rprint
 from rich.console import Console
 
-from stage_a.02_environment import load_environment, setup_directories
-from stage_a.03_llm_config import initialize_llm
-from stage_a.04_data_models import StageAInput
-from stage_a.05_clarification import clarify_user_prompt
-from stage_a.06_planning import planner_chain
-from stage_a.08_react import run_react_loop
-from stage_a.09_evidence_processing import normalize_and_filter_evidence
-from stage_a.10_synthesis import synthesize_stage_a_report
-from stage_a.11_output_formatting import build_markdown_report, build_json_report
-from stage_a.12_mongodb import MongoDBManager
-from stage_a.13_flask_api import create_app
-from stage_a.14_ngrok_tunnel import run_server
+from stage_a.environment import load_environment, setup_directories
+from stage_a.llm_config import initialize_llm
+from stage_a.data_models import StageAInput
+from stage_a.clarification import clarify_user_prompt
+from stage_a.planning import planner_chain
+from stage_a.react import run_react_loop
+from stage_a.evidence_processing import normalize_and_filter_evidence
+from stage_a.synthesis import synthesize_stage_a_report
+from stage_a.output_formatting import build_markdown_report, build_json_report
+from stage_a.mongodb import MongoDBManager
+from stage_a.flask_api import create_app
+from stage_a.ngrok_tunnel import run_server
 
 
 console = Console()

@@ -8,8 +8,8 @@ import re
 from typing import Any, Dict, Optional
 from rich import print as rprint
 
-from .04_data_models import StageAInput
-from .03_llm_config import LocalTextGenerator
+from .data_models import StageAInput
+from .llm_config import LocalTextGenerator
 
 
 def extract_first_json_block(text: str) -> Optional[str]:

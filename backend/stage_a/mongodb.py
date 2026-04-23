@@ -9,7 +9,7 @@ from typing import Any, Dict, Optional
 import pymongo
 from rich import print as rprint
 
-from .04_data_models import StageAOutput
+from .data_models import StageAOutput
 
 
 class MongoDBManager:

@@ -6,7 +6,7 @@ Convert results to various formats (Markdown, JSON, etc.)
 import pandas as pd
 from typing import Any, Dict, List
 
-from .04_data_models import StageAInput, StageAOutput
+from .data_models import StageAInput, StageAOutput
 
 
 def build_markdown_report(input_obj: StageAInput, output_obj: StageAOutput) -> str:

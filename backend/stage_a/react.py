@@ -7,9 +7,9 @@ import json
 from typing import Any, Dict, List
 from rich import print as rprint
 
-from .03_llm_config import LocalTextGenerator
-from .05_clarification import extract_first_json_block
-from .07_tavily_search import tavily_search_with_retry
+from .llm_config import LocalTextGenerator
+from .clarification import extract_first_json_block
+from .tavily_search import tavily_search_with_retry
 
 
 def react_decide_action(

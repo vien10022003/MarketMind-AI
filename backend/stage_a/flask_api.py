@@ -8,16 +8,16 @@ from datetime import datetime
 from flask import Flask, request, Response, stream_with_context
 from rich import print as rprint
 
-from .04_data_models import StageAInput
-from .02_environment import load_environment
-from .03_llm_config import initialize_llm
-from .05_clarification import clarify_user_prompt
-from .06_planning import planner_chain
-from .08_react import run_react_loop
-from .09_evidence_processing import normalize_and_filter_evidence, convert_evidence_to_dict
-from .10_synthesis import synthesize_stage_a_report
-from .11_output_formatting import build_markdown_report
-from .12_mongodb import MongoDBManager
+from .data_models import StageAInput
+from .environment import load_environment
+from .llm_config import initialize_llm
+from .clarification import clarify_user_prompt
+from .planning import planner_chain
+from .react import run_react_loop
+from .evidence_processing import normalize_and_filter_evidence, convert_evidence_to_dict
+from .synthesis import synthesize_stage_a_report
+from .output_formatting import build_markdown_report
+from .mongodb import MongoDBManager
 
 
 # Initialize Flask app
