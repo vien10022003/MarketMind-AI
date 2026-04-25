@@ -107,14 +107,21 @@ def run_stage_a_pipeline_generator(req_data: dict):
         clarification_result = clarify_user_prompt(llm, user_prompt, initial_input)
         user_input = clarification_result["clarified_input"]
 
+        # Prepare detected info string
+        detected_parts = []
+        if user_input.nganh_hang: detected_parts.append(f"Ngành hàng: {user_input.nganh_hang}")
+        if user_input.thi_truong_muc_tieu: detected_parts.append(f"Thị trường: {user_input.thi_truong_muc_tieu}")
+        detected_info_str = " | ".join(detected_parts) if detected_parts else "Chưa xác định rõ ngành hàng/thị trường"
+
         yield json.dumps({
             "status": "clarification_provided",
             "message": "LLM đã phân tích ✅",
-            "detected_info": {
-                "nganh_hang": user_input.nganh_hang,
-                "thi_truong_muc_tieu": user_input.thi_truong_muc_tieu,
-            },
-            "questions": clarification_result.get("questions", []),
+            "detected_info": detected_info_str,
+            "questions_for_user": clarification_result.get("questions", []),
+            "clarified_input": user_input.model_dump(),
+            "explanations": clarification_result.get("explanations", {}),
+            "auto_proceeding": clarification_result.get("ready_to_proceed", False),
+            "note": "Hệ thống đã phân tích xong. Tự động tiến hành nếu thông tin đã đủ." if clarification_result.get("ready_to_proceed") else "Vui lòng xác nhận hoặc bổ sung để kết quả nghiên cứu chính xác nhất."
         }) + "\n"
 
         # Step 2: Planning
