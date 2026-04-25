@@ -12,6 +12,7 @@ from .data_models import StageAInput
 from .environment import load_environment
 from .llm_config import initialize_llm
 from .clarification import clarify_user_prompt
+from .router import classify_intent_and_respond
 from .planning import planner_chain
 from .react import run_react_loop
 from .evidence_processing import normalize_and_filter_evidence
@@ -78,6 +79,23 @@ def run_stage_a_pipeline_generator(req_data: dict):
             khung_thoi_gian=req_data.get("khung_thoi_gian", "12 thang gan nhat"),
             muc_tieu_nghien_cuu=req_data.get("muc_tieu_nghien_cuu", [])
         )
+
+        # Step 0: Intent Routing
+        rprint("[yellow][STEP 0] Intent Routing...[/yellow]")
+        yield json.dumps({
+            "status": "progress",
+            "message": "Đang phân tích ý định..."
+        }) + "\n"
+
+        intent_result = classify_intent_and_respond(llm, user_prompt)
+
+        if intent_result.get("intent") == "chat":
+            rprint("[green]Chat intent detected, returning chat response[/green]")
+            yield json.dumps({
+                "status": "chat_response",
+                "message": intent_result.get("response", "Xin chào! Bạn cần tôi giúp gì?"),
+            }) + "\n"
+            return
 
         # Step 1: Clarification
         rprint("[yellow][STEP 1] Clarification...[/yellow]")

@@ -21,6 +21,7 @@ function App() {
       evidenceCount: undefined,
       report: undefined,
       markdownReport: undefined,
+      chatResponse: undefined,
       error: undefined,
     });
 
@@ -34,12 +35,15 @@ function App() {
             const newState = {
               ...prev,
               messages: newMessages,
-              isLoading: streamMessage.status !== 'completed' && streamMessage.status !== 'error' && streamMessage.status !== 'clarification_provided',
+              isLoading: streamMessage.status !== 'completed' && streamMessage.status !== 'error' && streamMessage.status !== 'clarification_provided' && streamMessage.status !== 'chat_response',
               error: streamMessage.status === 'error' ? streamMessage.message : undefined,
             };
 
             // Handle different stream events
-            if (streamMessage.status === 'clarification_provided') {
+            if (streamMessage.status === 'chat_response') {
+              newState.chatResponse = streamMessage.message;
+              newState.isLoading = false;
+            } else if (streamMessage.status === 'clarification_provided') {
               newState.clarification = {
                 detected_info: streamMessage.detected_info || '',
                 questions_for_user: streamMessage.questions_for_user || [],
@@ -119,6 +123,7 @@ function App() {
       evidenceCount: undefined,
       report: undefined,
       markdownReport: undefined,
+      chatResponse: undefined,
       error: undefined,
       mongodbId: undefined,
     });
@@ -152,6 +157,20 @@ function App() {
             <p className="error-message">❌ Lỗi: {uiState.error}</p>
             <button onClick={handleReset} className="reset-btn">
               Thử Lại
+            </button>
+          </div>
+        )}
+
+        {uiState.chatResponse && (
+          <div className="chat-response-section">
+            <div className="chat-bubble">
+              <span className="chat-icon">🤖</span>
+              <div className="chat-content">
+                <p>{uiState.chatResponse}</p>
+              </div>
+            </div>
+            <button onClick={handleReset} className="reset-btn" style={{marginTop: '1rem'}}>
+              Bắt Đầu Lại
             </button>
           </div>
         )}

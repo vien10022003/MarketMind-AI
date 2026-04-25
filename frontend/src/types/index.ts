@@ -74,6 +74,7 @@ export type StreamStatus =
   | "evidence_ready" 
   | "report_ready" 
   | "completed" 
+  | "chat_response"
   | "error";
 
 export interface ClarificationData {
@@ -114,6 +115,7 @@ export interface UIState {
   evidenceCount?: EvidenceCount;
   report?: ResearchReport;
   markdownReport?: string;
+  chatResponse?: string;
   error?: string;
   mongodbId?: string;
 }

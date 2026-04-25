@@ -135,10 +135,10 @@ export function ResearchForm({
           <ul>
             <li><strong>Ngành hàng:</strong> {clarificationOverrides.nganh_hang || clarification.clarified_input.nganh_hang}</li>
             <li><strong>Thị trường mục tiêu:</strong> {clarificationOverrides.thi_truong_muc_tieu || clarification.clarified_input.thi_truong_muc_tieu}</li>
-            {clarification.clarified_input.phan_khuc_quan_tam?.length > 0 && (
+            {clarification.clarified_input.phan_khuc_quan_tam && clarification.clarified_input.phan_khuc_quan_tam.length > 0 && (
               <li><strong>Phân khúc:</strong> {clarification.clarified_input.phan_khuc_quan_tam.join(', ')}</li>
             )}
-            {clarification.clarified_input.doi_thu_seed?.length > 0 && (
+            {clarification.clarified_input.doi_thu_seed && clarification.clarified_input.doi_thu_seed.length > 0 && (
               <li><strong>Đối thủ:</strong> {clarification.clarified_input.doi_thu_seed.join(', ')}</li>
             )}
           </ul>

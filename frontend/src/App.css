@@ -855,3 +855,40 @@ body {
   font-family: 'Fira Code', 'Courier New', monospace;
   resize: vertical;
 }
+
+/* Chat Response Styles */
+.chat-response-section {
+  background: var(--surface);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  margin-bottom: 2rem;
+  animation: slideIn 0.3s ease-out;
+}
+
+.chat-bubble {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, var(--surface-light) 0%, var(--background) 100%);
+  border-left: 4px solid var(--primary-color);
+  border-radius: 8px;
+}
+
+.chat-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.chat-content {
+  color: var(--text-primary);
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
+.chat-content p {
+  margin-bottom: 0;
+  white-space: pre-wrap;
+}
