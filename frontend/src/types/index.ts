@@ -104,7 +104,35 @@ export interface StreamMessage {
   note?: string;
 }
 
-// UI State Types
+// ─── Chat Message Types ───────────────────────────────────────
+export type ChatMessageType =
+  | 'user'
+  | 'assistant'
+  | 'status'
+  | 'clarification'
+  | 'plan'
+  | 'react_summary'
+  | 'evidence'
+  | 'report'
+  | 'error'
+  | 'completed';
+
+export interface ChatMessage {
+  id: string;
+  type: ChatMessageType;
+  content: string;
+  timestamp: Date;
+  // Typed payload depending on message type
+  clarificationData?: ClarificationData;
+  planData?: Plan;
+  reactSummaryData?: ReactSummary;
+  evidenceData?: Evidence[];
+  evidenceCountData?: EvidenceCount;
+  reportData?: ResearchReport;
+  mongodbId?: string;
+}
+
+// UI State Types (kept for compatibility, but App.tsx will primarily use ChatMessage[])
 export interface UIState {
   isLoading: boolean;
   messages: string[];

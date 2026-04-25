@@ -11,7 +11,7 @@ const BACKEND_LOCAL = 'http://127.0.0.1:5000';
 
 // Option 2: Ngrok tunnel (Backend expose qua ngrok)
 // Lấy từ output khi chạy notebook: "✅ API PUBLIC URL: https://xxx-ngrok.com"
-const BACKEND_NGROK = 'https://0e9b-34-126-93-211.ngrok-free.app';  // ← Thay bằng URL thực tế
+const BACKEND_NGROK = 'https://9058-34-87-146-206.ngrok-free.app';  // ← Thay bằng URL thực tế
 
 // Chọn một trong hai:
 const ACTIVE_BACKEND_URL = BACKEND_NGROK;  // ← Đổi thành BACKEND_NGROK nếu dùng ngrok

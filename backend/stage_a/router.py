@@ -31,6 +31,8 @@ YEU CAU (Chi tra ve JSON, khong van ban):
     raw = llm.generate(prompt, max_new_tokens=400)
     block = extract_first_json_block(raw)
     
+    print("-----------raw")
+    print(raw)
     result = {
         "intent": "research",
         "response": ""
