@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { ChatMessageBubble } from './components';
 import type { ChatMessage, ResearchRequest, ConversationTurn } from './types';
 import { researchService } from './services/researchService';
+import { initializeBackendUrl } from './config';
 import './App.css';
 
 let msgIdCounter = 0;
@@ -22,6 +23,11 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [waitingClarification, setWaitingClarification] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
+
+  // Initialize backend URL from Firebase on app startup
+  useEffect(() => {
+    initializeBackendUrl();
+  }, []);
 
   // Auto-scroll to latest message
   useEffect(() => {

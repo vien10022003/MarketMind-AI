@@ -4,6 +4,8 @@ REST API endpoints for Stage A research pipeline with streaming
 """
 
 import json
+import gc
+import torch
 from datetime import datetime
 from flask import Flask, request, Response, stream_with_context
 from rich import print as rprint
@@ -27,9 +29,16 @@ app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
 # Initialize components
 try:
+    # Clear GPU memory before initializing LLM
+    gc.collect()
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
+        rprint("[yellow]🧹 GPU memory cleared[/yellow]")
+    
     config = load_environment()
     llm = initialize_llm()
     mongo = MongoDBManager(config.get("mongo_uri"))
+    rprint("[green]✅ All components initialized successfully[/green]")
 except Exception as e:
     rprint(f"[red]Initialization error: {e}[/red]")
     llm = None

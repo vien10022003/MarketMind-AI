@@ -11,10 +11,13 @@ const BACKEND_LOCAL = 'http://127.0.0.1:5000';
 
 // Option 2: Ngrok tunnel (Backend expose qua ngrok)
 // Lấy từ output khi chạy notebook: "✅ API PUBLIC URL: https://xxx-ngrok.com"
-const BACKEND_NGROK = 'https://79ff-34-125-194-159.ngrok-free.app';  // ← Thay bằng URL thực tế
+const BACKEND_NGROK = 'https://9f34-34-125-194-159.ngrok-free.app';  // ← Thay bằng URL thực tế
 
-// Chọn một trong hai:
-const ACTIVE_BACKEND_URL = BACKEND_NGROK;  // ← Đổi thành BACKEND_NGROK nếu dùng ngrok
+// Firebase URL to fetch dynamic backend URL
+const FIREBASE_API_URL = 'https://vienvipvail-default-rtdb.firebaseio.com/api-graduation-ngrok.json';
+
+// Default backend URL (will be overridden by Firebase if available)
+let ACTIVE_BACKEND_URL = BACKEND_NGROK;
 
 // ========================================
 
@@ -62,4 +65,36 @@ export const config = {
 // Export helper function to get full API URL
 export const getApiUrl = (endpoint: string): string => {
   return `${config.api.baseURL}${endpoint}`;
+};
+
+/**
+ * Fetch backend URL from Firebase on app startup
+ * This allows updating the ngrok URL without redeploying the frontend
+ */
+export const initializeBackendUrl = async (): Promise<void> => {
+  try {
+    console.log('📡 Fetching backend URL from Firebase...');
+    const response = await fetch(FIREBASE_API_URL);
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    
+    // Firebase returns the ngrok URL directly or wrapped in an object
+    const backendUrl = typeof data === 'string' ? data : data.url || data.backend_url;
+    
+    if (backendUrl && backendUrl.startsWith('https://') || backendUrl.startsWith('http://')) {
+      ACTIVE_BACKEND_URL = backendUrl;
+      config.api.baseURL = ACTIVE_BACKEND_URL;
+      console.log(`✅ Backend URL loaded from Firebase: ${ACTIVE_BACKEND_URL}`);
+    } else {
+      console.warn('⚠️ Invalid URL from Firebase, using default:',ACTIVE_BACKEND_URL);
+    }
+  } catch (error) {
+    console.warn('⚠️ Failed to fetch backend URL from Firebase:', error);
+    console.log(`📌 Using default backend URL: ${ACTIVE_BACKEND_URL}`);
+    // Will continue with default ACTIVE_BACKEND_URL
+  }
 };
