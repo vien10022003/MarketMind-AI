@@ -87,7 +87,8 @@ def run_stage_a_pipeline_generator(req_data: dict):
             "message": "Đang phân tích ý định..."
         }) + "\n"
 
-        intent_result = classify_intent_and_respond(llm, user_prompt)
+        conversation_history = req_data.get("conversation_history", [])
+        intent_result = classify_intent_and_respond(llm, user_prompt, conversation_history)
 
         if intent_result.get("intent") == "chat":
             rprint("[green]Chat intent detected, returning chat response[/green]")
@@ -236,6 +237,7 @@ def api_research_stage_a():
         return '', 200
 
     rprint(f"[yellow][API] POST /api/research/stage_a[/yellow]")
+    print(f"------------wwwwwwwwwwwwwwwwwww")
     
     data = request.get_json()
     if not data:

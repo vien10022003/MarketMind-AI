@@ -1,6 +1,13 @@
+// Conversation History Types
+export interface ConversationTurn {
+  role: 'user' | 'assistant';
+  content: string;
+}
+
 // Research Request Types
 export interface ResearchRequest {
   user_prompt: string; // Required: user's research requirement
+  conversation_history?: ConversationTurn[]; // Recent Q&A pairs for context
   nganh_hang?: string;
   thi_truong_muc_tieu?: string;
   phan_khuc_quan_tam?: string[];

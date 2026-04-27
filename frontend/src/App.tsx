@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { ChatMessageBubble } from './components';
-import type { ChatMessage, ResearchRequest } from './types';
+import type { ChatMessage, ResearchRequest, ConversationTurn } from './types';
 import { researchService } from './services/researchService';
 import './App.css';
 
@@ -37,9 +37,31 @@ function App() {
     setChatMessages((prev) => [...prev, newMsg]);
   };
 
+  /**
+   * Extract the last N user/assistant conversation turns for short-term memory.
+   * This gives the LLM context about recent conversation.
+   */
+  const getRecentHistory = (maxTurns = 3): ConversationTurn[] => {
+    const turns: ConversationTurn[] = [];
+    // Walk through chatMessages, pick user + assistant/chat_response pairs
+    for (const msg of chatMessages) {
+      if (msg.type === 'user') {
+        turns.push({ role: 'user', content: msg.content });
+      } else if (msg.type === 'assistant') {
+        turns.push({ role: 'assistant', content: msg.content });
+      }
+    }
+    // Return only the last N turns (each turn = 1 message)
+    // We want last maxTurns pairs → maxTurns * 2 messages
+    return turns.slice(-(maxTurns * 2));
+  };
+
   const handleSend = async (prompt?: string) => {
     const text = prompt ?? inputValue.trim();
     if (!text || isLoading) return;
+
+    // Build conversation history BEFORE adding the new user message
+    const conversationHistory = getRecentHistory(3);
 
     // Add user bubble
     addMessage({ type: 'user', content: text });
@@ -47,7 +69,10 @@ function App() {
     setIsLoading(true);
     setWaitingClarification(false);
 
-    const request: ResearchRequest = { user_prompt: text };
+    const request: ResearchRequest = {
+      user_prompt: text,
+      conversation_history: conversationHistory,
+    };
 
     await runPipeline(request);
   };
