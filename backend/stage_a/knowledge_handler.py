@@ -119,13 +119,11 @@ Thong tin tim kiem duoc:
 {sources_text}
 
 Yeu cau:
-1. Tra loi bang tieng Viet, ro rang va de hieu
-2. Su dung thong tin tu nguon tim kiem de dam bao chinh xac
-3. Neu co so lieu cu the, hay trich dan
-4. Tra loi truc tiep, khong can noi "theo ket qua tim kiem"
-5. Chi tra ve noi dung tra loi, KHONG tra ve JSON
+Su dung thong tin tu nguon tim kiem de dam bao chinh xac
+Neu co so lieu cu the, hay trich dan
+Tra loi truc tiep, khong can noi "theo ket qua tim kiem"
 """
-    answer = llm.generate(prompt, max_new_tokens=600)
+    answer = llm.generate(prompt, max_new_tokens=1000)
     return answer.strip()
 
 

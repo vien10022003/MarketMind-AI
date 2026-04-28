@@ -43,7 +43,7 @@ RESPONSE DUNG DUNG DAY (CHI JSON, KHONG THEM GI):
 {{"intent": "chat|knowledge|research", "response": "Chi dien neu chat", "reasoning": "Ly do"}}"""
     rprint(f"[blue]--- Intent Classification prompt ---[/blue]")
     rprint(prompt)
-    raw = llm.generate(prompt, max_new_tokens=400)
+    raw = llm.generate(prompt, max_new_tokens=1000)
     block = extract_first_json_block(raw)
     
     rprint(f"[cyan]--- Intent Classification raw ---[/cyan]")
