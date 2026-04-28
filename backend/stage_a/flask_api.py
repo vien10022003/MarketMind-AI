@@ -15,6 +15,7 @@ from .environment import load_environment
 from .llm_config import initialize_llm
 from .clarification import clarify_user_prompt
 from .router import classify_intent_and_respond
+from .knowledge_handler import handle_knowledge_query
 from .planning import planner_chain
 from .react import run_react_loop
 from .evidence_processing import normalize_and_filter_evidence
@@ -61,7 +62,6 @@ def add_cors_headers(response):
 def run_stage_a_pipeline_generator(req_data: dict):
     """Generator function for streaming pipeline execution"""
     rprint(f"[yellow][PIPELINE START] Input: {list(req_data.keys())}[/yellow]")
-    yield json.dumps({"status": "starting", "message": "Khởi tạo tác vụ Giai đoạn A..."}) + "\n"
 
     try:
         # Validate input
@@ -98,8 +98,10 @@ def run_stage_a_pipeline_generator(req_data: dict):
 
         conversation_history = req_data.get("conversation_history", [])
         intent_result = classify_intent_and_respond(llm, user_prompt, conversation_history)
+        detected_intent = intent_result.get("intent", "research")
 
-        if intent_result.get("intent") == "chat":
+        # ─── Path 1: Chat ───
+        if detected_intent == "chat":
             rprint("[green]Chat intent detected, returning chat response[/green]")
             yield json.dumps({
                 "status": "chat_response",
@@ -107,32 +109,35 @@ def run_stage_a_pipeline_generator(req_data: dict):
             }) + "\n"
             return
 
-        # Step 1: Clarification
-        rprint("[yellow][STEP 1] Clarification...[/yellow]")
+        # ─── Path 2: Knowledge (hard questions, may need Tavily search) ───
+        if detected_intent == "knowledge":
+            rprint("[cyan]Knowledge intent detected, processing...[/cyan]")
+            for event in handle_knowledge_query(llm, user_prompt, conversation_history):
+                yield json.dumps(event) + "\n"
+            return
+
+        # ─── Path 3: Research / Marketing ───
+        # If this is a fresh research request (not from form submission),
+        # show the marketing form for the user to fill in details
+        if not req_data.get("_from_marketing_form"):
+            rprint("[magenta]Research intent detected, showing marketing form[/magenta]")
+            yield json.dumps({
+                "status": "show_marketing_form",
+                "message": "Tôi nhận thấy bạn cần nghiên cứu thị trường. Vui lòng cung cấp thêm thông tin để tôi phân tích chính xác hơn.",
+                "detected_prompt": user_prompt,
+            }) + "\n"
+            return
+
+        yield json.dumps({"status": "starting", "message": "Khởi tạo tác vụ Giai đoạn A..."}) + "\n"
+
+        # Step 1: Use form data directly (skip LLM clarification since user already provided info)
+        rprint("[yellow][STEP 1] Using marketing form data...[/yellow]")
         yield json.dumps({
             "status": "progress",
-            "message": "LLM đang phân tích yêu cầu..."
+            "message": "Đang xử lý thông tin marketing..."
         }) + "\n"
 
-        clarification_result = clarify_user_prompt(llm, user_prompt, initial_input)
-        user_input = clarification_result["clarified_input"]
-
-        # Prepare detected info string
-        detected_parts = []
-        if user_input.nganh_hang: detected_parts.append(f"Ngành hàng: {user_input.nganh_hang}")
-        if user_input.thi_truong_muc_tieu: detected_parts.append(f"Thị trường: {user_input.thi_truong_muc_tieu}")
-        detected_info_str = " | ".join(detected_parts) if detected_parts else "Chưa xác định rõ ngành hàng/thị trường"
-
-        yield json.dumps({
-            "status": "clarification_provided",
-            "message": "LLM đã phân tích ✅",
-            "detected_info": detected_info_str,
-            "questions_for_user": clarification_result.get("questions", []),
-            "clarified_input": user_input.model_dump(),
-            "explanations": clarification_result.get("explanations", {}),
-            "auto_proceeding": clarification_result.get("ready_to_proceed", False),
-            "note": "Hệ thống đã phân tích xong. Tự động tiến hành nếu thông tin đã đủ." if clarification_result.get("ready_to_proceed") else "Vui lòng xác nhận hoặc bổ sung để kết quả nghiên cứu chính xác nhất."
-        }) + "\n"
+        user_input = initial_input
 
         # Step 2: Planning
         rprint("[yellow][STEP 2] Planning...[/yellow]")
@@ -241,16 +246,38 @@ def run_stage_a_pipeline_generator(req_data: dict):
 
 @app.route('/api/research/stage_a', methods=['POST', 'OPTIONS'])
 def api_research_stage_a():
-    """Main research endpoint - POST request"""
+    """Main research endpoint - handles chat, knowledge, and initial research classification"""
     if request.method == 'OPTIONS':
         return '', 200
 
     rprint(f"[yellow][API] POST /api/research/stage_a[/yellow]")
-    print(f"------------wwwwwwwwwwwwwwwwwww")
     
     data = request.get_json()
     if not data:
         return {"error": "Missing JSON body"}, 400
+
+    return Response(
+        stream_with_context(run_stage_a_pipeline_generator(data)),
+        content_type='application/x-ndjson',
+        status=200
+    )
+
+
+@app.route('/api/research/stage_a/marketing', methods=['POST', 'OPTIONS'])
+def api_research_stage_a_marketing():
+    """Marketing form submission endpoint - runs full Stage A pipeline skipping intent classification"""
+    if request.method == 'OPTIONS':
+        return '', 200
+
+    rprint(f"[yellow][API] POST /api/research/stage_a/marketing[/yellow]")
+    
+    data = request.get_json()
+    if not data:
+        return {"error": "Missing JSON body"}, 400
+
+    # Mark this as coming from the marketing form so the pipeline skips
+    # intent classification and goes straight to research
+    data["_from_marketing_form"] = True
 
     return Response(
         stream_with_context(run_stage_a_pipeline_generator(data)),

@@ -21,7 +21,7 @@ function App() {
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [waitingClarification, setWaitingClarification] = useState(false);
+  const [waitingMarketingForm, setWaitingMarketingForm] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   // Initialize backend URL from Firebase on app startup
@@ -53,7 +53,7 @@ function App() {
     for (const msg of chatMessages) {
       if (msg.type === 'user') {
         turns.push({ role: 'user', content: msg.content });
-      } else if (msg.type === 'assistant') {
+      } else if (msg.type === 'assistant' || msg.type === 'knowledge') {
         turns.push({ role: 'assistant', content: msg.content });
       }
     }
@@ -73,7 +73,7 @@ function App() {
     addMessage({ type: 'user', content: text });
     setInputValue('');
     setIsLoading(true);
-    setWaitingClarification(false);
+    setWaitingMarketingForm(false);
 
     const request: ResearchRequest = {
       user_prompt: text,
@@ -83,69 +83,101 @@ function App() {
     await runPipeline(request);
   };
 
+  /**
+   * Shared stream event handler for both main endpoint and marketing endpoint
+   */
+  const handleStreamMessage = (streamMessage: import('./types').StreamMessage) => {
+    // ─── Chat response ───
+    if (streamMessage.status === 'chat_response') {
+      addMessage({ type: 'assistant', content: streamMessage.message });
+      setIsLoading(false);
+
+    // ─── Knowledge path ───
+    } else if (streamMessage.status === 'knowledge_searching') {
+      addMessage({ type: 'status', content: streamMessage.message });
+    } else if (streamMessage.status === 'knowledge_response') {
+      addMessage({
+        type: 'knowledge',
+        content: streamMessage.message,
+        knowledgeData: {
+          answer: streamMessage.message,
+          sources: streamMessage.sources || [],
+        },
+      });
+      setIsLoading(false);
+
+    // ─── Marketing form path ───
+    } else if (streamMessage.status === 'show_marketing_form') {
+      addMessage({
+        type: 'marketing_form',
+        content: streamMessage.message,
+        marketingFormData: {
+          detected_prompt: streamMessage.detected_prompt || '',
+        },
+      });
+      setIsLoading(false);
+      setWaitingMarketingForm(true);
+
+    // ─── Research pipeline events (unchanged) ───
+    } else if (streamMessage.status === 'clarification_provided') {
+      addMessage({
+        type: 'clarification',
+        content: streamMessage.message,
+        clarificationData: {
+          detected_info: streamMessage.detected_info || '',
+          questions_for_user: streamMessage.questions_for_user || (streamMessage as any).questions || [],
+          clarified_input: streamMessage.clarified_input || { user_prompt: '' },
+          explanations: streamMessage.explanations || {},
+          auto_proceeding: streamMessage.auto_proceeding || false,
+          note: streamMessage.note || '',
+        },
+      });
+      setIsLoading(false);
+    } else if (streamMessage.status === 'plan_completed' && streamMessage.plan) {
+      addMessage({
+        type: 'plan',
+        content: streamMessage.message,
+        planData: streamMessage.plan,
+      });
+    } else if (streamMessage.status === 'react_completed' && streamMessage.react_summary) {
+      addMessage({
+        type: 'react_summary',
+        content: streamMessage.message,
+        reactSummaryData: streamMessage.react_summary,
+      });
+    } else if (streamMessage.status === 'evidence_ready' && streamMessage.evidence) {
+      addMessage({
+        type: 'evidence',
+        content: streamMessage.message,
+        evidenceData: streamMessage.evidence,
+        evidenceCountData: streamMessage.evidence_count,
+      });
+    } else if (streamMessage.status === 'report_ready' && streamMessage.report) {
+      addMessage({
+        type: 'report',
+        content: streamMessage.message,
+        reportData: streamMessage.report,
+      });
+    } else if (streamMessage.status === 'completed') {
+      addMessage({
+        type: 'completed',
+        content: streamMessage.message,
+        mongodbId: streamMessage.mongodb_id,
+      });
+      setIsLoading(false);
+    } else if (streamMessage.status === 'error') {
+      addMessage({ type: 'error', content: streamMessage.message });
+      setIsLoading(false);
+    } else if (streamMessage.status === 'progress' || streamMessage.status === 'starting') {
+      addMessage({ type: 'status', content: streamMessage.message });
+    }
+  };
+
   const runPipeline = async (request: ResearchRequest) => {
     try {
       await researchService.callStageAResearch(
         request,
-        (streamMessage) => {
-          // Map each stream event to a ChatMessage
-          if (streamMessage.status === 'chat_response') {
-            addMessage({ type: 'assistant', content: streamMessage.message });
-            setIsLoading(false);
-          } else if (streamMessage.status === 'clarification_provided') {
-            addMessage({
-              type: 'clarification',
-              content: streamMessage.message,
-              clarificationData: {
-                detected_info: streamMessage.detected_info || '',
-                questions_for_user: streamMessage.questions_for_user || (streamMessage as any).questions || [],
-                clarified_input: streamMessage.clarified_input || { user_prompt: '' },
-                explanations: streamMessage.explanations || {},
-                auto_proceeding: streamMessage.auto_proceeding || false,
-                note: streamMessage.note || '',
-              },
-            });
-            setIsLoading(false);
-            setWaitingClarification(true);
-          } else if (streamMessage.status === 'plan_completed' && streamMessage.plan) {
-            addMessage({
-              type: 'plan',
-              content: streamMessage.message,
-              planData: streamMessage.plan,
-            });
-          } else if (streamMessage.status === 'react_completed' && streamMessage.react_summary) {
-            addMessage({
-              type: 'react_summary',
-              content: streamMessage.message,
-              reactSummaryData: streamMessage.react_summary,
-            });
-          } else if (streamMessage.status === 'evidence_ready' && streamMessage.evidence) {
-            addMessage({
-              type: 'evidence',
-              content: streamMessage.message,
-              evidenceData: streamMessage.evidence,
-              evidenceCountData: streamMessage.evidence_count,
-            });
-          } else if (streamMessage.status === 'report_ready' && streamMessage.report) {
-            addMessage({
-              type: 'report',
-              content: streamMessage.message,
-              reportData: streamMessage.report,
-            });
-          } else if (streamMessage.status === 'completed') {
-            addMessage({
-              type: 'completed',
-              content: streamMessage.message,
-              mongodbId: streamMessage.mongodb_id,
-            });
-            setIsLoading(false);
-          } else if (streamMessage.status === 'error') {
-            addMessage({ type: 'error', content: streamMessage.message });
-            setIsLoading(false);
-          } else if (streamMessage.status === 'progress' || streamMessage.status === 'starting') {
-            addMessage({ type: 'status', content: streamMessage.message });
-          }
-        },
+        handleStreamMessage,
         (errorMsg) => {
           addMessage({ type: 'error', content: errorMsg });
           setIsLoading(false);
@@ -157,21 +189,28 @@ function App() {
     }
   };
 
-  const handleClarificationConfirm = (overrides: Partial<ResearchRequest>) => {
-    setWaitingClarification(false);
+  /**
+   * Called when user submits the marketing form.
+   * Calls the dedicated /marketing endpoint that skips intent classification.
+   */
+  const handleMarketingFormSubmit = async (formData: ResearchRequest) => {
+    setWaitingMarketingForm(false);
     setIsLoading(true);
-    addMessage({ type: 'status', content: 'Đã xác nhận thông tin. Tiếp tục nghiên cứu...' });
+    addMessage({ type: 'status', content: '🚀 Bắt đầu nghiên cứu thị trường...' });
 
-    const confirmed: ResearchRequest = {
-      user_prompt: overrides.user_prompt || '',
-      nganh_hang: overrides.nganh_hang,
-      thi_truong_muc_tieu: overrides.thi_truong_muc_tieu,
-      phan_khuc_quan_tam: overrides.phan_khuc_quan_tam,
-      doi_thu_seed: overrides.doi_thu_seed,
-      khung_thoi_gian: overrides.khung_thoi_gian,
-      muc_tieu_nghien_cuu: overrides.muc_tieu_nghien_cuu,
-    };
-    runPipeline(confirmed);
+    try {
+      await researchService.callMarketingResearch(
+        formData,
+        handleStreamMessage,
+        (errorMsg) => {
+          addMessage({ type: 'error', content: errorMsg });
+          setIsLoading(false);
+        }
+      );
+    } catch {
+      addMessage({ type: 'error', content: 'Lỗi không xác định' });
+      setIsLoading(false);
+    }
   };
 
   const handleReset = () => {
@@ -184,7 +223,7 @@ function App() {
       },
     ]);
     setIsLoading(false);
-    setWaitingClarification(false);
+    setWaitingMarketingForm(false);
     setInputValue('');
     msgIdCounter = 0;
   };
@@ -217,11 +256,12 @@ function App() {
               key={msg.id}
               message={msg}
               isLoading={isLoading}
-              onClarificationConfirm={handleClarificationConfirm}
+              onClarificationConfirm={() => {}}
+              onMarketingFormSubmit={handleMarketingFormSubmit}
             />
           ))}
 
-          {isLoading && !waitingClarification && (
+          {isLoading && !waitingMarketingForm && (
             <div className="chat-row chat-row--assistant">
               <div className="chat-avatar chat-avatar--assistant">🤖</div>
               <div className="chat-bubble chat-bubble--typing">

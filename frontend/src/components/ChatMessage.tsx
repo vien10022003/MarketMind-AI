@@ -1,14 +1,15 @@
 import { useState, useEffect, useCallback } from 'react';
-import type { ChatMessage, ResearchRequest, ClarificationData } from '../types';
+import type { ChatMessage, ResearchRequest, ClarificationData, SearchSource } from '../types';
 import { CollapsibleCard } from './CollapsibleCard';
 
 interface ChatMessageProps {
   message: ChatMessage;
   isLoading?: boolean;
   onClarificationConfirm?: (overrides: Partial<ResearchRequest>) => void;
+  onMarketingFormSubmit?: (formData: ResearchRequest) => void;
 }
 
-export function ChatMessageBubble({ message, isLoading, onClarificationConfirm }: ChatMessageProps) {
+export function ChatMessageBubble({ message, isLoading, onClarificationConfirm, onMarketingFormSubmit }: ChatMessageProps) {
   switch (message.type) {
     case 'user':
       return <UserBubble content={message.content} />;
@@ -16,6 +17,17 @@ export function ChatMessageBubble({ message, isLoading, onClarificationConfirm }
       return <AssistantBubble content={message.content} />;
     case 'status':
       return <StatusMessage content={message.content} />;
+    case 'knowledge':
+      return <KnowledgeBubble content={message.content} sources={message.knowledgeData?.sources || []} />;
+    case 'marketing_form':
+      return (
+        <MarketingFormBubble
+          content={message.content}
+          detectedPrompt={message.marketingFormData?.detected_prompt || ''}
+          isLoading={isLoading}
+          onSubmit={onMarketingFormSubmit}
+        />
+      );
     case 'clarification':
       return (
         <ClarificationBubble
@@ -386,6 +398,185 @@ function ReportBubble({
             )}
           </div>
         </CollapsibleCard>
+      </div>
+    </div>
+  );
+}
+
+/* ────── Knowledge Bubble ────── */
+function KnowledgeBubble({ content, sources }: { content: string; sources: SearchSource[] }) {
+  return (
+    <div className="chat-row chat-row--assistant">
+      <div className="chat-avatar chat-avatar--assistant">🧠</div>
+      <div className="chat-bubble chat-bubble--knowledge">
+        <div className="knowledge-answer">
+          {content.split('\n').map((line, i) => (
+            <p key={i}>{line}</p>
+          ))}
+        </div>
+        {sources.length > 0 && (
+          <CollapsibleCard
+            title={`Nguồn tham khảo (${sources.length})`}
+            summary="Nhấn để xem các nguồn đã sử dụng"
+            icon="🔗"
+            accentColor="var(--accent-knowledge, #8b5cf6)"
+          >
+            <div className="knowledge-sources">
+              {sources.map((src, i) => (
+                <div key={i} className="knowledge-source-item">
+                  <a href={src.url} target="_blank" rel="noopener noreferrer">
+                    {src.title || src.url}
+                  </a>
+                  {src.snippet && <p className="knowledge-source-snippet">{src.snippet}</p>}
+                </div>
+              ))}
+            </div>
+          </CollapsibleCard>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ────── Marketing Form Bubble ────── */
+function MarketingFormBubble({
+  content,
+  detectedPrompt,
+  isLoading,
+  onSubmit,
+}: {
+  content: string;
+  detectedPrompt: string;
+  isLoading?: boolean;
+  onSubmit?: (formData: ResearchRequest) => void;
+}) {
+  const [formData, setFormData] = useState({
+    user_prompt: detectedPrompt,
+    nganh_hang: '',
+    thi_truong_muc_tieu: '',
+    phan_khuc_quan_tam: '',
+    doi_thu_seed: '',
+    khung_thoi_gian: '12 tháng gần nhất',
+    muc_tieu_nghien_cuu: '',
+  });
+
+  const handleChange = (field: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleSubmit = () => {
+    if (!onSubmit) return;
+    onSubmit({
+      user_prompt: formData.user_prompt,
+      nganh_hang: formData.nganh_hang || undefined,
+      thi_truong_muc_tieu: formData.thi_truong_muc_tieu || undefined,
+      phan_khuc_quan_tam: formData.phan_khuc_quan_tam
+        ? formData.phan_khuc_quan_tam.split(',').map((s) => s.trim()).filter(Boolean)
+        : undefined,
+      doi_thu_seed: formData.doi_thu_seed
+        ? formData.doi_thu_seed.split(',').map((s) => s.trim()).filter(Boolean)
+        : undefined,
+      khung_thoi_gian: formData.khung_thoi_gian || undefined,
+      muc_tieu_nghien_cuu: formData.muc_tieu_nghien_cuu
+        ? formData.muc_tieu_nghien_cuu.split(',').map((s) => s.trim()).filter(Boolean)
+        : undefined,
+    });
+  };
+
+  return (
+    <div className="chat-row chat-row--assistant">
+      <div className="chat-avatar chat-avatar--assistant">📊</div>
+      <div className="chat-bubble chat-bubble--marketing-form">
+        <div className="mkt-form-header">
+          <span className="mkt-form-badge">📋 Nghiên cứu thị trường</span>
+          <p>{content}</p>
+        </div>
+
+        <div className="mkt-form-fields">
+          <div className="mkt-form-field">
+            <label>Yêu cầu nghiên cứu</label>
+            <textarea
+              value={formData.user_prompt}
+              onChange={(e) => handleChange('user_prompt', e.target.value)}
+              rows={2}
+              placeholder="Mô tả yêu cầu nghiên cứu..."
+            />
+          </div>
+
+          <div className="mkt-form-row">
+            <div className="mkt-form-field">
+              <label>Ngành hàng</label>
+              <input
+                type="text"
+                value={formData.nganh_hang}
+                onChange={(e) => handleChange('nganh_hang', e.target.value)}
+                placeholder="VD: Cà phê, Mỹ phẩm..."
+              />
+            </div>
+            <div className="mkt-form-field">
+              <label>Thị trường mục tiêu</label>
+              <input
+                type="text"
+                value={formData.thi_truong_muc_tieu}
+                onChange={(e) => handleChange('thi_truong_muc_tieu', e.target.value)}
+                placeholder="VD: Việt Nam, Đông Nam Á..."
+              />
+            </div>
+          </div>
+
+          <div className="mkt-form-row">
+            <div className="mkt-form-field">
+              <label>Phân khúc quan tâm</label>
+              <input
+                type="text"
+                value={formData.phan_khuc_quan_tam}
+                onChange={(e) => handleChange('phan_khuc_quan_tam', e.target.value)}
+                placeholder="VD: Gen Z, Premium (phân cách bằng dấu phẩy)"
+              />
+            </div>
+            <div className="mkt-form-field">
+              <label>Đối thủ cạnh tranh</label>
+              <input
+                type="text"
+                value={formData.doi_thu_seed}
+                onChange={(e) => handleChange('doi_thu_seed', e.target.value)}
+                placeholder="VD: Highlands, Starbucks (phân cách bằng dấu phẩy)"
+              />
+            </div>
+          </div>
+
+          <div className="mkt-form-row">
+            <div className="mkt-form-field">
+              <label>Khung thời gian</label>
+              <select
+                value={formData.khung_thoi_gian}
+                onChange={(e) => handleChange('khung_thoi_gian', e.target.value)}
+              >
+                <option value="3 tháng gần nhất">3 tháng gần nhất</option>
+                <option value="6 tháng gần nhất">6 tháng gần nhất</option>
+                <option value="12 tháng gần nhất">12 tháng gần nhất</option>
+                <option value="2 năm gần nhất">2 năm gần nhất</option>
+              </select>
+            </div>
+            <div className="mkt-form-field">
+              <label>Mục tiêu nghiên cứu</label>
+              <input
+                type="text"
+                value={formData.muc_tieu_nghien_cuu}
+                onChange={(e) => handleChange('muc_tieu_nghien_cuu', e.target.value)}
+                placeholder="VD: Xu hướng, Đối thủ (phân cách bằng dấu phẩy)"
+              />
+            </div>
+          </div>
+        </div>
+
+        <button
+          className="mkt-form-submit"
+          onClick={handleSubmit}
+          disabled={isLoading || !formData.user_prompt.trim()}
+        >
+          🚀 Bắt Đầu Nghiên Cứu
+        </button>
       </div>
     </div>
   );

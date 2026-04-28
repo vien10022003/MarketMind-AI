@@ -4,6 +4,13 @@ export interface ConversationTurn {
   content: string;
 }
 
+// Search Source (from Tavily)
+export interface SearchSource {
+  title: string;
+  url: string;
+  snippet: string;
+}
+
 // Research Request Types
 export interface ResearchRequest {
   user_prompt: string; // Required: user's research requirement
@@ -82,6 +89,9 @@ export type StreamStatus =
   | "report_ready" 
   | "completed" 
   | "chat_response"
+  | "knowledge_searching"
+  | "knowledge_response"
+  | "show_marketing_form"
   | "error";
 
 export interface ClarificationData {
@@ -109,6 +119,10 @@ export interface StreamMessage {
   explanations?: Record<string, string>;
   auto_proceeding?: boolean;
   note?: string;
+  // Knowledge path
+  sources?: SearchSource[];
+  // Marketing form path
+  detected_prompt?: string;
 }
 
 // ─── Chat Message Types ───────────────────────────────────────
@@ -122,7 +136,9 @@ export type ChatMessageType =
   | 'evidence'
   | 'report'
   | 'error'
-  | 'completed';
+  | 'completed'
+  | 'knowledge'
+  | 'marketing_form';
 
 export interface ChatMessage {
   id: string;
@@ -137,6 +153,15 @@ export interface ChatMessage {
   evidenceCountData?: EvidenceCount;
   reportData?: ResearchReport;
   mongodbId?: string;
+  // Knowledge path
+  knowledgeData?: {
+    answer: string;
+    sources: SearchSource[];
+  };
+  // Marketing form path
+  marketingFormData?: {
+    detected_prompt: string;
+  };
 }
 
 // UI State Types (kept for compatibility, but App.tsx will primarily use ChatMessage[])
