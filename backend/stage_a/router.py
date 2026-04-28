@@ -31,33 +31,18 @@ def classify_intent_and_respond(llm: LocalTextGenerator, user_prompt: str, conve
             history_parts.append(f"{role_label}: {turn.get('content', '')}")
         history_context = "\n".join(history_parts)
 
-    prompt = f"""
-Ban la mot he thong phan loai y dinh nguoi dung cho ung dung MarketMind AI.
-Nhiem vu: Phan loai cau hoi cua nguoi dung vao MOT trong BA loai sau:
+    prompt = f"""Ban la he thong phan loai y dinh nguoi dung. NHIEM VU: Phan loai prompt vao dung 1 trong 3 loai:
 
-1. "chat" - Cau chao hoi, tro chuyen don gian, cam on, hoi ve ban than chatbot, cau hoi rat don gian ai cung biet.
-   Vi du: "Xin chao", "Ban la ai?", "Cam on nhe", "Hom nay troi dep qua"
+1. "chat" - Chao hoi, tro chuyen don gian, cam on, hoi ve chatbot, thong tin ai cung biet. Vi du: "Xin chao", "Ban la ai?"
+2. "knowledge" - Cau hoi kien thuc (khong phai marketing), co the can tim kiem. Vi du: "GDP 2024 la bao nhieu?"
+3. "research" - Yeu cau phan tich thi truong, chien luoc marketing, nghien cuu canh tranh. Vi du: "Phan tich thi truong ca phe"
 
-2. "knowledge" - Cau hoi can kien thuc chuyen sau, du kien cu the, thong tin moi nhat, so sanh phuc tap, giai thich khai niem kho.
-   KHONG phai yeu cau nghien cuu marketing chien luoc. Day la cau hoi co the tra loi truc tiep hoac can tim kiem them.
-   Vi du: "GDP Viet Nam 2024 la bao nhieu?", "So sanh React va Vue", "Xu huong AI moi nhat la gi?", "Giai thich blockchain"
+{f"Lich su:{chr(10)}{history_context}{chr(10)}" if history_context else ""}Prompt: "{user_prompt}"
 
-3. "research" - Yeu cau phan tich thi truong, lap chien luoc marketing, nghien cuu doi thu canh tranh, phan tich nganh hang, 
-   nghien cuu phan khuc khach hang, bao cao thi truong toan dien.
-   Vi du: "Phan tich thi truong ca phe Viet Nam", "Lap chien luoc marketing cho san pham moi", "Nghien cuu doi thu trong nganh my pham"
-
-Neu la "chat", hay dua ra cau tra loi than thien. Su dung lich su hoi thoai (neu co) de tra loi phu hop.
-Neu la "knowledge" hoac "research", de response la chuoi rong.
-
-{f"Lich su hoi thoai gan day:{chr(10)}{history_context}{chr(10)}" if history_context else ""}User prompt: "{user_prompt}"
-
-YEU CAU (Chi tra ve JSON, khong van ban):
-{{
-  "intent": "chat" | "knowledge" | "research",
-  "response": "Cau tra loi neu intent la 'chat', nguoc lai de trong ''",
-  "reasoning": "Ly do ngan gon tai sao phan loai nhu vay"
-}}
-"""
+RESPONSE DUNG DUNG DAY (CHI JSON, KHONG THEM GI):
+{{"intent": "chat|knowledge|research", "response": "Chi dien neu chat", "reasoning": "Ly do"}}"""
+    rprint(f"[blue]--- Intent Classification prompt ---[/blue]")
+    rprint(prompt)
     raw = llm.generate(prompt, max_new_tokens=400)
     block = extract_first_json_block(raw)
     
@@ -75,10 +60,22 @@ YEU CAU (Chi tra ve JSON, khong van ban):
             # Validate intent value
             valid_intents = {"chat", "knowledge", "research"}
             if parsed.get("intent") not in valid_intents:
+                rprint(f"[yellow]⚠️ Invalid intent '{parsed.get('intent')}', defaulting to research[/yellow]")
                 parsed["intent"] = "research"
             result.update(parsed)
-            rprint(f"[green]✅ Intent Classification completed: {result.get('intent')} — {result.get('reasoning', '')}[/green]")
-        except json.JSONDecodeError:
-            rprint("[yellow]⚠️ Intent Classification JSON parse failed, defaulting to research[/yellow]")
+            rprint(f"[green]✅ Intent Classification: {result.get('intent')}[/green]")
+        except json.JSONDecodeError as e:
+            rprint(f"[yellow]⚠️ JSON parse failed: {e}, trying to extract intent from raw text[/yellow]")
+            # Fallback: try to detect intent from raw response
+            raw_lower = raw.lower()
+            if "knowledge" in raw_lower and ("hoi" in raw_lower or "cau hoi" in raw_lower):
+                result["intent"] = "knowledge"
+            elif "research" in raw_lower or "chien luoc" in raw_lower or "phan tich thi truong" in raw_lower:
+                result["intent"] = "research"
+            elif "chat" in raw_lower or "chao" in raw_lower:
+                result["intent"] = "chat"
+            rprint(f"[yellow]Fallback intent: {result['intent']}[/yellow]")
+    else:
+        rprint("[red]❌ No JSON block found in LLM response[/red]")
     
     return result
