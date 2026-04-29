@@ -90,6 +90,7 @@ class LocalTextGenerator:
             do_sample=temp > 0,
             temperature=temp,
             top_p=0.9,
+            repetition_penalty=1.15,  # Add this to prevent token repetition loops
             return_full_text=True,
         )[0]["generated_text"]
 

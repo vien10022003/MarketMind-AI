@@ -111,8 +111,6 @@ def answer_with_search(
     prompt = f"""
 Ban la tro ly AI thong minh. Hay tra loi cau hoi cua nguoi dung mot cach CHINH XAC va CHI TIET dua tren thong tin tim kiem duoc ben duoi.
 
-{f"Lich su hoi thoai:{chr(10)}{history_context}{chr(10)}" if history_context else ""}
-
 Cau hoi: "{user_prompt}"
 
 Thong tin tim kiem duoc:

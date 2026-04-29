@@ -34,7 +34,7 @@ def classify_intent_and_respond(llm: LocalTextGenerator, user_prompt: str, conve
     prompt = f"""Ban la he thong phan loai y dinh nguoi dung. NHIEM VU: Phan loai prompt vao dung 1 trong 3 loai:
 
 1. "chat" - Chao hoi, tro chuyen don gian, cam on, hoi ve chatbot, thong tin ai cung biet. Vi du: "Xin chao", "Ban la ai?"
-2. "knowledge" - Cau hoi kien thuc (khong phai marketing), co the can tim kiem. Vi du: "GDP 2024 la bao nhieu?"
+2. "knowledge" - Khi bạn không có đủ thông tin như thông tin mới thay đổi liên tục, tin chi tiết cần độ chính xác cao. Vi du: "GDP 2024 la bao nhieu?"
 3. "research" - Yeu cau phan tich thi truong, chien luoc marketing, nghien cuu canh tranh. Vi du: "Phan tich thi truong ca phe"
 
 {f"Lich su:{chr(10)}{history_context}{chr(10)}" if history_context else ""}Prompt: "{user_prompt}"
