@@ -96,44 +96,52 @@ def run_stage_a_pipeline_generator(req_data: dict):
             muc_tieu_nghien_cuu=req_data.get("muc_tieu_nghien_cuu", [])
         )
 
-        # Step 0: Intent Routing
-        rprint("[yellow][STEP 0] Intent Routing...[/yellow]")
-        yield json.dumps({
-            "status": "progress",
-            "message": "Đang phân tích ý định..."
-        }) + "\n"
-
-        conversation_history = req_data.get("conversation_history", [])
-        intent_result = classify_intent_and_respond(llm, user_prompt, conversation_history)
-        detected_intent = intent_result.get("intent", "research")
-
-        # ─── Path 1: Chat ───
-        if detected_intent == "chat":
-            rprint("[green]Chat intent detected, returning chat response[/green]")
+        # Check if nganh_hang is provided - if yes, skip intent routing and go directly to Stage A
+        if initial_input.nganh_hang and initial_input.nganh_hang.strip():
+            rprint("[magenta]nganh_hang provided, skipping intent routing and going directly to Stage A[/magenta]")
             yield json.dumps({
-                "status": "chat_response",
-                "message": intent_result.get("response", "Xin chào! Bạn cần tôi giúp gì?"),
+                "status": "progress",
+                "message": "Đã nhận dạng ngành hàng, bắt đầu phân tích..."
             }) + "\n"
-            return
-
-        # ─── Path 2: Knowledge (hard questions, may need Tavily search) ───
-        if detected_intent == "knowledge":
-            rprint("[cyan]Knowledge intent detected, processing...[/cyan]")
-            for event in handle_knowledge_query(llm, user_prompt, conversation_history):
-                yield json.dumps(event) + "\n"
-            return
-
-        # ─── Path 3: Research / Marketing ───
-        # If this is a fresh research request (not from form submission),
-        # show the marketing form for the user to fill in details
-        if not req_data.get("_from_marketing_form"):
-            rprint("[magenta]Research intent detected, showing marketing form[/magenta]")
+        else:
+            # Step 0: Intent Routing
+            rprint("[yellow][STEP 0] Intent Routing...[/yellow]")
             yield json.dumps({
-                "status": "show_marketing_form",
-                "message": "Tôi nhận thấy bạn cần nghiên cứu thị trường. Vui lòng cung cấp thêm thông tin để tôi phân tích chính xác hơn.",
-                "detected_prompt": user_prompt,
+                "status": "progress",
+                "message": "Đang phân tích ý định..."
             }) + "\n"
-            return
+
+            conversation_history = req_data.get("conversation_history", [])
+            intent_result = classify_intent_and_respond(llm, user_prompt, conversation_history)
+            detected_intent = intent_result.get("intent", "research")
+
+            # ─── Path 1: Chat ───
+            if detected_intent == "chat":
+                rprint("[green]Chat intent detected, returning chat response[/green]")
+                yield json.dumps({
+                    "status": "chat_response",
+                    "message": intent_result.get("response", "Xin chào! Bạn cần tôi giúp gì?"),
+                }) + "\n"
+                return
+
+            # ─── Path 2: Knowledge (hard questions, may need Tavily search) ───
+            if detected_intent == "knowledge":
+                rprint("[cyan]Knowledge intent detected, processing...[/cyan]")
+                for event in handle_knowledge_query(llm, user_prompt, conversation_history):
+                    yield json.dumps(event) + "\n"
+                return
+
+            # ─── Path 3: Research / Marketing ───
+            # If this is a fresh research request (not from form submission),
+            # show the marketing form for the user to fill in details
+            if not req_data.get("_from_marketing_form"):
+                rprint("[magenta]Research intent detected, showing marketing form[/magenta]")
+                yield json.dumps({
+                    "status": "show_marketing_form",
+                    "message": "Tôi nhận thấy bạn cần nghiên cứu thị trường. Vui lòng cung cấp thêm thông tin để tôi phân tích chính xác hơn.",
+                    "detected_prompt": user_prompt,
+                }) + "\n"
+                return
 
         yield json.dumps({"status": "starting", "message": "Khởi tạo tác vụ Giai đoạn A..."}) + "\n"
 
