@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { ChatMessage, ResearchRequest, ClarificationData, SearchSource, ContentBrief, ResearchReport } from '../types';
+import { parseMarkdown, renderMarkdown } from '../utils/markdownParser';
 import { CollapsibleCard } from './CollapsibleCard';
 import { StrategyBubble } from './StrategyBubble';
 import { ContentBriefEditor } from './ContentBriefEditor';
@@ -68,7 +69,6 @@ export function ChatMessageBubble({ message, isLoading, onClarificationConfirm, 
         <ContentBriefEditor
           briefs={message.contentBriefsData}
           isLoading={isLoading}
-          onApproveAll={onBriefsApproveAll}
           onStartCampaign={onStartCampaign}
         />
       ) : <StatusMessage content={message.content} />;
@@ -401,22 +401,30 @@ function ReportBubble({
 
             <section className="report-section-inner">
               <h4>📊 Tổng Quan Thị Trường</h4>
-              <div className="report-text">{data.tong_quan_thi_truong}</div>
+              <div className="report-text">
+                {renderMarkdown(parseMarkdown(data.tong_quan_thi_truong))}
+              </div>
             </section>
 
             <section className="report-section-inner">
               <h4>🎯 Phân Tích Đối Thủ</h4>
-              <div className="report-text">{data.phan_tich_doi_thu}</div>
+              <div className="report-text">
+                {renderMarkdown(parseMarkdown(data.phan_tich_doi_thu))}
+              </div>
             </section>
 
             <section className="report-section-inner">
               <h4>📈 Xu Hướng Ngành</h4>
-              <div className="report-text">{data.xu_huong_nganh}</div>
+              <div className="report-text">
+                {renderMarkdown(parseMarkdown(data.xu_huong_nganh))}
+              </div>
             </section>
 
             <section className="report-section-inner">
               <h4>👥 Phân Khúc & Insight</h4>
-              <div className="report-text">{data.phan_khuc_va_insight_khach_hang}</div>
+              <div className="report-text">
+                {renderMarkdown(parseMarkdown(data.phan_khuc_va_insight_khach_hang))}
+              </div>
             </section>
 
             {data.citations && data.citations.length > 0 && (

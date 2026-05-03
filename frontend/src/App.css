@@ -698,8 +698,70 @@ body {
   font-size: 0.85rem;
   color: var(--text-secondary);
   line-height: 1.7;
-  white-space: pre-wrap;
+  white-space: normal;
   word-break: break-word;
+}
+
+/* ──────── Markdown Styles ──────── */
+.report-text .markdown-h1 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 1rem 0 0.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid rgba(99, 102, 241, 0.3);
+}
+
+.report-text .markdown-h2 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--primary-light);
+  margin: 0.9rem 0 0.4rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 1px solid rgba(129, 140, 248, 0.2);
+}
+
+.report-text .markdown-h3 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0.8rem 0 0.3rem;
+}
+
+.report-text .markdown-paragraph {
+  margin: 0.5rem 0;
+  line-height: 1.8;
+  color: var(--text-secondary);
+}
+
+.report-text .markdown-bold {
+  font-weight: 700;
+  color: var(--text);
+  background: rgba(99, 102, 241, 0.1);
+  padding: 0.1rem 0.3rem;
+  border-radius: 3px;
+}
+
+.report-text .markdown-list {
+  list-style-position: inside;
+  margin: 0.6rem 0;
+  padding-left: 1rem;
+}
+
+.report-text .markdown-list li {
+  margin: 0.3rem 0;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.report-text .markdown-list li .markdown-bold {
+  background: rgba(99, 102, 241, 0.1);
+  padding: 0.1rem 0.3rem;
+  border-radius: 3px;
+}
+
+.report-text .markdown-break {
+  height: 0.6rem;
 }
 
 .citations-grid {
@@ -1186,6 +1248,30 @@ body {
   margin-top: 0.4rem;
 }
 
+/* ──────── Markdown in USP ──────── */
+.usp-statement .markdown-bold,
+.usp-point .markdown-bold,
+.usp-advantage .markdown-bold {
+  color: var(--primary-light);
+  background: rgba(99, 102, 241, 0.1);
+  padding: 0.1rem 0.3rem;
+  border-radius: 3px;
+}
+
+.usp-point .markdown-h3 {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0.3rem 0;
+}
+
+.usp-advantage .markdown-h3 {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--primary-light);
+  margin: 0.2rem 0;
+}
+
 /* Persona Card */
 .persona-card {
   padding: 1rem;
@@ -1234,6 +1320,34 @@ body {
   font-size: 0.82rem;
   color: var(--text-secondary);
   margin: 0.2rem 0 0;
+  line-height: 1.5;
+}
+
+/* ──────── Markdown in Persona ──────── */
+.persona-detail-group .markdown-bold {
+  color: var(--text);
+  font-weight: 700;
+  background: rgba(99, 102, 241, 0.1);
+  padding: 0.1rem 0.3rem;
+  border-radius: 3px;
+}
+
+.persona-detail-group .markdown-h3 {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0.3rem 0;
+}
+
+.persona-detail-group .markdown-list {
+  padding-left: 1rem;
+  margin: 0.3rem 0;
+}
+
+.persona-detail-group .markdown-list li {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin: 0.2rem 0;
 }
 
 .persona-detail-label {
@@ -1299,6 +1413,23 @@ body {
   font-size: 0.78rem;
   color: var(--text-secondary);
   margin-bottom: 0.4rem;
+  line-height: 1.4;
+}
+
+/* ──────── Markdown in Pillars ──────── */
+.pillar-desc .markdown-bold {
+  color: var(--text);
+  font-weight: 600;
+  background: rgba(99, 102, 241, 0.1);
+  padding: 0.1rem 0.2rem;
+  border-radius: 2px;
+}
+
+.pillar-desc .markdown-h3 {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0.2rem 0;
 }
 
 .pillar-topics {
@@ -1352,6 +1483,23 @@ body {
   padding: 0.5rem;
   background: rgba(245, 158, 11, 0.04);
   border-radius: 8px;
+  line-height: 1.5;
+}
+
+/* ──────── Markdown in Campaign ──────── */
+.campaign-goal .markdown-bold {
+  color: var(--accent-campaign);
+  font-weight: 700;
+  background: rgba(245, 158, 11, 0.1);
+  padding: 0.1rem 0.3rem;
+  border-radius: 3px;
+}
+
+.campaign-goal .markdown-h3 {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--accent-campaign);
+  margin: 0.3rem 0;
 }
 
 .campaign-schedule {

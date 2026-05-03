@@ -1,4 +1,5 @@
 import type { StageBOutput } from '../types';
+import { parseMarkdown, renderMarkdown } from '../utils/markdownParser';
 import { CollapsibleCard } from './CollapsibleCard';
 
 interface StrategyBubbleProps {
@@ -44,15 +45,15 @@ export function StrategyBubble({ data }: StrategyBubbleProps) {
             <section className="strategy-section">
               <h4>🎯 Unique Selling Proposition</h4>
               <div className="usp-callout">
-                <p className="usp-statement">"{data.usp.usp_statement}"</p>
+                <p className="usp-statement">"{renderMarkdown(parseMarkdown(data.usp.usp_statement))}"</p>
                 <div className="usp-points">
                   {data.usp.supporting_points.map((p, i) => (
-                    <span key={i} className="usp-point">✓ {p}</span>
+                    <span key={i} className="usp-point">✓ {renderMarkdown(parseMarkdown(p))}</span>
                   ))}
                 </div>
                 {data.usp.competitive_advantage && (
                   <p className="usp-advantage">
-                    <strong>🏆 Lợi thế:</strong> {data.usp.competitive_advantage}
+                    <strong>🏆 Lợi thế:</strong> {renderMarkdown(parseMarkdown(data.usp.competitive_advantage))}
                   </p>
                 )}
               </div>
@@ -72,7 +73,7 @@ export function StrategyBubble({ data }: StrategyBubbleProps) {
                 <div className="persona-details">
                   <div className="persona-detail-group">
                     <span className="persona-detail-label">💬 Discord:</span>
-                    <p>{data.persona.discord_behavior}</p>
+                    <p>{renderMarkdown(parseMarkdown(data.persona.discord_behavior))}</p>
                   </div>
                   <div className="persona-tags">
                     <span className="persona-detail-label">❤️ Sở thích:</span>
@@ -112,7 +113,7 @@ export function StrategyBubble({ data }: StrategyBubbleProps) {
                       <span className="pillar-emoji">{pillar.emoji}</span>
                       <strong>{pillar.name}</strong>
                     </div>
-                    <p className="pillar-desc">{pillar.description}</p>
+                    <p className="pillar-desc">{renderMarkdown(parseMarkdown(pillar.description))}</p>
                     <div className="pillar-topics">
                       {pillar.example_topics.map((t, j) => (
                         <span key={j} className="pillar-topic">• {t}</span>
@@ -142,7 +143,7 @@ export function StrategyBubble({ data }: StrategyBubbleProps) {
                   </div>
                 </div>
                 {data.campaign_plan.campaign_goal && (
-                  <p className="campaign-goal">🎯 {data.campaign_plan.campaign_goal}</p>
+                  <p className="campaign-goal">🎯 {renderMarkdown(parseMarkdown(data.campaign_plan.campaign_goal))}</p>
                 )}
                 <div className="campaign-schedule">
                   {data.campaign_plan.schedule.map((entry, i) => (

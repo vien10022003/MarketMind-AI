@@ -176,12 +176,19 @@ function App() {
       setIsLoading(false);
 
       // Show Stage B proposal instead of auto-trigger
-      if (lastReportData || streamMessage.report) {
+      // Look for report data in recent messages (most recent report_ready)
+      const reportMsg = [...chatMessages].reverse().find(msg => msg.type === 'report');
+      const reportData = streamMessage.report || reportMsg?.reportData || lastReportData;
+      console.log('Report data for Stage B streamMessage:', streamMessage);
+      console.log('Report data for Stage B reportMsg:', reportMsg);
+      console.log('Report data for Stage B lastReportData:', lastReportData);
+      console.log('Report data for Stage B proposal:', reportData);
+      if (reportData) {
         addMessage({
           type: 'stage_b_proposal',
           content: '📊 Báo cáo nghiên cứu đã hoàn tất! Bạn có muốn lập chiến lược marketing dựa trên kết quả này không?',
           stageBProposalData: {
-            reportData: streamMessage.report || lastReportData!,
+            reportData: reportData,
             mongodbId: streamMessage.mongodb_id,
           },
         });
