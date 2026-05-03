@@ -266,9 +266,11 @@ export type ChatMessageType =
   | 'completed'
   | 'knowledge'
   | 'marketing_form'
+  | 'stage_b_proposal'
   // Stage B
   | 'strategy'
   | 'content_briefs'
+  | 'stage_c_proposal'
   // Stage C
   | 'campaign_results';
 
@@ -294,9 +296,18 @@ export interface ChatMessage {
   marketingFormData?: {
     detected_prompt: string;
   };
+  // Stage B proposal
+  stageBProposalData?: {
+    reportData: ResearchReport;
+    mongodbId?: string;
+  };
   // Stage B
   strategyData?: StageBOutput;
   contentBriefsData?: ContentBrief[];
+  // Stage C proposal
+  stageCProposalData?: {
+    briefs: ContentBrief[];
+  };
   // Stage C
   campaignLogData?: CampaignLog;
 }

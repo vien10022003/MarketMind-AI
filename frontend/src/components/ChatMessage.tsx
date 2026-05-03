@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import type { ChatMessage, ResearchRequest, ClarificationData, SearchSource, ContentBrief } from '../types';
+import type { ChatMessage, ResearchRequest, ClarificationData, SearchSource, ContentBrief, ResearchReport } from '../types';
 import { CollapsibleCard } from './CollapsibleCard';
 import { StrategyBubble } from './StrategyBubble';
 import { ContentBriefEditor } from './ContentBriefEditor';
@@ -10,11 +10,12 @@ interface ChatMessageProps {
   isLoading?: boolean;
   onClarificationConfirm?: (overrides: Partial<ResearchRequest>) => void;
   onMarketingFormSubmit?: (formData: ResearchRequest) => void;
-  onBriefsApproveAll?: (briefs: ContentBrief[]) => void;
   onStartCampaign?: (approvedBriefs: ContentBrief[]) => void;
+  onAcceptStageBProposal?: (reportData: ResearchReport, mongodbId?: string) => void;
+  onAcceptStageCProposal?: (briefs: ContentBrief[]) => void;
 }
 
-export function ChatMessageBubble({ message, isLoading, onClarificationConfirm, onMarketingFormSubmit, onBriefsApproveAll, onStartCampaign }: ChatMessageProps) {
+export function ChatMessageBubble({ message, isLoading, onClarificationConfirm, onMarketingFormSubmit, onStartCampaign, onAcceptStageBProposal, onAcceptStageCProposal }: ChatMessageProps) {
   switch (message.type) {
     case 'user':
       return <UserBubble content={message.content} />;
@@ -71,6 +72,25 @@ export function ChatMessageBubble({ message, isLoading, onClarificationConfirm, 
           onStartCampaign={onStartCampaign}
         />
       ) : <StatusMessage content={message.content} />;
+    // Stage B Proposal
+    case 'stage_b_proposal':
+      return (
+        <StageBProposalBubble
+          content={message.content}
+          reportData={message.stageBProposalData?.reportData}
+          mongodbId={message.stageBProposalData?.mongodbId}
+          onAccept={onAcceptStageBProposal}
+        />
+      );
+    // Stage C Proposal
+    case 'stage_c_proposal':
+      return (
+        <StageCProposalBubble
+          content={message.content}
+          briefs={message.stageCProposalData?.briefs || []}
+          onAccept={onAcceptStageCProposal}
+        />
+      );
     // Stage C
     case 'campaign_results':
       return message.campaignLogData ? <CampaignResultsBubble data={message.campaignLogData} /> : <StatusMessage content={message.content} />;
@@ -597,6 +617,66 @@ function MarketingFormBubble({
         >
           🚀 Bắt Đầu Nghiên Cứu
         </button>
+      </div>
+    </div>
+  );
+}
+
+/* ────── Stage B Proposal Bubble ────── */
+function StageBProposalBubble({
+  content,
+  reportData,
+  mongodbId,
+  onAccept,
+}: {
+  content: string;
+  reportData?: ResearchReport;
+  mongodbId?: string;
+  onAccept?: (reportData: ResearchReport, mongodbId?: string) => void;
+}) {
+  return (
+    <div className="chat-row chat-row--assistant">
+      <div className="chat-avatar chat-avatar--assistant">📊</div>
+      <div className="chat-bubble chat-bubble--proposal">
+        <p>{content}</p>
+        <div className="proposal-actions">
+          <button
+            className="proposal-btn proposal-btn--accept"
+            onClick={() => reportData && onAccept?.(reportData, mongodbId)}
+          >
+            ✅ Lập Chiến Lược Marketing
+          </button>
+          <button className="proposal-btn proposal-btn--decline">❌ Không, cảm ơn</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ────── Stage C Proposal Bubble ────── */
+function StageCProposalBubble({
+  content,
+  briefs,
+  onAccept,
+}: {
+  content: string;
+  briefs: ContentBrief[];
+  onAccept?: (briefs: ContentBrief[]) => void;
+}) {
+  return (
+    <div className="chat-row chat-row--assistant">
+      <div className="chat-avatar chat-avatar--assistant">🎯</div>
+      <div className="chat-bubble chat-bubble--proposal">
+        <p>{content}</p>
+        <div className="proposal-actions">
+          <button
+            className="proposal-btn proposal-btn--accept"
+            onClick={() => onAccept?.(briefs)}
+          >
+            🚀 Thực Thi Chiến Dịch
+          </button>
+          <button className="proposal-btn proposal-btn--decline">❌ Chỉnh Sửa Trước</button>
+        </div>
       </div>
     </div>
   );

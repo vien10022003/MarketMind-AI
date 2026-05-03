@@ -175,16 +175,16 @@ function App() {
       setLastMongodbId(streamMessage.mongodb_id);
       setIsLoading(false);
 
-      // Auto-trigger Stage B after Stage A completes
+      // Show Stage B proposal instead of auto-trigger
       if (lastReportData || streamMessage.report) {
         addMessage({
-          type: 'assistant',
-          content: '📊 Báo cáo nghiên cứu đã hoàn tất! Bây giờ tôi sẽ xây dựng chiến lược marketing dựa trên kết quả nghiên cứu...',
+          type: 'stage_b_proposal',
+          content: '📊 Báo cáo nghiên cứu đã hoàn tất! Bạn có muốn lập chiến lược marketing dựa trên kết quả này không?',
+          stageBProposalData: {
+            reportData: streamMessage.report || lastReportData!,
+            mongodbId: streamMessage.mongodb_id,
+          },
         });
-        // Slight delay before triggering Stage B
-        setTimeout(() => {
-          handleStartStageB(streamMessage.report || lastReportData!, streamMessage.mongodb_id);
-        }, 1500);
       }
     } else if (streamMessage.status === 'error') {
       addMessage({ type: 'error', content: streamMessage.message });
@@ -215,6 +215,15 @@ function App() {
           contentBriefsData: streamMessage.strategy.content_briefs,
         });
       }
+
+      // Show Stage C proposal instead of auto-trigger
+      addMessage({
+        type: 'stage_c_proposal',
+        content: '✅ Chiến lược marketing đã hoàn tất! Bạn có muốn thực thi chiến dịch marketing này không?',
+        stageCProposalData: {
+          briefs: streamMessage.strategy.content_briefs || [],
+        },
+      });
       setIsLoading(false);
     } else if (streamMessage.status === 'error') {
       addMessage({ type: 'error', content: streamMessage.message });
@@ -305,13 +314,58 @@ function App() {
   };
 
   /**
-   * Called when user approves all briefs
+   * Called when user clicks "Lập Chiến Lược Marketing"
    */
-  const handleBriefsApproveAll = (briefs: ContentBrief[]) => {
+  const handleAcceptStageBProposal = async (reportData: ResearchReport, mongodbId?: string) => {
     addMessage({
-      type: 'assistant',
-      content: `✅ Đã duyệt ${briefs.filter(b => b.status === 'approved').length} briefs. Nhấn "Thực Thi" để bắt đầu đăng lên Discord!`,
+      type: 'status',
+      content: '🚀 Bắt đầu lập chiến lược marketing...',
     });
+    setIsLoading(true);
+    await handleStartStageB(reportData, mongodbId);
+  };
+
+  /**
+   * Called when user clicks "Thực Thi Chiến Dịch" from proposal
+   */
+  const handleAcceptStageCProposal = async (briefs: ContentBrief[]) => {
+    if (briefs.length === 0) {
+      addMessage({ type: 'error', content: 'Không có brief nào để thực thi!' });
+      return;
+    }
+
+    addMessage({
+      type: 'status',
+      content: `🎯 Bắt đầu thực thi chiến dịch: ${briefs.length} bài đăng...`,
+    });
+    setIsLoading(true);
+
+    // Save approval to backend
+    if (lastStrategy) {
+      await researchService.approveStageBBriefs({
+        mongodb_id: lastMongodbId,
+        strategy: lastStrategy as unknown as Record<string, unknown>,
+        approved_briefs: briefs,
+      });
+    }
+
+    // Run Stage C
+    try {
+      await researchService.callStageCCampaign(
+        {
+          approved_briefs: briefs,
+          mongodb_stage_a_id: lastMongodbId,
+        },
+        handleStageCStreamMessage,
+        (errorMsg) => {
+          addMessage({ type: 'error', content: errorMsg });
+          setIsLoading(false);
+        }
+      );
+    } catch {
+      addMessage({ type: 'error', content: 'Lỗi Stage C không xác định' });
+      setIsLoading(false);
+    }
   };
 
   /**
@@ -433,8 +487,9 @@ function App() {
               isLoading={isLoading}
               onClarificationConfirm={() => {}}
               onMarketingFormSubmit={handleMarketingFormSubmit}
-              onBriefsApproveAll={handleBriefsApproveAll}
               onStartCampaign={handleStartCampaign}
+              onAcceptStageBProposal={handleAcceptStageBProposal}
+              onAcceptStageCProposal={handleAcceptStageCProposal}
             />
           ))}
 
