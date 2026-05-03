@@ -59,6 +59,7 @@ JSON schema:
 }}
 """
     raw = llm.generate(prompt, max_new_tokens=900)
+    rprint(f"[blue]Raw output:[/blue] {raw}")
     block = extract_first_json_block(raw)
 
     if block:

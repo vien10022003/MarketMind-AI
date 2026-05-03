@@ -50,7 +50,9 @@ Evidence:
 
 Chi tra ve phan tich chi tiet, khong JSON, khong mo dau/ket luan.
 """
+    print("synthesize_tong_quan_thi_truong")
     raw = llm.generate(prompt, max_new_tokens=400)
+    print(f"[blue]Raw output:[/blue] {raw}")
     return raw.strip() if raw else "Khong du du lieu."
 
 
