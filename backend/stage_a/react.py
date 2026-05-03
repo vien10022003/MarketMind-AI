@@ -90,7 +90,9 @@ def run_react_loop(
 
         # Decide action
         decision = react_decide_action(llm, step, len(evidence))
-        query = (decision.get("query") or step).strip()
+        # Ensure query is a string (step might be dict or string)
+        query_raw = decision.get("query") or step
+        query = str(query_raw).strip() if query_raw else ""
         action = decision.get("action", "search")
 
         # Skip summarize action (no tool call)

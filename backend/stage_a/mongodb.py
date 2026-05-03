@@ -46,7 +46,7 @@ class MongoDBManager:
         output_data: StageAOutput
     ) -> Optional[str]:
         """Save report to MongoDB"""
-        if not self.client or not self.collection:
+        if self.client is None or self.collection is None:
             rprint("[yellow]⚠️ MongoDB not connected. Skipping save.[/yellow]")
             return None
         
@@ -76,7 +76,7 @@ class MongoDBManager:
     
     def find_report(self, report_id: str) -> Optional[Dict[str, Any]]:
         """Find report by ID"""
-        if not self.client or not self.collection:
+        if self.client is None or self.collection is None:
             return None
         
         try:
