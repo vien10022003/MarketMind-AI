@@ -1,15 +1,20 @@
 import { useState, useEffect, useCallback } from 'react';
-import type { ChatMessage, ResearchRequest, ClarificationData, SearchSource } from '../types';
+import type { ChatMessage, ResearchRequest, ClarificationData, SearchSource, ContentBrief } from '../types';
 import { CollapsibleCard } from './CollapsibleCard';
+import { StrategyBubble } from './StrategyBubble';
+import { ContentBriefEditor } from './ContentBriefEditor';
+import { CampaignResultsBubble } from './CampaignResultsBubble';
 
 interface ChatMessageProps {
   message: ChatMessage;
   isLoading?: boolean;
   onClarificationConfirm?: (overrides: Partial<ResearchRequest>) => void;
   onMarketingFormSubmit?: (formData: ResearchRequest) => void;
+  onBriefsApproveAll?: (briefs: ContentBrief[]) => void;
+  onStartCampaign?: (approvedBriefs: ContentBrief[]) => void;
 }
 
-export function ChatMessageBubble({ message, isLoading, onClarificationConfirm, onMarketingFormSubmit }: ChatMessageProps) {
+export function ChatMessageBubble({ message, isLoading, onClarificationConfirm, onMarketingFormSubmit, onBriefsApproveAll, onStartCampaign }: ChatMessageProps) {
   switch (message.type) {
     case 'user':
       return <UserBubble content={message.content} />;
@@ -54,6 +59,21 @@ export function ChatMessageBubble({ message, isLoading, onClarificationConfirm, 
       return <ErrorBubble content={message.content} />;
     case 'completed':
       return <CompletedBubble content={message.content} mongodbId={message.mongodbId} />;
+    // Stage B
+    case 'strategy':
+      return message.strategyData ? <StrategyBubble data={message.strategyData} /> : <StatusMessage content={message.content} />;
+    case 'content_briefs':
+      return message.contentBriefsData ? (
+        <ContentBriefEditor
+          briefs={message.contentBriefsData}
+          isLoading={isLoading}
+          onApproveAll={onBriefsApproveAll}
+          onStartCampaign={onStartCampaign}
+        />
+      ) : <StatusMessage content={message.content} />;
+    // Stage C
+    case 'campaign_results':
+      return message.campaignLogData ? <CampaignResultsBubble data={message.campaignLogData} /> : <StatusMessage content={message.content} />;
     default:
       return <StatusMessage content={message.content} />;
   }

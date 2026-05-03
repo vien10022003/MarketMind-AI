@@ -1,9 +1,9 @@
-import type { ResearchRequest, StreamMessage } from '../types';
+import type { ResearchRequest, StreamMessage, ContentBrief } from '../types';
 import { config, getApiUrl } from '../config';
 
 async function streamFetch(
   url: string,
-  request: ResearchRequest,
+  request: object,
   onMessage: (msg: StreamMessage) => void,
   onError: (err: string) => void
 ): Promise<void> {
@@ -92,5 +92,61 @@ export const researchService = {
     const url = getApiUrl(config.api.endpoints.stageAResearch + '/marketing');
     return streamFetch(url, request, onMessage, onError);
   },
-};
 
+  /**
+   * Stage B — Generate marketing strategy from Stage A report
+   */
+  async callStageBStrategy(
+    request: {
+      stage_a_report: Record<string, unknown>;
+      stage_a_input: Record<string, unknown>;
+      mongodb_id?: string;
+    },
+    onMessage: (msg: StreamMessage) => void,
+    onError: (err: string) => void
+  ): Promise<void> {
+    const url = getApiUrl(config.api.endpoints.stageBStrategy);
+    return streamFetch(url, request, onMessage, onError);
+  },
+
+  /**
+   * Stage B — Approve strategy and briefs
+   */
+  async approveStageBBriefs(
+    request: {
+      mongodb_id?: string;
+      strategy: Record<string, unknown>;
+      approved_briefs: ContentBrief[];
+    }
+  ): Promise<{ status: string; message: string; strategy_id?: string }> {
+    const url = getApiUrl(config.api.endpoints.stageBApprove);
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(request),
+      });
+      return await response.json();
+    } catch (err) {
+      return { status: 'error', message: String(err) };
+    }
+  },
+
+  /**
+   * Stage C — Execute campaign (image gen + Discord posting)
+   */
+  async callStageCCampaign(
+    request: {
+      approved_briefs: ContentBrief[];
+      webhook_url?: string;
+      image_api_url?: string;
+      skip_image_generation?: boolean;
+      mongodb_stage_a_id?: string;
+    },
+    onMessage: (msg: StreamMessage) => void,
+    onError: (err: string) => void
+  ): Promise<void> {
+    const url = getApiUrl(config.api.endpoints.stageCCampaign);
+    return streamFetch(url, request as object, onMessage, onError);
+  },
+};

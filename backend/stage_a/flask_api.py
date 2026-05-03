@@ -1,6 +1,6 @@
 """
 Flask API Module
-REST API endpoints for Stage A research pipeline with streaming
+REST API endpoints for Stage A, B, C pipelines with streaming
 """
 
 import json
@@ -22,6 +22,13 @@ from .evidence_processing import normalize_and_filter_evidence
 from .synthesis import synthesize_stage_a_report
 from .output_formatting import build_markdown_report, convert_evidence_to_dict
 from .mongodb import MongoDBManager
+
+# Stage B & C imports
+from stage_b.data_models_b import StageBInput, StageBOutput
+from stage_b.campaign import run_stage_b_pipeline
+from stage_c.data_models_c import StageCInput, CampaignLog
+from stage_c.discord_publisher import run_stage_c_pipeline
+from stage_c.campaign_log import save_campaign_log
 
 
 # Initialize Flask app
@@ -285,6 +292,133 @@ def api_research_stage_a_marketing():
         status=200
     )
 
+
+# ─── Stage B: Strategy Generation ────────────────────────────────────
+
+def run_stage_b_generator(req_data: dict):
+    """Generator for Stage B strategy pipeline streaming."""
+    try:
+        stage_b_input = StageBInput(
+            stage_a_report=req_data.get("stage_a_report", {}),
+            stage_a_input=req_data.get("stage_a_input", {}),
+            mongodb_id=req_data.get("mongodb_id"),
+        )
+
+        if not stage_b_input.stage_a_report:
+            yield json.dumps({"status": "error", "message": "Thiếu stage_a_report"}) + "\n"
+            return
+
+        for event in run_stage_b_pipeline(llm, stage_b_input):
+            yield json.dumps(event) + "\n"
+
+    except Exception as e:
+        rprint(f"[red][STAGE B ERROR] {str(e)}[/red]")
+        import traceback
+        traceback.print_exc()
+        yield json.dumps({"status": "error", "message": f"Stage B lỗi: {str(e)}"}) + "\n"
+
+
+@app.route('/api/strategy/stage_b', methods=['POST', 'OPTIONS'])
+def api_strategy_stage_b():
+    """Stage B: Generate marketing strategy from Stage A report."""
+    if request.method == 'OPTIONS':
+        return '', 200
+    rprint(f"[yellow][API] POST /api/strategy/stage_b[/yellow]")
+    data = request.get_json()
+    if not data:
+        return {"error": "Missing JSON body"}, 400
+    return Response(
+        stream_with_context(run_stage_b_generator(data)),
+        content_type='application/x-ndjson', status=200
+    )
+
+
+@app.route('/api/strategy/stage_b/approve', methods=['POST', 'OPTIONS'])
+def api_strategy_stage_b_approve():
+    """Stage B: Save approved/edited briefs."""
+    if request.method == 'OPTIONS':
+        return '', 200
+    rprint(f"[yellow][API] POST /api/strategy/stage_b/approve[/yellow]")
+    data = request.get_json()
+    if not data:
+        return {"error": "Missing JSON body"}, 400
+
+    # Save approved strategy + briefs to MongoDB
+    if mongo and mongo.client:
+        try:
+            collection = mongo.db['stage_b_strategies']
+            doc = {
+                "timestamp": datetime.now().isoformat(),
+                "mongodb_stage_a_id": data.get("mongodb_id"),
+                "strategy": data.get("strategy", {}),
+                "approved_briefs": data.get("approved_briefs", []),
+            }
+            result = collection.insert_one(doc)
+            return {
+                "status": "approved",
+                "message": "Chiến lược đã được phê duyệt",
+                "strategy_id": str(result.inserted_id),
+            }, 200
+        except Exception as e:
+            return {"status": "error", "message": str(e)}, 500
+    else:
+        return {
+            "status": "approved",
+            "message": "Chiến lược đã được phê duyệt (MongoDB không khả dụng)",
+        }, 200
+
+
+# ─── Stage C: Campaign Execution ─────────────────────────────────────
+
+def run_stage_c_generator(req_data: dict):
+    """Generator for Stage C campaign execution streaming."""
+    try:
+        stage_c_input = StageCInput(
+            approved_briefs=req_data.get("approved_briefs", []),
+            webhook_url=req_data.get("webhook_url"),
+            image_api_url=req_data.get("image_api_url"),
+            skip_image_generation=req_data.get("skip_image_generation", False),
+            mongodb_stage_a_id=req_data.get("mongodb_stage_a_id"),
+        )
+
+        for event in run_stage_c_pipeline(stage_c_input):
+            yield json.dumps(event) + "\n"
+
+            # Save campaign log to MongoDB when completed
+            if event.get("status") == "stage_c_completed" and mongo:
+                campaign_log_data = event.get("campaign_log", {})
+                if campaign_log_data:
+                    log = CampaignLog(**campaign_log_data)
+                    log_id = save_campaign_log(mongo, log)
+                    if log_id:
+                        yield json.dumps({
+                            "status": "progress",
+                            "message": f"📝 Nhật ký chiến dịch đã lưu: {log_id}",
+                        }) + "\n"
+
+    except Exception as e:
+        rprint(f"[red][STAGE C ERROR] {str(e)}[/red]")
+        import traceback
+        traceback.print_exc()
+        yield json.dumps({"status": "error", "message": f"Stage C lỗi: {str(e)}"}) + "\n"
+
+
+@app.route('/api/campaign/stage_c', methods=['POST', 'OPTIONS'])
+def api_campaign_stage_c():
+    """Stage C: Execute approved campaign (image gen + Discord posting)."""
+    if request.method == 'OPTIONS':
+        return '', 200
+    rprint(f"[yellow][API] POST /api/campaign/stage_c[/yellow]")
+    data = request.get_json()
+    if not data:
+        return {"error": "Missing JSON body"}, 400
+    return Response(
+        stream_with_context(run_stage_c_generator(data)),
+        content_type='application/x-ndjson', status=200
+    )
+
+
+# ─── Health Check ─────────────────────────────────────────────────────
 
 @app.route('/health', methods=['GET', 'OPTIONS'])
 def health_check():

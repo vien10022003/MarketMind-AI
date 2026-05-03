@@ -1027,6 +1027,649 @@ body {
 }
 
 /* ══════════════════════════════════════════
+   Stage B: Strategy Bubble
+   ══════════════════════════════════════════ */
+:root {
+  --accent-strategy: #10b981;
+  --accent-campaign: #f59e0b;
+}
+
+.strategy-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding-top: 0.8rem;
+}
+
+.strategy-section h4 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--accent-strategy);
+  margin-bottom: 0.7rem;
+}
+
+/* SWOT Grid */
+.swot-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.swot-quadrant {
+  padding: 0.75rem;
+  border-radius: 10px;
+  border: 1px solid var(--glass-border);
+}
+
+.swot-quadrant ul {
+  margin: 0.3rem 0 0 1rem;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+
+.swot-quadrant li { margin-bottom: 0.2rem; }
+
+.swot-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+}
+
+.swot-strengths  { background: rgba(16, 185, 129, 0.08); border-color: rgba(16, 185, 129, 0.25); }
+.swot-strengths .swot-label { color: #10b981; }
+.swot-weaknesses { background: rgba(239, 68, 68, 0.08); border-color: rgba(239, 68, 68, 0.25); }
+.swot-weaknesses .swot-label { color: #ef4444; }
+.swot-opportunities { background: rgba(56, 189, 248, 0.08); border-color: rgba(56, 189, 248, 0.25); }
+.swot-opportunities .swot-label { color: #38bdf8; }
+.swot-threats { background: rgba(245, 158, 11, 0.08); border-color: rgba(245, 158, 11, 0.25); }
+.swot-threats .swot-label { color: #f59e0b; }
+
+/* USP Callout */
+.usp-callout {
+  padding: 1rem;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.08), rgba(236, 72, 153, 0.08));
+  border-radius: 12px;
+  border: 1px solid rgba(99, 102, 241, 0.2);
+}
+
+.usp-statement {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+  font-style: italic;
+  margin-bottom: 0.6rem;
+  line-height: 1.5;
+}
+
+.usp-points {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.usp-point {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+
+.usp-advantage {
+  font-size: 0.85rem;
+  color: var(--primary-light);
+  margin-top: 0.4rem;
+}
+
+/* Persona Card */
+.persona-card {
+  padding: 1rem;
+  background: var(--glass-bg);
+  border-radius: 12px;
+  border: 1px solid var(--glass-border);
+}
+
+.persona-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.8rem;
+}
+
+.persona-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+}
+
+.persona-name {
+  display: block;
+  font-size: 0.95rem;
+  color: var(--text);
+}
+
+.persona-age {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-left: 0.4rem;
+}
+
+.persona-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.persona-detail-group p {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  margin: 0.2rem 0 0;
+}
+
+.persona-detail-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text);
+  display: block;
+  margin-bottom: 0.3rem;
+}
+
+.persona-tags { display: flex; flex-direction: column; gap: 0.3rem; }
+
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.tag {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  border-radius: 99px;
+  font-size: 0.72rem;
+  font-weight: 500;
+}
+
+.tag--interest { background: rgba(99, 102, 241, 0.12); color: var(--primary-light); }
+.tag--pain { background: rgba(239, 68, 68, 0.12); color: #f87171; }
+.tag--content { background: rgba(16, 185, 129, 0.12); color: #34d399; }
+
+/* Content Pillars */
+.pillars-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.pillar-card {
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  transition: transform 0.2s;
+}
+
+.pillar-card:hover { transform: translateY(-2px); }
+
+.pillar-header {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.3rem;
+}
+
+.pillar-emoji { font-size: 1.1rem; }
+
+.pillar-header strong {
+  font-size: 0.85rem;
+  color: var(--text);
+}
+
+.pillar-desc {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.4rem;
+}
+
+.pillar-topics {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.pillar-topic {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  opacity: 0.8;
+}
+
+/* Campaign Plan */
+.campaign-overview {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.campaign-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+
+.campaign-stat {
+  text-align: center;
+  padding: 0.6rem;
+  background: rgba(245, 158, 11, 0.06);
+  border-radius: 10px;
+  border: 1px solid rgba(245, 158, 11, 0.15);
+}
+
+.campaign-stat-num {
+  display: block;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--accent-campaign);
+}
+
+.campaign-stat-label {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+}
+
+.campaign-goal {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  padding: 0.5rem;
+  background: rgba(245, 158, 11, 0.04);
+  border-radius: 8px;
+}
+
+.campaign-schedule {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.schedule-entry {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.4rem 0.6rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 6px;
+  font-size: 0.8rem;
+  border-left: 3px solid var(--accent-campaign);
+}
+
+.schedule-day { font-weight: 600; color: var(--text); min-width: 60px; }
+.schedule-time { color: var(--text-secondary); min-width: 55px; }
+.schedule-type { color: var(--primary-light); }
+.schedule-pillar { color: var(--text-secondary); margin-left: auto; font-size: 0.75rem; }
+
+/* ══════════════════════════════════════════
+   Stage B: Content Brief Editor
+   ══════════════════════════════════════════ */
+.chat-bubble--briefs {
+  max-width: min(95%, 720px);
+  padding: 1.2rem;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-bottom-left-radius: 4px;
+}
+
+.briefs-header {
+  margin-bottom: 1rem;
+}
+
+.briefs-header h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.3rem;
+}
+
+.briefs-header p {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+
+.briefs-actions-top {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.7rem;
+}
+
+.btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btn--approve-all {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.btn--approve-all:hover:not(:disabled) {
+  background: rgba(16, 185, 129, 0.25);
+}
+
+.btn--start-campaign {
+  background: linear-gradient(135deg, #f59e0b, #ef4444);
+  color: #fff;
+}
+
+.btn--start-campaign:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(245, 158, 11, 0.35);
+}
+
+.briefs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.brief-card {
+  padding: 0.8rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 10px;
+  border: 1px solid var(--glass-border);
+  border-left: 4px solid var(--primary);
+  transition: all 0.2s ease;
+}
+
+.brief-card:hover { background: rgba(255, 255, 255, 0.04); }
+
+.brief-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.brief-card-meta {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.brief-day, .brief-time {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.brief-pillar-tag, .brief-type-tag {
+  display: inline-block;
+  padding: 0.1rem 0.45rem;
+  border-radius: 99px;
+  font-size: 0.7rem;
+  font-weight: 500;
+}
+
+.brief-pillar-tag {
+  background: rgba(99, 102, 241, 0.12);
+  color: var(--primary-light);
+}
+
+.brief-type-tag {
+  background: rgba(56, 189, 248, 0.12);
+  color: #38bdf8;
+}
+
+.brief-status-badge {
+  padding: 0.15rem 0.55rem;
+  border-radius: 99px;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.brief-status--pending { background: rgba(148, 163, 184, 0.12); color: var(--text-secondary); }
+.brief-status--approved { background: rgba(16, 185, 129, 0.15); color: #10b981; }
+.brief-status--rejected { background: rgba(239, 68, 68, 0.12); color: #ef4444; }
+.brief-status--edited { background: rgba(56, 189, 248, 0.12); color: #38bdf8; }
+
+.brief-card-body { margin-bottom: 0.5rem; }
+
+.brief-title {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 0.3rem;
+}
+
+.brief-caption {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  white-space: pre-wrap;
+}
+
+.brief-image-prompt {
+  margin-top: 0.4rem;
+  padding: 0.4rem 0.6rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 6px;
+  font-size: 0.78rem;
+}
+
+.brief-prompt-label {
+  font-weight: 600;
+  color: var(--text);
+  margin-right: 0.3rem;
+}
+
+.brief-prompt-text {
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* Brief Edit Form */
+.brief-edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.brief-edit-field label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 0.2rem;
+}
+
+.brief-edit-field input,
+.brief-edit-field textarea {
+  width: 100%;
+  padding: 0.45rem 0.6rem;
+  background: rgba(51, 65, 85, 0.5);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.82rem;
+  transition: border-color 0.2s;
+}
+
+.brief-edit-field input:focus,
+.brief-edit-field textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.brief-edit-field textarea { resize: vertical; min-height: 40px; }
+
+.brief-card-actions {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.btn-brief {
+  padding: 0.3rem 0.6rem;
+  border: 1px solid var(--glass-border);
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-secondary);
+  transition: all 0.2s;
+}
+
+.btn-brief:hover:not(:disabled) { background: rgba(255, 255, 255, 0.08); }
+.btn-brief:disabled { opacity: 0.35; cursor: not-allowed; }
+
+.btn-brief--approve { color: #10b981; border-color: rgba(16, 185, 129, 0.3); }
+.btn-brief--approve:hover:not(:disabled) { background: rgba(16, 185, 129, 0.1); }
+.btn-brief--edit { color: #38bdf8; border-color: rgba(56, 189, 248, 0.3); }
+.btn-brief--edit:hover:not(:disabled) { background: rgba(56, 189, 248, 0.1); }
+.btn-brief--reject { color: #ef4444; border-color: rgba(239, 68, 68, 0.3); }
+.btn-brief--reject:hover:not(:disabled) { background: rgba(239, 68, 68, 0.1); }
+
+/* ══════════════════════════════════════════
+   Stage C: Campaign Results
+   ══════════════════════════════════════════ */
+.campaign-results-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-top: 0.8rem;
+}
+
+.campaign-results-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+}
+
+.cr-stat {
+  text-align: center;
+  padding: 0.6rem;
+  border-radius: 10px;
+  border: 1px solid var(--glass-border);
+}
+
+.cr-stat-num {
+  display: block;
+  font-size: 1.3rem;
+  font-weight: 800;
+}
+
+.cr-stat-label {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+}
+
+.cr-stat--success { background: rgba(16, 185, 129, 0.08); }
+.cr-stat--success .cr-stat-num { color: #10b981; }
+.cr-stat--failed { background: rgba(239, 68, 68, 0.08); }
+.cr-stat--failed .cr-stat-num { color: #ef4444; }
+.cr-stat--skipped { background: rgba(148, 163, 184, 0.08); }
+.cr-stat--skipped .cr-stat-num { color: var(--text-secondary); }
+.cr-stat--rate { background: rgba(99, 102, 241, 0.08); }
+.cr-stat--rate .cr-stat-num { color: var(--primary-light); }
+
+.campaign-results-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.cr-item {
+  padding: 0.7rem;
+  border-radius: 8px;
+  border: 1px solid var(--glass-border);
+  border-left: 4px solid var(--text-secondary);
+}
+
+.cr-item--success { border-left-color: #10b981; background: rgba(16, 185, 129, 0.04); }
+.cr-item--failed { border-left-color: #ef4444; background: rgba(239, 68, 68, 0.04); }
+.cr-item--skipped { border-left-color: #94a3b8; }
+
+.cr-item-header {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.4rem;
+}
+
+.cr-item-status { font-size: 1rem; }
+
+.cr-item-title {
+  font-size: 0.85rem;
+  color: var(--text);
+}
+
+.cr-item-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.cr-item-image {
+  max-width: 200px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.cr-item-image img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.cr-item-meta {
+  display: flex;
+  gap: 0.8rem;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+}
+
+.cr-item-note {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.cr-item-error {
+  color: #f87171;
+  font-size: 0.78rem;
+}
+
+.campaign-results-footer {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--glass-border);
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.cr-campaign-id {
+  font-family: 'Fira Code', monospace;
+  opacity: 0.7;
+}
+
+/* ══════════════════════════════════════════
    Responsive
    ══════════════════════════════════════════ */
 @media (max-width: 640px) {
@@ -1040,7 +1683,8 @@ body {
 
   .chat-bubble--clarification,
   .chat-bubble--knowledge,
-  .chat-bubble--marketing-form {
+  .chat-bubble--marketing-form,
+  .chat-bubble--briefs {
     max-width: 95%;
   }
 
@@ -1054,5 +1698,21 @@ body {
 
   .react-stats-grid {
     grid-template-columns: 1fr;
+  }
+
+  .swot-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pillars-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .campaign-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .campaign-results-stats {
+    grid-template-columns: repeat(2, 1fr);
   }
 }

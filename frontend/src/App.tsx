@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { ChatMessageBubble } from './components';
-import type { ChatMessage, ResearchRequest, ConversationTurn } from './types';
+import type { ChatMessage, ResearchRequest, ConversationTurn, ContentBrief, StageBOutput, ResearchReport } from './types';
 import { researchService } from './services/researchService';
 import { initializeBackendUrl } from './config';
 import './App.css';
@@ -23,6 +23,12 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [waitingMarketingForm, setWaitingMarketingForm] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
+
+  // Stage B/C state
+  const [lastReportData, setLastReportData] = useState<ResearchReport | null>(null);
+  const [lastReportInput, setLastReportInput] = useState<Record<string, unknown> | null>(null);
+  const [lastMongodbId, setLastMongodbId] = useState<string | undefined>(undefined);
+  const [lastStrategy, setLastStrategy] = useState<StageBOutput | null>(null);
 
   // Initialize backend URL from Firebase on app startup
   useEffect(() => {
@@ -158,13 +164,28 @@ function App() {
         content: streamMessage.message,
         reportData: streamMessage.report,
       });
+      // Save report data for Stage B
+      setLastReportData(streamMessage.report);
     } else if (streamMessage.status === 'completed') {
       addMessage({
         type: 'completed',
         content: streamMessage.message,
         mongodbId: streamMessage.mongodb_id,
       });
+      setLastMongodbId(streamMessage.mongodb_id);
       setIsLoading(false);
+
+      // Auto-trigger Stage B after Stage A completes
+      if (lastReportData || streamMessage.report) {
+        addMessage({
+          type: 'assistant',
+          content: '📊 Báo cáo nghiên cứu đã hoàn tất! Bây giờ tôi sẽ xây dựng chiến lược marketing dựa trên kết quả nghiên cứu...',
+        });
+        // Slight delay before triggering Stage B
+        setTimeout(() => {
+          handleStartStageB(streamMessage.report || lastReportData!, streamMessage.mongodb_id);
+        }, 1500);
+      }
     } else if (streamMessage.status === 'error') {
       addMessage({ type: 'error', content: streamMessage.message });
       setIsLoading(false);
@@ -173,8 +194,78 @@ function App() {
     }
   };
 
+  /**
+   * Stage B stream event handler
+   */
+  const handleStageBStreamMessage = (streamMessage: import('./types').StreamMessage) => {
+    if (streamMessage.status === 'stage_b_completed' && streamMessage.strategy) {
+      // Show the full strategy
+      addMessage({
+        type: 'strategy',
+        content: streamMessage.message,
+        strategyData: streamMessage.strategy,
+      });
+      setLastStrategy(streamMessage.strategy);
+
+      // Show content briefs editor
+      if (streamMessage.strategy.content_briefs?.length) {
+        addMessage({
+          type: 'content_briefs',
+          content: `📝 ${streamMessage.strategy.content_briefs.length} content briefs đã sẵn sàng để review`,
+          contentBriefsData: streamMessage.strategy.content_briefs,
+        });
+      }
+      setIsLoading(false);
+    } else if (streamMessage.status === 'error') {
+      addMessage({ type: 'error', content: streamMessage.message });
+      setIsLoading(false);
+    } else if (
+      streamMessage.status === 'stage_b_starting' ||
+      streamMessage.status === 'progress' ||
+      streamMessage.status === 'swot_completed' ||
+      streamMessage.status === 'usp_completed' ||
+      streamMessage.status === 'persona_completed' ||
+      streamMessage.status === 'pillars_completed' ||
+      streamMessage.status === 'campaign_plan_completed' ||
+      streamMessage.status === 'briefs_generated'
+    ) {
+      addMessage({ type: 'status', content: streamMessage.message });
+    }
+  };
+
+  /**
+   * Stage C stream event handler
+   */
+  const handleStageCStreamMessage = (streamMessage: import('./types').StreamMessage) => {
+    if (streamMessage.status === 'stage_c_completed' && streamMessage.campaign_log) {
+      addMessage({
+        type: 'campaign_results',
+        content: streamMessage.message,
+        campaignLogData: streamMessage.campaign_log,
+      });
+      setIsLoading(false);
+    } else if (streamMessage.status === 'error') {
+      addMessage({ type: 'error', content: streamMessage.message });
+      setIsLoading(false);
+    } else if (
+      streamMessage.status === 'stage_c_starting' ||
+      streamMessage.status === 'progress' ||
+      streamMessage.status === 'brief_executing' ||
+      streamMessage.status === 'image_generating' ||
+      streamMessage.status === 'image_generated' ||
+      streamMessage.status === 'discord_posting' ||
+      streamMessage.status === 'discord_posted' ||
+      streamMessage.status === 'discord_post_failed'
+    ) {
+      addMessage({ type: 'status', content: streamMessage.message });
+    }
+  };
+
   const runPipeline = async (request: ResearchRequest) => {
     try {
+      // Save input for Stage B
+      setLastReportInput(request as unknown as Record<string, unknown>);
+
       await researchService.callStageAResearch(
         request,
         handleStreamMessage,
@@ -190,6 +281,83 @@ function App() {
   };
 
   /**
+   * Start Stage B: Build strategy from Stage A report
+   */
+  const handleStartStageB = async (reportData: ResearchReport, mongodbId?: string) => {
+    setIsLoading(true);
+    try {
+      await researchService.callStageBStrategy(
+        {
+          stage_a_report: reportData as unknown as Record<string, unknown>,
+          stage_a_input: lastReportInput || {},
+          mongodb_id: mongodbId || lastMongodbId,
+        },
+        handleStageBStreamMessage,
+        (errorMsg) => {
+          addMessage({ type: 'error', content: errorMsg });
+          setIsLoading(false);
+        }
+      );
+    } catch {
+      addMessage({ type: 'error', content: 'Lỗi Stage B không xác định' });
+      setIsLoading(false);
+    }
+  };
+
+  /**
+   * Called when user approves all briefs
+   */
+  const handleBriefsApproveAll = (briefs: ContentBrief[]) => {
+    addMessage({
+      type: 'assistant',
+      content: `✅ Đã duyệt ${briefs.filter(b => b.status === 'approved').length} briefs. Nhấn "Thực Thi" để bắt đầu đăng lên Discord!`,
+    });
+  };
+
+  /**
+   * Called when user clicks "Start Campaign" in the brief editor
+   */
+  const handleStartCampaign = async (approvedBriefs: ContentBrief[]) => {
+    if (approvedBriefs.length === 0) {
+      addMessage({ type: 'error', content: 'Không có brief nào được duyệt!' });
+      return;
+    }
+
+    addMessage({
+      type: 'status',
+      content: `🚀 Bắt đầu thực thi chiến dịch: ${approvedBriefs.length} bài đăng...`,
+    });
+    setIsLoading(true);
+
+    // Save approval to backend
+    if (lastStrategy) {
+      await researchService.approveStageBBriefs({
+        mongodb_id: lastMongodbId,
+        strategy: lastStrategy as unknown as Record<string, unknown>,
+        approved_briefs: approvedBriefs,
+      });
+    }
+
+    // Run Stage C
+    try {
+      await researchService.callStageCCampaign(
+        {
+          approved_briefs: approvedBriefs,
+          mongodb_stage_a_id: lastMongodbId,
+        },
+        handleStageCStreamMessage,
+        (errorMsg) => {
+          addMessage({ type: 'error', content: errorMsg });
+          setIsLoading(false);
+        }
+      );
+    } catch {
+      addMessage({ type: 'error', content: 'Lỗi Stage C không xác định' });
+      setIsLoading(false);
+    }
+  };
+
+  /**
    * Called when user submits the marketing form.
    * Calls the dedicated /marketing endpoint that skips intent classification.
    */
@@ -197,6 +365,9 @@ function App() {
     setWaitingMarketingForm(false);
     setIsLoading(true);
     addMessage({ type: 'status', content: '🚀 Bắt đầu nghiên cứu thị trường...' });
+
+    // Save form data for Stage B
+    setLastReportInput(formData as unknown as Record<string, unknown>);
 
     try {
       await researchService.callMarketingResearch(
@@ -225,6 +396,10 @@ function App() {
     setIsLoading(false);
     setWaitingMarketingForm(false);
     setInputValue('');
+    setLastReportData(null);
+    setLastReportInput(null);
+    setLastMongodbId(undefined);
+    setLastStrategy(null);
     msgIdCounter = 0;
   };
 
@@ -258,6 +433,8 @@ function App() {
               isLoading={isLoading}
               onClarificationConfirm={() => {}}
               onMarketingFormSubmit={handleMarketingFormSubmit}
+              onBriefsApproveAll={handleBriefsApproveAll}
+              onStartCampaign={handleStartCampaign}
             />
           ))}
 

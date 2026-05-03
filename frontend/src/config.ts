@@ -7,7 +7,7 @@
 // 🌐 BACKEND URL CONFIGURATION
 // ========================================
 // Option 1: Local development (Backend chạy trên localhost)
-const BACKEND_LOCAL = 'http://127.0.0.1:5000';
+// const BACKEND_LOCAL = 'http://127.0.0.1:5000';
 
 // Option 2: Ngrok tunnel (Backend expose qua ngrok)
 // Lấy từ output khi chạy notebook: "✅ API PUBLIC URL: https://xxx-ngrok.com"
@@ -27,6 +27,9 @@ export const config = {
     baseURL: ACTIVE_BACKEND_URL,
     endpoints: {
       stageAResearch: '/api/research/stage_a',
+      stageBStrategy: '/api/strategy/stage_b',
+      stageBApprove: '/api/strategy/stage_b/approve',
+      stageCCampaign: '/api/campaign/stage_c',
     },
     timeout: 300000, // 5 minutes in milliseconds
   },

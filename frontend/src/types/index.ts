@@ -78,20 +78,133 @@ export interface ResearchReport {
   citations: Citation[];
 }
 
-// Streaming Response Types
-export type StreamStatus = 
-  | "starting" 
-  | "progress" 
+// ─── Stage B Types ──────────────────────────────────────────────────
+
+export interface SWOTAnalysis {
+  strengths: string[];
+  weaknesses: string[];
+  opportunities: string[];
+  threats: string[];
+}
+
+export interface USPResult {
+  usp_statement: string;
+  supporting_points: string[];
+  competitive_advantage: string;
+}
+
+export interface BuyerPersona {
+  name: string;
+  age_range: string;
+  interests: string[];
+  pain_points: string[];
+  discord_behavior: string;
+  preferred_content_types: string[];
+  goals: string[];
+}
+
+export interface ContentPillar {
+  name: string;
+  description: string;
+  example_topics: string[];
+  emoji: string;
+}
+
+export interface ScheduleEntry {
+  day: number;
+  time: string;
+  content_type: string;
+  pillar_name: string;
+}
+
+export interface CampaignPlan {
+  duration_days: number;
+  posting_frequency: string;
+  content_types: string[];
+  schedule: ScheduleEntry[];
+  campaign_goal: string;
+}
+
+export interface ContentBrief {
+  id: string;
+  title: string;
+  caption: string;
+  image_prompt: string;
+  content_type: string;
+  pillar: string;
+  scheduled_day: number;
+  scheduled_time: string;
+  status: 'pending' | 'approved' | 'rejected' | 'edited';
+  embed_color: number;
+}
+
+export interface StageBOutput {
+  swot: SWOTAnalysis;
+  usp: USPResult;
+  persona: BuyerPersona;
+  content_pillars: ContentPillar[];
+  campaign_plan: CampaignPlan;
+  content_briefs: ContentBrief[];
+}
+
+// ─── Stage C Types ──────────────────────────────────────────────────
+
+export interface ExecutionResult {
+  brief_id: string;
+  brief_title: string;
+  status: 'success' | 'failed' | 'skipped' | 'pending';
+  image_url?: string;
+  image_skipped: boolean;
+  discord_sent: boolean;
+  error?: string;
+  timestamp: string;
+}
+
+export interface CampaignLog {
+  campaign_id: string;
+  mongodb_stage_a_id?: string;
+  results: ExecutionResult[];
+  total_briefs: number;
+  total_posted: number;
+  total_failed: number;
+  total_skipped: number;
+  started_at: string;
+  completed_at?: string;
+}
+
+// ─── Streaming Response Types ───────────────────────────────────────
+
+export type StreamStatus =
+  | "starting"
+  | "progress"
   | "clarification_provided"
-  | "plan_completed" 
-  | "react_completed" 
-  | "evidence_ready" 
-  | "report_ready" 
-  | "completed" 
+  | "plan_completed"
+  | "react_completed"
+  | "evidence_ready"
+  | "report_ready"
+  | "completed"
   | "chat_response"
   | "knowledge_searching"
   | "knowledge_response"
   | "show_marketing_form"
+  // Stage B
+  | "stage_b_starting"
+  | "swot_completed"
+  | "usp_completed"
+  | "persona_completed"
+  | "pillars_completed"
+  | "campaign_plan_completed"
+  | "briefs_generated"
+  | "stage_b_completed"
+  // Stage C
+  | "stage_c_starting"
+  | "brief_executing"
+  | "image_generating"
+  | "image_generated"
+  | "discord_posting"
+  | "discord_posted"
+  | "discord_post_failed"
+  | "stage_c_completed"
   | "error";
 
 export interface ClarificationData {
@@ -123,9 +236,23 @@ export interface StreamMessage {
   sources?: SearchSource[];
   // Marketing form path
   detected_prompt?: string;
+  // Stage B fields
+  swot?: SWOTAnalysis;
+  usp?: USPResult;
+  persona?: BuyerPersona;
+  content_pillars?: ContentPillar[];
+  campaign_plan?: CampaignPlan;
+  content_briefs?: ContentBrief[];
+  strategy?: StageBOutput;
+  // Stage C fields
+  brief_index?: number;
+  image_url?: string;
+  result?: ExecutionResult;
+  campaign_log?: CampaignLog;
 }
 
-// ─── Chat Message Types ───────────────────────────────────────
+// ─── Chat Message Types ─────────────────────────────────────────────
+
 export type ChatMessageType =
   | 'user'
   | 'assistant'
@@ -138,7 +265,12 @@ export type ChatMessageType =
   | 'error'
   | 'completed'
   | 'knowledge'
-  | 'marketing_form';
+  | 'marketing_form'
+  // Stage B
+  | 'strategy'
+  | 'content_briefs'
+  // Stage C
+  | 'campaign_results';
 
 export interface ChatMessage {
   id: string;
@@ -162,9 +294,14 @@ export interface ChatMessage {
   marketingFormData?: {
     detected_prompt: string;
   };
+  // Stage B
+  strategyData?: StageBOutput;
+  contentBriefsData?: ContentBrief[];
+  // Stage C
+  campaignLogData?: CampaignLog;
 }
 
-// UI State Types (kept for compatibility, but App.tsx will primarily use ChatMessage[])
+// UI State Types (kept for compatibility)
 export interface UIState {
   isLoading: boolean;
   messages: string[];

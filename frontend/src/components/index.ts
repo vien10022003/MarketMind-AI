@@ -3,3 +3,6 @@ export { ResearchProgress } from './ResearchProgress';
 export { ResearchReportComponent } from './ResearchReport';
 export { ChatMessageBubble } from './ChatMessage';
 export { CollapsibleCard } from './CollapsibleCard';
+export { StrategyBubble } from './StrategyBubble';
+export { ContentBriefEditor } from './ContentBriefEditor';
+export { CampaignResultsBubble } from './CampaignResultsBubble';
