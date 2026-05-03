@@ -25,7 +25,7 @@ class LocalLLMConfig:
     """Configuration for Local LLM"""
     model_name: str = os.getenv("STAGE_A_LOCAL_MODEL", "meta-llama/Llama-3.2-3B-Instruct")
     temperature: float = float(os.getenv("STAGE_A_TEMPERATURE", "0.2"))
-    max_new_tokens: int = int(os.getenv("STAGE_A_MAX_NEW_TOKENS", "700"))
+    max_new_tokens: int = int(os.getenv("STAGE_A_MAX_NEW_TOKENS", "1000"))
     device_map: str = os.getenv("STAGE_A_DEVICE_MAP", "auto")
     timeout_sec: int = int(os.getenv("STAGE_A_TIMEOUT_SEC", "120"))
 

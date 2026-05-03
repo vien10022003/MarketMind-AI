@@ -58,9 +58,10 @@ JSON schema:
   "success_criteria": ["..."]
 }}
 """
-    raw = llm.generate(prompt, max_new_tokens=900)
+    raw = llm.generate(prompt, max_new_tokens=1200)
     rprint(f"[blue]Raw output:[/blue] {raw}")
     block = extract_first_json_block(raw)
+    rprint(f"[blue]block:[/blue] {block}")
 
     if block:
         try:
@@ -70,6 +71,7 @@ JSON schema:
             rprint(f"  Steps: {len(plan.get('steps', []))} search queries")
             return plan
         except json.JSONDecodeError:
+            rprint("[red]✗ Failed to parse JSON from planner output[/red]")
             pass
 
     # Fallback plan

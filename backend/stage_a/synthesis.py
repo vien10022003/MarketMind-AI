@@ -10,13 +10,28 @@ from .data_models import StageAInput, StageAOutput, EvidenceItem
 from .llm_config import LocalTextGenerator
 
 
-def dataframe_to_compact_context(df: pd.DataFrame, top_n: int = 25) -> str:
-    """Convert DataFrame to compact context string"""
+def dataframe_to_compact_context(df: pd.DataFrame, top_n: int = 10, snippet_max: int = 150) -> str:
+    """
+    Convert DataFrame to compact context string
+    
+    Args:
+        df: Evidence DataFrame
+        top_n: Max number of items (default 10 to avoid token overflow)
+        snippet_max: Max characters per snippet (default 150)
+    
+    Returns:
+        Formatted evidence context
+    """
+    if df.empty:
+        return "[NO_EVIDENCE]"
+    
     rows = []
     for idx, row in df.head(top_n).iterrows():
+        snippet = row['snippet'][:snippet_max]
         rows.append(
-            f"[{idx+1}] title={row['title']} | url={row['url']} | "
-            f"score={row['source_score']:.2f} | snippet={row['snippet'][:300]}"
+            f"[{idx+1}] {row['title'][:80]} | {row['url'][:100]} | "
+            f"score={row.get('combined_score', row['source_score']):.2f} | "
+            f"{snippet}"
         )
     return "\n".join(rows)
 
@@ -27,7 +42,10 @@ def synthesize_tong_quan_thi_truong(
     df: pd.DataFrame
 ) -> str:
     """Generate market overview section"""
-    evidence_context = dataframe_to_compact_context(df, top_n=20)
+    evidence_context = dataframe_to_compact_context(df, top_n=10)
+    
+    if evidence_context == "[NO_EVIDENCE]":
+        return "Không có đủ dữ liệu để tạo báo cáo. Vui lòng thử lại với từ khóa khác."
     
     prompt = f"""
 Ban la senior market analyst chuyen gia chi tiet.
@@ -45,15 +63,12 @@ Yeu cau:
 4. Tien do va xu huong
 5. Dan chung URL trong [url]
 
-Evidence:
+Evidence (top 10 items):
 {evidence_context}
 
 Chi tra ve phan tich chi tiet, khong JSON, khong mo dau/ket luan.
 """
-    print("synthesize_tong_quan_thi_truong1")
-    print(f"[blue]prompt:[/blue] {prompt}")
     raw = llm.generate(prompt, max_new_tokens=400)
-    print(f"[blue]Raw output:[/blue] {raw}")
     return raw.strip() if raw else "Khong du du lieu."
 
 
@@ -63,7 +78,10 @@ def synthesize_phan_tich_doi_thu(
     df: pd.DataFrame
 ) -> str:
     """Generate competitor analysis section"""
-    evidence_context = dataframe_to_compact_context(df, top_n=20)
+    evidence_context = dataframe_to_compact_context(df, top_n=10)
+    
+    if evidence_context == "[NO_EVIDENCE]":
+        return "Không có đủ dữ liệu để phân tích đối thủ."
     
     prompt = f"""
 Ban la chuyen gia phan tich canh tranh.
@@ -82,7 +100,7 @@ Yeu cau:
 5. Diem yeu co the khai thac
 6. Dan chung URL [url]
 
-Evidence:
+Evidence (top 10 items):
 {evidence_context}
 
 Chi tra ve phan tich chi tiet, khong JSON, khong mo dau/ket luan.
@@ -97,7 +115,10 @@ def synthesize_xu_huong_nganh(
     df: pd.DataFrame
 ) -> str:
     """Generate industry trends section"""
-    evidence_context = dataframe_to_compact_context(df, top_n=20)
+    evidence_context = dataframe_to_compact_context(df, top_n=10)
+    
+    if evidence_context == "[NO_EVIDENCE]":
+        return "Không có đủ dữ liệu để phân tích xu hướng ngành."
     
     prompt = f"""
 Ban la chuyen gia xu huong nganh hang.
@@ -116,7 +137,7 @@ Yeu cau:
 5. Cau truc thi truong dang thay doi
 6. Dan chung URL [url]
 
-Evidence:
+Evidence (top 10 items):
 {evidence_context}
 
 Chi tra ve phan tich chi tiet, khong JSON, khong mo dau/ket luan.
@@ -131,7 +152,10 @@ def synthesize_phan_khuc_va_insight(
     df: pd.DataFrame
 ) -> str:
     """Generate customer segment and insights section"""
-    evidence_context = dataframe_to_compact_context(df, top_n=20)
+    evidence_context = dataframe_to_compact_context(df, top_n=10)
+    
+    if evidence_context == "[NO_EVIDENCE]":
+        return "Không có đủ dữ liệu để phân tích phân khúc khách hàng."
     
     prompt = f"""
 Ban la chuyen gia hang vi khach hang va hanh vi pham.
@@ -150,7 +174,7 @@ Yeu cau:
 5. Kenh tiem can va phuong thuc giao tieu
 6. Dan chung URL [url]
 
-Evidence:
+Evidence (top 10 items):
 {evidence_context}
 
 Chi tra ve phan tich chi tiet, khong JSON, khong mo dau/ket luan.

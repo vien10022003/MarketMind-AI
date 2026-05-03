@@ -10,7 +10,7 @@ from datetime import datetime
 from flask import Flask, request, Response, stream_with_context
 from rich import print as rprint
 
-from .data_models import StageAInput
+from .data_models import StageAInput, StageAOutput, EvidenceItem
 from .environment import load_environment
 from .llm_config import initialize_llm
 from .clarification import clarify_user_prompt
@@ -222,7 +222,42 @@ def run_stage_a_pipeline_generator(req_data: dict):
             "message": "Đang tổng hợp báo cáo..."
         }) + "\n"
 
-        stage_a_output = synthesize_stage_a_report(llm, user_input, evidence_df)
+        try:
+            stage_a_output = synthesize_stage_a_report(llm, user_input, evidence_df)
+        except RuntimeError as e:
+            # Handle out-of-memory errors
+            if "out of memory" in str(e).lower() or "cuda" in str(e).lower():
+                rprint("[yellow]⚠️ Out of memory, reducing evidence and retrying...[/yellow]")
+                yield json.dumps({
+                    "status": "progress",
+                    "message": "Giảm dung lượng dữ liệu, thử lại..."
+                }) + "\n"
+                
+                # Reduce evidence to top 5 most relevant
+                evidence_df = evidence_df.head(5)
+                gc.collect()
+                if torch.cuda.is_available():
+                    torch.cuda.empty_cache()
+                
+                try:
+                    stage_a_output = synthesize_stage_a_report(llm, user_input, evidence_df)
+                except Exception as retry_error:
+                    rprint(f"[red]Synthesis retry failed: {str(retry_error)}[/red]")
+                    yield json.dumps({
+                        "status": "warning",
+                        "message": "Báo cáo không thể tạo đầy đủ. Vui lòng thử lại với tiêu chí tìm kiếm cụ thể hơn.",
+                    }) + "\n"
+                    
+                    # Return minimal output
+                    stage_a_output = StageAOutput(
+                        tong_quan_thi_truong="Quá nhiều dữ liệu để xử lý. Vui lòng thử lại với từ khóa tìm kiếm cụ thể hơn.",
+                        phan_tich_doi_thu="",
+                        xu_huong_nganh="",
+                        phan_khuc_va_insight_khach_hang="",
+                        citations=[]
+                    )
+            else:
+                raise
 
         yield json.dumps({
             "status": "report_ready",
