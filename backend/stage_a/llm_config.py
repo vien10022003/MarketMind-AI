@@ -4,12 +4,20 @@ Handles Llama model setup and text generation
 """
 
 import os
+import gc
 from dataclasses import dataclass
 from typing import Optional
+import warnings
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
 from huggingface_hub import login
 from rich import print as rprint
+
+# Suppress warnings
+warnings.filterwarnings('ignore', message='.*pad_token_id.*')
+warnings.filterwarnings('ignore', message='.*max_new_tokens.*')
+warnings.filterwarnings('ignore', message='.*LangChainTracer.*')
+os.environ['LANGCHAIN_TRACING_V2'] = 'false'
 
 
 @dataclass
@@ -90,13 +98,18 @@ class LocalTextGenerator:
             do_sample=temp > 0,
             temperature=temp,
             top_p=0.9,
-            repetition_penalty=1.15,  # Add this to prevent token repetition loops
+            repetition_penalty=1.15,
             return_full_text=True,
         )[0]["generated_text"]
 
         # Remove input from output
         if output.startswith(model_input):
             output = output[len(model_input):]
+        
+        # Cleanup GPU memory
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+        gc.collect()
         
         return output.strip()
 

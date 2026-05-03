@@ -169,6 +169,11 @@ def run_stage_a_pipeline_generator(req_data: dict):
             "plan": plan
         }) + "\n"
 
+        # Clear GPU memory after planning
+        gc.collect()
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+
         # Step 3: ReAct Loop
         rprint("[yellow][STEP 3] ReAct Loop...[/yellow]")
         yield json.dumps({
@@ -186,6 +191,11 @@ def run_stage_a_pipeline_generator(req_data: dict):
                 "total_evidence": len(react_state.get("evidence", [])),
             }
         }) + "\n"
+
+        # Clear GPU memory after ReAct
+        gc.collect()
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
 
         # Step 4: Evidence Processing
         rprint("[yellow][STEP 4] Evidence Processing...[/yellow]")
@@ -219,6 +229,11 @@ def run_stage_a_pipeline_generator(req_data: dict):
             "message": "Báo cáo đã tạo xong",
             "report": stage_a_output.model_dump(),
         }) + "\n"
+
+        # Clear GPU memory after synthesis
+        gc.collect()
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
 
         # Step 6: Save to MongoDB
         if mongo:

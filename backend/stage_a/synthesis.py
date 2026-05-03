@@ -50,7 +50,7 @@ Evidence:
 
 Chi tra ve phan tich chi tiet, khong JSON, khong mo dau/ket luan.
 """
-    raw = llm.generate(prompt, max_new_tokens=800)
+    raw = llm.generate(prompt, max_new_tokens=400)
     return raw.strip() if raw else "Khong du du lieu."
 
 
@@ -84,7 +84,7 @@ Evidence:
 
 Chi tra ve phan tich chi tiet, khong JSON, khong mo dau/ket luan.
 """
-    raw = llm.generate(prompt, max_new_tokens=800)
+    raw = llm.generate(prompt, max_new_tokens=400)
     return raw.strip() if raw else "Khong du du lieu."
 
 
@@ -118,7 +118,7 @@ Evidence:
 
 Chi tra ve phan tich chi tiet, khong JSON, khong mo dau/ket luan.
 """
-    raw = llm.generate(prompt, max_new_tokens=800)
+    raw = llm.generate(prompt, max_new_tokens=400)
     return raw.strip() if raw else "Khong du du lieu."
 
 
@@ -152,7 +152,7 @@ Evidence:
 
 Chi tra ve phan tich chi tiet, khong JSON, khong mo dau/ket luan.
 """
-    raw = llm.generate(prompt, max_new_tokens=800)
+    raw = llm.generate(prompt, max_new_tokens=400)
     return raw.strip() if raw else "Khong du du lieu."
 
 
