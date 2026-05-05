@@ -15,6 +15,7 @@ from rich import print as rprint
 from .data_models_c import ExecutionResult, CampaignLog, StageCInput
 from .image_generator import generate_image, check_image_api_health
 from .campaign_scheduler import get_scheduler
+from .content_expander import expand_content_brief
 
 
 def get_webhook_url() -> str:
@@ -91,7 +92,7 @@ def post_to_discord(payload: dict, webhook_url: Optional[str] = None) -> bool:
         return False
 
 
-def run_stage_c_pipeline(stage_c_input: StageCInput) -> Generator[dict, None, None]:
+def run_stage_c_pipeline(stage_c_input: StageCInput, llm=None) -> Generator[dict, None, None]:
     """
     Run Stage C campaign execution as a generator for streaming.
     Supports both immediate posting and scheduled posting.
@@ -124,6 +125,19 @@ def run_stage_c_pipeline(stage_c_input: StageCInput) -> Generator[dict, None, No
             "status": "stage_c_starting",
             "message": f"📅 Lên lịch chiến dịch: {len(briefs)} bài đăng",
         }
+        
+        # Expand briefs using LLM before scheduling
+        if llm:
+            expanded_briefs = []
+            for idx, brief in enumerate(briefs, 1):
+                yield {
+                    "status": "progress",
+                    "message": f"🧠 Đang hoàn thiện nội dung bài {idx}/{len(briefs)}...",
+                    "brief_index": idx,
+                }
+                expanded_brief = expand_content_brief(llm, brief)
+                expanded_briefs.append(expanded_brief)
+            briefs = expanded_briefs
         
         # Validate scheduled times
         if not scheduled_times or len(scheduled_times) != len(briefs):
@@ -218,6 +232,15 @@ def run_stage_c_pipeline(stage_c_input: StageCInput) -> Generator[dict, None, No
             "message": f"📝 [{idx}/{len(briefs)}] Đang xử lý: {brief_title}",
             "brief_index": idx,
         }
+
+        # Step 0: Expand content
+        if llm:
+            yield {
+                "status": "progress",
+                "message": f"🧠 Đang hoàn thiện nội dung (LLM)...",
+                "brief_index": idx,
+            }
+            brief_data = expand_content_brief(llm, brief_data)
 
         image_url = None
         image_skipped = True

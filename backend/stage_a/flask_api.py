@@ -461,7 +461,7 @@ def run_stage_c_generator(req_data: dict):
             mongodb_stage_a_id=req_data.get("mongodb_stage_a_id"),
         )
 
-        for event in run_stage_c_pipeline(stage_c_input):
+        for event in run_stage_c_pipeline(stage_c_input, llm=llm):
             yield json.dumps(event) + "\n"
 
             # Save campaign log to MongoDB when completed
@@ -524,7 +524,7 @@ def api_campaign_stage_c_scheduled():
         
         def run_scheduled_stage_c_generator():
             """Generator for scheduled Stage C campaign."""
-            for event in run_stage_c_pipeline(stage_c_input):
+            for event in run_stage_c_pipeline(stage_c_input, llm=llm):
                 yield json.dumps(event) + "\n"
         
         return Response(
