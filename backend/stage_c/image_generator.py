@@ -69,14 +69,18 @@ def fetch_image_api_from_firebase() -> Optional[str]:
 
 def get_image_api_url() -> str:
     """
-    Get image API URL from cache or environment.
-    Returns cached URL if available, otherwise empty string.
-    Use fetch_image_api_from_firebase() to fetch fresh URL from Firebase.
+    Get image API URL exclusively from Firebase.
+    Returns cached URL if available, otherwise attempts to fetch from Firebase.
     """
     global _cached_image_api_url
     if _cached_image_api_url:
         return _cached_image_api_url
-    return os.getenv("IMAGE_API_URL", "")
+        
+    fetched_url = fetch_image_api_from_firebase()
+    if fetched_url:
+        return fetched_url
+        
+    return ""
 
 
 def generate_image(

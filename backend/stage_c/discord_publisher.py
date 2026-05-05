@@ -103,7 +103,7 @@ def run_stage_c_pipeline(stage_c_input: StageCInput) -> Generator[dict, None, No
     """
     briefs = stage_c_input.approved_briefs
     webhook_url = stage_c_input.webhook_url or get_webhook_url()
-    image_api_url = stage_c_input.image_api_url or os.getenv("IMAGE_API_URL", "")
+    image_api_url = stage_c_input.image_api_url
     skip_images = stage_c_input.skip_image_generation
     execution_mode = stage_c_input.execution_mode or "immediate"
     scheduled_times = stage_c_input.scheduled_times or []
