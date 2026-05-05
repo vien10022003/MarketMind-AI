@@ -29,6 +29,11 @@ from stage_b.campaign import run_stage_b_pipeline
 from stage_c.data_models_c import StageCInput, CampaignLog
 from stage_c.discord_publisher import run_stage_c_pipeline
 from stage_c.campaign_log import save_campaign_log
+from stage_c.campaign_scheduler import initialize_scheduler
+from stage_c.scheduler_service import initialize_scheduler_service
+
+# Conversation history import
+from conversation_manager import get_conversation_manager
 
 
 # Initialize Flask app
@@ -46,11 +51,18 @@ try:
     config = load_environment()
     llm = initialize_llm()
     mongo = MongoDBManager(config.get("mongo_uri"))
+    
+    # Initialize Stage C scheduler (for scheduled posting)
+    initialize_scheduler()
+    scheduler_service = initialize_scheduler_service(auto_start=True)
+    rprint("[green]✅ Scheduled posting service initialized[/green]")
+    
     rprint("[green]✅ All components initialized successfully[/green]")
 except Exception as e:
     rprint(f"[red]Initialization error: {e}[/red]")
     llm = None
     mongo = None
+    scheduler_service = None
 
 
 @app.after_request
@@ -64,6 +76,16 @@ def add_cors_headers(response):
     response.headers['Pragma'] = 'no-cache'
     response.headers['Expires'] = '0'
     return response
+
+
+# ─── Register Blueprints ──────────────────────────────────────────────────
+try:
+    from stage_c.scheduler_routes import create_scheduler_blueprint
+    scheduler_blueprint = create_scheduler_blueprint()
+    app.register_blueprint(scheduler_blueprint, url_prefix='/api/stage-c/scheduler')
+    rprint("[green]✅ Scheduler blueprint registered[/green]")
+except Exception as e:
+    rprint(f"[yellow]⚠️  Scheduler blueprint registration failed: {e}[/yellow]")
 
 
 def run_stage_a_pipeline_generator(req_data: dict):
@@ -719,11 +741,20 @@ def health_check():
     if request.method == 'OPTIONS':
         return '', 200
     
+    scheduler_running = False
+    try:
+        from stage_c.scheduler_service import get_scheduler_service
+        svc = get_scheduler_service()
+        scheduler_running = svc is not None and svc.is_running()
+    except:
+        pass
+    
     return {
         "status": "healthy",
         "timestamp": datetime.now().isoformat(),
         "llm_ready": llm is not None,
-        "mongodb_ready": mongo is not None and mongo.client is not None
+        "mongodb_ready": mongo is not None and mongo.client is not None,
+        "scheduler_running": scheduler_running,
     }, 200
 
 
