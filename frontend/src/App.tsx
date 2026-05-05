@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { ChatMessageBubble } from './components';
+import { ChatMessageBubble, ConversationList } from './components';
 import type { ChatMessage, ResearchRequest, ConversationTurn, ContentBrief, StageBOutput, ResearchReport } from './types';
 import { researchService } from './services/researchService';
 import { initializeBackendUrl } from './config';
@@ -11,6 +11,9 @@ function nextId() {
 }
 
 function App() {
+  // Conversation state
+  const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
+
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
     {
       id: 'welcome',
@@ -23,6 +26,8 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [waitingMarketingForm, setWaitingMarketingForm] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
+  const messagesSaveBuffer = useRef<ChatMessage[]>([]);
+  const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Stage B/C state
   const [lastReportData, setLastReportData] = useState<ResearchReport | null>(null);
@@ -33,12 +38,85 @@ function App() {
   // Initialize backend URL from Firebase on app startup
   useEffect(() => {
     initializeBackendUrl();
+    handleCreateNewConversation(); // Create a new conversation on app start
   }, []);
 
   // Auto-scroll to latest message
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [chatMessages]);
+
+  // Auto-save messages (debounced)
+  useEffect(() => {
+    if (messagesSaveBuffer.current.length === 0 || !currentConversationId) return;
+
+    // Clear existing timeout
+    if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+
+    // Set new timeout to save after 3 seconds of inactivity
+    saveTimeoutRef.current = setTimeout(async () => {
+      if (messagesSaveBuffer.current.length > 0 && currentConversationId) {
+        const toSave = messagesSaveBuffer.current;
+        messagesSaveBuffer.current = [];
+        await researchService.saveMessagesToConversation(currentConversationId, toSave);
+      }
+    }, 3000);
+
+    return () => {
+      if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+    };
+  }, [chatMessages, currentConversationId]);
+
+  const createNewConversation = async (title?: string) => {
+    try {
+      const conv = await researchService.createConversation(title);
+      if (conv && conv.conversation_id) {
+        setCurrentConversationId(conv.conversation_id);
+        return conv.conversation_id;
+      }
+    } catch (err) {
+      console.error('Failed to create conversation:', err);
+    }
+    return null;
+  };
+
+  const handleCreateNewConversation = async () => {
+    // Reset state
+    setChatMessages([
+      {
+        id: 'welcome',
+        type: 'assistant',
+        content: 'Xin chào! Tôi là MarketMind AI — trợ lý nghiên cứu thị trường thông minh. Hãy mô tả những gì bạn muốn tìm hiểu, tôi sẽ giúp bạn phân tích! 🚀',
+        timestamp: new Date(),
+      },
+    ]);
+    setInputValue('');
+    setLastReportData(null);
+    setLastReportInput(null);
+    setLastMongodbId(undefined);
+    setLastStrategy(null);
+    msgIdCounter = 0;
+    messagesSaveBuffer.current = [];
+
+    // Create new conversation
+    const convId = await createNewConversation();
+    if (convId) {
+      setCurrentConversationId(convId);
+    }
+  };
+
+  const handleLoadConversation = async (conversationId: string) => {
+    try {
+      const conv = await researchService.getConversation(conversationId);
+      if (conv && conv.messages) {
+        setCurrentConversationId(conversationId);
+        setChatMessages(conv.messages);
+        messagesSaveBuffer.current = [];
+      }
+    } catch (err) {
+      console.error('Failed to load conversation:', err);
+    }
+  };
 
   const addMessage = (msg: Omit<ChatMessage, 'id' | 'timestamp'>) => {
     const newMsg: ChatMessage = {
@@ -47,6 +125,8 @@ function App() {
       timestamp: new Date(),
     };
     setChatMessages((prev) => [...prev, newMsg]);
+    // Buffer message for auto-save
+    messagesSaveBuffer.current.push(newMsg);
   };
 
   /**
@@ -225,10 +305,11 @@ function App() {
 
       // Show Stage C proposal instead of auto-trigger
       addMessage({
-        type: 'stage_c_proposal',
+        type: 'stage_c_schedule_proposal',
         content: '✅ Chiến lược marketing đã hoàn tất! Bạn có muốn thực thi chiến dịch marketing này không?',
-        stageCProposalData: {
+        stageCScheduleProposalData: {
           briefs: streamMessage.strategy.content_briefs || [],
+          mongodbId: streamMessage.mongodb_id,
         },
       });
       setIsLoading(false);
@@ -376,6 +457,55 @@ function App() {
   };
 
   /**
+   * Called when user schedules campaign with specific times
+   */
+  const handleAcceptStageCScheduleProposal = async (briefs: ContentBrief[], scheduledTimes: string[], mongodbId?: string) => {
+    if (briefs.length === 0) {
+      addMessage({ type: 'error', content: 'Không có brief nào để thực thi!' });
+      return;
+    }
+
+    if (scheduledTimes.length !== briefs.length) {
+      addMessage({ type: 'error', content: 'Số lượng thời gian không khớp với số lượng bài đăng!' });
+      return;
+    }
+
+    addMessage({
+      type: 'status',
+      content: `📅 Đang lên lịch chiến dịch: ${briefs.length} bài đăng...`,
+    });
+    setIsLoading(true);
+
+    // Save approval to backend
+    if (lastStrategy) {
+      await researchService.approveStageBBriefs({
+        mongodb_id: mongodbId || lastMongodbId,
+        strategy: lastStrategy as unknown as Record<string, unknown>,
+        approved_briefs: briefs,
+      });
+    }
+
+    // Run Stage C with scheduled mode
+    try {
+      await researchService.callStageCCampaignScheduled(
+        {
+          approved_briefs: briefs,
+          scheduled_times: scheduledTimes,
+          mongodb_stage_a_id: mongodbId || lastMongodbId,
+        },
+        handleStageCStreamMessage,
+        (errorMsg) => {
+          addMessage({ type: 'error', content: errorMsg });
+          setIsLoading(false);
+        }
+      );
+    } catch {
+      addMessage({ type: 'error', content: 'Lỗi lên lịch Stage C không xác định' });
+      setIsLoading(false);
+    }
+  };
+
+  /**
    * Called when user clicks "Start Campaign" in the brief editor
    */
   const handleStartCampaign = async (approvedBriefs: ContentBrief[]) => {
@@ -446,22 +576,7 @@ function App() {
   };
 
   const handleReset = () => {
-    setChatMessages([
-      {
-        id: 'welcome',
-        type: 'assistant',
-        content: 'Xin chào! Tôi là MarketMind AI — trợ lý nghiên cứu thị trường thông minh. Hãy mô tả những gì bạn muốn tìm hiểu, tôi sẽ giúp bạn phân tích! 🚀',
-        timestamp: new Date(),
-      },
-    ]);
-    setIsLoading(false);
-    setWaitingMarketingForm(false);
-    setInputValue('');
-    setLastReportData(null);
-    setLastReportInput(null);
-    setLastMongodbId(undefined);
-    setLastStrategy(null);
-    msgIdCounter = 0;
+    handleCreateNewConversation();
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -473,40 +588,52 @@ function App() {
 
   return (
     <div className="app-container">
-      {/* Header */}
-      <header className="app-header">
-        <div className="header-content">
-          <h1>🎯 MarketMind AI</h1>
-          <p>Trợ lý nghiên cứu thị trường thông minh</p>
-        </div>
-        <button className="header-reset" onClick={handleReset} title="Cuộc hội thoại mới">
-          ✨ Mới
-        </button>
-      </header>
+      {/* Conversation Sidebar */}
+      <aside className="app-sidebar">
+        <ConversationList
+          onSelectConversation={handleLoadConversation}
+          onCreateNew={handleCreateNewConversation}
+          currentConversationId={currentConversationId || undefined}
+        />
+      </aside>
 
-      {/* Chat area */}
-      <main className="chat-area">
-        <div className="chat-messages">
-          {chatMessages.map((msg) => (
-            <ChatMessageBubble
-              key={msg.id}
-              message={msg}
-              isLoading={isLoading}
-              onClarificationConfirm={() => {}}
-              onMarketingFormSubmit={handleMarketingFormSubmit}
-              onStartCampaign={handleStartCampaign}
-              onAcceptStageBProposal={handleAcceptStageBProposal}
-              onAcceptStageCProposal={handleAcceptStageCProposal}
-            />
-          ))}
+      {/* Main Content */}
+      <div className="app-main">
+        {/* Header */}
+        <header className="app-header">
+          <div className="header-content">
+            <h1>🎯 MarketMind AI</h1>
+            <p>Trợ lý nghiên cứu thị trường thông minh</p>
+          </div>
+          <button className="header-reset" onClick={handleReset} title="Cuộc hội thoại mới">
+            ✨ Mới
+          </button>
+        </header>
 
-          {isLoading && !waitingMarketingForm && (
-            <div className="chat-row chat-row--assistant">
-              <div className="chat-avatar chat-avatar--assistant">🤖</div>
-              <div className="chat-bubble chat-bubble--typing">
-                <span className="typing-dot" />
-                <span className="typing-dot" />
-                <span className="typing-dot" />
+        {/* Chat area */}
+        <main className="chat-area">
+          <div className="chat-messages">
+            {chatMessages.map((msg) => (
+              <ChatMessageBubble
+                key={msg.id}
+                message={msg}
+                isLoading={isLoading}
+                onClarificationConfirm={() => {}}
+                onMarketingFormSubmit={handleMarketingFormSubmit}
+                onStartCampaign={handleStartCampaign}
+                onAcceptStageBProposal={handleAcceptStageBProposal}
+                onAcceptStageCProposal={handleAcceptStageCProposal}
+                onAcceptStageCScheduleProposal={handleAcceptStageCScheduleProposal}
+              />
+            ))}
+
+            {isLoading && !waitingMarketingForm && (
+              <div className="chat-row chat-row--assistant">
+                <div className="chat-avatar chat-avatar--assistant">🤖</div>
+                <div className="chat-bubble chat-bubble--typing">
+                  <span className="typing-dot" />
+                  <span className="typing-dot" />
+                  <span className="typing-dot" />
               </div>
             </div>
           )}
@@ -543,6 +670,7 @@ function App() {
           Nhấn <kbd>Enter</kbd> để gửi · <kbd>Shift+Enter</kbd> xuống dòng
         </small>
       </footer>
+      </div>
     </div>
   );
 }

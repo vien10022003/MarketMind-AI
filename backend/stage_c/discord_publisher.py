@@ -2,9 +2,11 @@
 Discord Publisher Module - Stage C
 Format and post content to Discord via webhook.
 Builds on the existing discord_advertising.py patterns but uses env-based webhook URL.
+Supports both immediate posting and scheduled posting via campaign scheduler.
 """
 
 import os
+import uuid
 import requests
 from datetime import datetime, timezone
 from typing import Dict, List, Optional, Generator
@@ -12,6 +14,7 @@ from rich import print as rprint
 
 from .data_models_c import ExecutionResult, CampaignLog, StageCInput
 from .image_generator import generate_image, check_image_api_health
+from .campaign_scheduler import get_scheduler
 
 
 def get_webhook_url() -> str:
@@ -91,12 +94,19 @@ def post_to_discord(payload: dict, webhook_url: Optional[str] = None) -> bool:
 def run_stage_c_pipeline(stage_c_input: StageCInput) -> Generator[dict, None, None]:
     """
     Run Stage C campaign execution as a generator for streaming.
-    For each approved brief: generate image → format embed → post to Discord → log result.
+    Supports both immediate posting and scheduled posting.
+    
+    - Immediate mode: Posts briefs immediately as they're processed
+    - Scheduled mode: Saves briefs to scheduler for deferred posting
+    
+    For each approved brief: generate image → format embed → post/schedule → log result.
     """
     briefs = stage_c_input.approved_briefs
     webhook_url = stage_c_input.webhook_url or get_webhook_url()
     image_api_url = stage_c_input.image_api_url or os.getenv("IMAGE_API_URL", "")
     skip_images = stage_c_input.skip_image_generation
+    execution_mode = stage_c_input.execution_mode or "immediate"
+    scheduled_times = stage_c_input.scheduled_times or []
 
     if not briefs:
         yield {"status": "error", "message": "❌ Không có content brief nào được phê duyệt."}
@@ -106,6 +116,79 @@ def run_stage_c_pipeline(stage_c_input: StageCInput) -> Generator[dict, None, No
         yield {"status": "error", "message": "❌ DISCORD_WEBHOOK_URL chưa được cấu hình trong .env"}
         return
 
+    # ===== SCHEDULED MODE =====
+    if execution_mode == "scheduled":
+        campaign_id = str(uuid.uuid4())[:8]
+        
+        yield {
+            "status": "stage_c_starting",
+            "message": f"📅 Lên lịch chiến dịch: {len(briefs)} bài đăng",
+        }
+        
+        # Validate scheduled times
+        if not scheduled_times or len(scheduled_times) != len(briefs):
+            yield {
+                "status": "error",
+                "message": f"❌ Cần {len(briefs)} thời gian lên lịch, nhận được {len(scheduled_times or [])}"
+            }
+            return
+        
+        # Save to scheduler
+        try:
+            scheduler = get_scheduler()
+            scheduler_id = scheduler.save_scheduled_campaign(
+                campaign_id=campaign_id,
+                mongodb_stage_a_id=stage_c_input.mongodb_stage_a_id,
+                briefs=briefs,
+                scheduled_times=scheduled_times,
+                webhook_url=webhook_url,
+                image_api_url=image_api_url,
+                skip_images=skip_images,
+            )
+            
+            # Build campaign log for scheduled mode
+            campaign_log = CampaignLog(
+                campaign_id=campaign_id,
+                mongodb_stage_a_id=stage_c_input.mongodb_stage_a_id,
+                total_briefs=len(briefs),
+                total_posted=0,
+                total_scheduled=len(briefs),
+                total_failed=0,
+                total_skipped=0,
+                execution_mode="scheduled",
+            )
+            
+            yield {
+                "status": "progress",
+                "message": f"✅ Đã lên lịch {len(briefs)} bài. Scheduler ID: {scheduler_id}"
+            }
+            
+            # Show scheduled times
+            for idx, (brief_data, sched_time) in enumerate(zip(briefs, scheduled_times), 1):
+                brief_title = brief_data.get("title", f"Bài đăng {idx}")
+                yield {
+                    "status": "progress",
+                    "message": f"📍 [{idx}] {brief_title} → {sched_time}",
+                    "brief_index": idx,
+                }
+            
+            yield {
+                "status": "stage_c_completed",
+                "message": f"🎉 Chiến dịch đã được lên lịch! {len(briefs)} bài sẽ được đăng vào các thời điểm quy định.",
+                "campaign_log": campaign_log.model_dump(),
+            }
+            return
+        
+        except Exception as e:
+            yield {
+                "status": "error",
+                "message": f"❌ Lỗi lên lịch chiến dịch: {str(e)}"
+            }
+            return
+    
+    # ===== IMMEDIATE MODE (existing logic) =====
+    campaign_id = str(uuid.uuid4())[:8]
+    
     yield {
         "status": "stage_c_starting",
         "message": f"🚀 Bắt đầu thực thi chiến dịch: {len(briefs)} bài đăng",
@@ -192,6 +275,7 @@ def run_stage_c_pipeline(stage_c_input: StageCInput) -> Generator[dict, None, No
             image_skipped=image_skipped,
             discord_sent=success,
             error=None if success else "Discord post failed",
+            posted_at=datetime.now(timezone.utc).isoformat() if success else None,
         )
         results.append(exec_result)
 
@@ -213,16 +297,16 @@ def run_stage_c_pipeline(stage_c_input: StageCInput) -> Generator[dict, None, No
             }
 
     # Build campaign log
-    import uuid
     campaign_log = CampaignLog(
-        campaign_id=str(uuid.uuid4())[:8],
+        campaign_id=campaign_id,
         mongodb_stage_a_id=stage_c_input.mongodb_stage_a_id,
         results=results,
         total_briefs=len(briefs),
         total_posted=total_posted,
         total_failed=total_failed,
         total_skipped=len(briefs) - total_posted - total_failed,
-        completed_at=datetime.now().isoformat(),
+        execution_mode="immediate",
+        completed_at=datetime.now(timezone.utc).isoformat(),
     )
 
     yield {

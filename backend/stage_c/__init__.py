@@ -1,6 +1,7 @@
 """
 Stage C Campaign Execution Package
 Executes approved content briefs: Image generation → Discord posting → Logging.
+Supports both immediate and scheduled posting.
 """
 
 from .data_models_c import (
@@ -17,6 +18,19 @@ from .discord_publisher import (
     format_discord_embed,
     post_to_discord,
     run_stage_c_pipeline,
+)
+from .campaign_scheduler import (
+    CampaignScheduler,
+    get_scheduler,
+    initialize_scheduler,
+)
+from .scheduler_service import (
+    SchedulerService,
+    get_scheduler_service,
+    initialize_scheduler_service,
+)
+from .scheduler_routes import (
+    create_scheduler_blueprint,
 )
 from .campaign_log import (
     save_campaign_log,

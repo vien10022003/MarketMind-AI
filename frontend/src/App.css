@@ -63,9 +63,24 @@ body {
 /* ──────── Layout ──────── */
 .app-container {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   height: 100vh;
   background: linear-gradient(160deg, var(--bg) 0%, #111936 40%, #0d1225 100%);
+}
+
+.app-sidebar {
+  width: 300px;
+  background: rgba(15, 23, 42, 0.7);
+  border-right: 1px solid var(--glass-border);
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+
+.app-main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
 }
 
 /* ──────── Header ──────── */
@@ -1887,7 +1902,25 @@ body {
 /* ══════════════════════════════════════════
    Responsive
    ══════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .app-sidebar {
+    width: 260px;
+  }
+}
+
 @media (max-width: 640px) {
+  .app-container {
+    flex-direction: column;
+  }
+
+  .app-sidebar {
+    width: 100%;
+    max-height: 150px;
+    border-right: none;
+    border-bottom: 1px solid var(--glass-border);
+    overflow-x: auto;
+  }
+
   .chat-bubble {
     max-width: 92%;
   }

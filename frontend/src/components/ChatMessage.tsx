@@ -5,6 +5,8 @@ import { CollapsibleCard } from './CollapsibleCard';
 import { StrategyBubble } from './StrategyBubble';
 import { ContentBriefEditor } from './ContentBriefEditor';
 import { CampaignResultsBubble } from './CampaignResultsBubble';
+import { ScheduleEditor } from './ScheduleEditor';
+import { ScheduleManager } from './ScheduleManager';
 
 interface ChatMessageProps {
   message: ChatMessage;
@@ -14,9 +16,10 @@ interface ChatMessageProps {
   onStartCampaign?: (approvedBriefs: ContentBrief[]) => void;
   onAcceptStageBProposal?: (reportData: ResearchReport, mongodbId?: string) => void;
   onAcceptStageCProposal?: (briefs: ContentBrief[]) => void;
+  onAcceptStageCScheduleProposal?: (briefs: ContentBrief[], times: string[], mongodbId?: string) => void;
 }
 
-export function ChatMessageBubble({ message, isLoading, onClarificationConfirm, onMarketingFormSubmit, onStartCampaign, onAcceptStageBProposal, onAcceptStageCProposal }: ChatMessageProps) {
+export function ChatMessageBubble({ message, isLoading, onClarificationConfirm, onMarketingFormSubmit, onStartCampaign, onAcceptStageBProposal, onAcceptStageCProposal, onAcceptStageCScheduleProposal }: ChatMessageProps) {
   switch (message.type) {
     case 'user':
       return <UserBubble content={message.content} />;
@@ -91,9 +94,23 @@ export function ChatMessageBubble({ message, isLoading, onClarificationConfirm, 
           onAccept={onAcceptStageCProposal}
         />
       );
+    // Stage C Scheduled Proposal
+    case 'stage_c_schedule_proposal':
+      return (
+        <StageCScheduleProposalBubble
+          content={message.content}
+          briefs={message.stageCScheduleProposalData?.briefs || []}
+          mongodbId={message.stageCScheduleProposalData?.mongodbId}
+          isLoading={isLoading}
+          onAccept={onAcceptStageCScheduleProposal}
+        />
+      );
     // Stage C
     case 'campaign_results':
       return message.campaignLogData ? <CampaignResultsBubble data={message.campaignLogData} /> : <StatusMessage content={message.content} />;
+    // Schedule Manager
+    case 'schedule_manager':
+      return <ScheduleManagerBubble campaigns={message.scheduleManagerData?.campaigns || []} status={message.scheduleManagerData?.status} />;
     default:
       return <StatusMessage content={message.content} />;
   }
@@ -685,6 +702,75 @@ function StageCProposalBubble({
           </button>
           <button className="proposal-btn proposal-btn--decline">❌ Chỉnh Sửa Trước</button>
         </div>
+      </div>
+    </div>
+  );
+}
+
+/* ────── Stage C Scheduled Proposal Bubble ────── */
+function StageCScheduleProposalBubble({
+  content,
+  briefs,
+  mongodbId,
+  isLoading,
+  onAccept,
+}: {
+  content: string;
+  briefs: ContentBrief[];
+  mongodbId?: string;
+  isLoading?: boolean;
+  onAccept?: (briefs: ContentBrief[], times: string[], mongodbId?: string) => void;
+}) {
+  const [showScheduler, setShowScheduler] = useState(false);
+
+  const handleSchedule = (times: string[]) => {
+    onAccept?.(briefs, times, mongodbId);
+    setShowScheduler(false);
+  };
+
+  return (
+    <div className="chat-row chat-row--assistant">
+      <div className="chat-avatar chat-avatar--assistant">📅</div>
+      <div className="chat-bubble chat-bubble--proposal">
+        <p>{content}</p>
+        {!showScheduler && (
+          <div className="proposal-actions">
+            <button
+              className="proposal-btn proposal-btn--accept"
+              onClick={() => setShowScheduler(true)}
+              disabled={isLoading}
+            >
+              📅 Lên Lịch
+            </button>
+            <button className="proposal-btn proposal-btn--decline">❌ Hủy</button>
+          </div>
+        )}
+        {showScheduler && (
+          <ScheduleEditor
+            briefs={briefs}
+            onSchedule={handleSchedule}
+            onCancel={() => setShowScheduler(false)}
+            isLoading={isLoading}
+          />
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ────── Schedule Manager Bubble ────── */
+function ScheduleManagerBubble({
+  campaigns,
+  status,
+}: {
+  campaigns: any[];
+  status?: any;
+}) {
+  return (
+    <div className="chat-row chat-row--assistant">
+      <div className="chat-avatar chat-avatar--assistant">📊</div>
+      <div className="chat-bubble chat-bubble--card">
+        <ScheduleManager autoRefresh={false} />
       </div>
     </div>
   );

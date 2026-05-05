@@ -476,6 +476,241 @@ def api_campaign_stage_c():
     )
 
 
+@app.route('/api/campaign/stage_c/scheduled', methods=['POST', 'OPTIONS'])
+def api_campaign_stage_c_scheduled():
+    """Stage C Scheduled: Schedule approved campaign with specific posting times."""
+    if request.method == 'OPTIONS':
+        return '', 200
+    rprint(f"[yellow][API] POST /api/campaign/stage_c/scheduled[/yellow]")
+    data = request.get_json()
+    if not data:
+        return {"error": "Missing JSON body"}, 400
+    
+    try:
+        # Import scheduler
+        from stage_c.campaign_scheduler import get_scheduler
+        
+        stage_c_input = StageCInput(
+            approved_briefs=data.get("approved_briefs", []),
+            webhook_url=data.get("webhook_url"),
+            image_api_url=data.get("image_api_url"),
+            skip_image_generation=data.get("skip_image_generation", False),
+            mongodb_stage_a_id=data.get("mongodb_stage_a_id"),
+            execution_mode="scheduled",  # Mark as scheduled mode
+            scheduled_times=data.get("scheduled_times", []),  # List of ISO 8601 datetimes
+        )
+        
+        def run_scheduled_stage_c_generator():
+            """Generator for scheduled Stage C campaign."""
+            for event in run_stage_c_pipeline(stage_c_input):
+                yield json.dumps(event) + "\n"
+        
+        return Response(
+            stream_with_context(run_scheduled_stage_c_generator()),
+            content_type='application/x-ndjson', status=200
+        )
+    except Exception as e:
+        rprint(f"[red][SCHEDULED STAGE C ERROR] {str(e)}[/red]")
+        import traceback
+        traceback.print_exc()
+        return {"error": str(e)}, 500
+
+
+# ─── Health Check ─────────────────────────────────────────────────────
+
+# ─── Conversation History ─────────────────────────────────────────────────────
+
+@app.route('/api/conversations', methods=['GET', 'OPTIONS'])
+def api_list_conversations():
+    """List recent conversations"""
+    if request.method == 'OPTIONS':
+        return '', 200
+    
+    try:
+        from conversation_manager import get_conversation_manager
+        
+        if not mongo or not mongo.db:
+            return {"error": "MongoDB not available"}, 500
+        
+        cm = get_conversation_manager(mongo.db)
+        skip = request.args.get('skip', default=0, type=int)
+        limit = request.args.get('limit', default=10, type=int)
+        
+        conversations, total = cm.list_conversations(skip=skip, limit=limit)
+        
+        return {
+            "data": {
+                "conversations": conversations,
+                "total": total,
+                "skip": skip,
+                "limit": limit,
+            }
+        }, 200
+    except Exception as e:
+        rprint(f"[red][LIST CONVERSATIONS ERROR] {str(e)}[/red]")
+        return {"error": str(e)}, 500
+
+
+@app.route('/api/conversations/<conversation_id>', methods=['GET', 'OPTIONS'])
+def api_get_conversation(conversation_id):
+    """Get a specific conversation"""
+    if request.method == 'OPTIONS':
+        return '', 200
+    
+    try:
+        from conversation_manager import get_conversation_manager
+        
+        if not mongo or not mongo.db:
+            return {"error": "MongoDB not available"}, 500
+        
+        cm = get_conversation_manager(mongo.db)
+        conversation = cm.get_conversation(conversation_id)
+        
+        if not conversation:
+            return {"error": "Conversation not found"}, 404
+        
+        return {"data": conversation}, 200
+    except Exception as e:
+        rprint(f"[red][GET CONVERSATION ERROR] {str(e)}[/red]")
+        return {"error": str(e)}, 500
+
+
+@app.route('/api/conversations', methods=['POST', 'OPTIONS'])
+def api_create_conversation():
+    """Create a new conversation"""
+    if request.method == 'OPTIONS':
+        return '', 200
+    
+    try:
+        from conversation_manager import get_conversation_manager
+        import uuid
+        
+        if not mongo or not mongo.db:
+            return {"error": "MongoDB not available"}, 500
+        
+        data = request.get_json() or {}
+        conversation_id = str(uuid.uuid4())
+        title = data.get('title')
+        
+        cm = get_conversation_manager(mongo.db)
+        conversation = cm.create_conversation(conversation_id, title=title)
+        
+        return {"data": conversation}, 201
+    except Exception as e:
+        rprint(f"[red][CREATE CONVERSATION ERROR] {str(e)}[/red]")
+        return {"error": str(e)}, 500
+
+
+@app.route('/api/conversations/<conversation_id>/messages', methods=['POST', 'OPTIONS'])
+def api_save_messages(conversation_id):
+    """Save one or more messages to conversation"""
+    if request.method == 'OPTIONS':
+        return '', 200
+    
+    try:
+        from conversation_manager import get_conversation_manager, ChatMessageDoc
+        
+        if not mongo or not mongo.db:
+            return {"error": "MongoDB not available"}, 500
+        
+        data = request.get_json() or {}
+        messages_data = data.get('messages', [])
+        
+        if not messages_data:
+            return {"error": "No messages provided"}, 400
+        
+        # Convert to ChatMessageDoc
+        messages = []
+        for msg_data in messages_data:
+            msg = ChatMessageDoc(
+                id=msg_data.get('id'),
+                type=msg_data.get('type'),
+                content=msg_data.get('content', ''),
+                timestamp=msg_data.get('timestamp', datetime.now().isoformat()),
+                mongodbId=msg_data.get('mongodbId'),
+                clarificationData=msg_data.get('clarificationData'),
+                planData=msg_data.get('planData'),
+                reactSummaryData=msg_data.get('reactSummaryData'),
+                evidenceData=msg_data.get('evidenceData'),
+                reportData=msg_data.get('reportData'),
+                strategyData=msg_data.get('strategyData'),
+                contentBriefsData=msg_data.get('contentBriefsData'),
+                stageBProposalData=msg_data.get('stageBProposalData'),
+                stageCProposalData=msg_data.get('stageCProposalData'),
+                stageCScheduleProposalData=msg_data.get('stageCScheduleProposalData'),
+                campaignLogData=msg_data.get('campaignLogData'),
+                scheduleManagerData=msg_data.get('scheduleManagerData'),
+                knowledgeData=msg_data.get('knowledgeData'),
+                marketingFormData=msg_data.get('marketingFormData'),
+            )
+            messages.append(msg)
+        
+        cm = get_conversation_manager(mongo.db)
+        success = cm.save_batch_messages(conversation_id, messages)
+        
+        if not success:
+            return {"error": "Conversation not found or no changes made"}, 404
+        
+        return {"data": {"message_count": len(messages), "success": True}}, 200
+    except Exception as e:
+        rprint(f"[red][SAVE MESSAGES ERROR] {str(e)}[/red]")
+        return {"error": str(e)}, 500
+
+
+@app.route('/api/conversations/<conversation_id>/title', methods=['PUT', 'OPTIONS'])
+def api_update_conversation_title(conversation_id):
+    """Update conversation title"""
+    if request.method == 'OPTIONS':
+        return '', 200
+    
+    try:
+        from conversation_manager import get_conversation_manager
+        
+        if not mongo or not mongo.db:
+            return {"error": "MongoDB not available"}, 500
+        
+        data = request.get_json() or {}
+        title = data.get('title')
+        
+        if not title:
+            return {"error": "Title is required"}, 400
+        
+        cm = get_conversation_manager(mongo.db)
+        success = cm.update_title(conversation_id, title)
+        
+        if not success:
+            return {"error": "Conversation not found"}, 404
+        
+        return {"data": {"success": True}}, 200
+    except Exception as e:
+        rprint(f"[red][UPDATE TITLE ERROR] {str(e)}[/red]")
+        return {"error": str(e)}, 500
+
+
+@app.route('/api/conversations/<conversation_id>', methods=['DELETE', 'OPTIONS'])
+def api_delete_conversation(conversation_id):
+    """Delete a conversation"""
+    if request.method == 'OPTIONS':
+        return '', 200
+    
+    try:
+        from conversation_manager import get_conversation_manager
+        
+        if not mongo or not mongo.db:
+            return {"error": "MongoDB not available"}, 500
+        
+        cm = get_conversation_manager(mongo.db)
+        success = cm.delete_conversation(conversation_id)
+        
+        if not success:
+            return {"error": "Conversation not found"}, 404
+        
+        return {"data": {"success": True}}, 200
+    except Exception as e:
+        rprint(f"[red][DELETE CONVERSATION ERROR] {str(e)}[/red]")
+        return {"error": str(e)}, 500
+
+
 # ─── Health Check ─────────────────────────────────────────────────────
 
 @app.route('/health', methods=['GET', 'OPTIONS'])

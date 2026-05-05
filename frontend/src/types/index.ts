@@ -152,12 +152,14 @@ export interface StageBOutput {
 export interface ExecutionResult {
   brief_id: string;
   brief_title: string;
-  status: 'success' | 'failed' | 'skipped' | 'pending';
+  status: 'success' | 'failed' | 'skipped' | 'pending' | 'scheduled';
   image_url?: string;
   image_skipped: boolean;
   discord_sent: boolean;
   error?: string;
-  timestamp: string;
+  scheduled_post_time?: string;
+  posted_at?: string;
+  created_at: string;
 }
 
 export interface CampaignLog {
@@ -166,10 +168,31 @@ export interface CampaignLog {
   results: ExecutionResult[];
   total_briefs: number;
   total_posted: number;
+  total_scheduled?: number;
   total_failed: number;
   total_skipped: number;
+  execution_mode?: 'immediate' | 'scheduled';
   started_at: string;
   completed_at?: string;
+}
+
+export interface ScheduledCampaign {
+  campaign_id: string;
+  mongodb_stage_a_id?: string;
+  total_briefs: number;
+  total_posted: number;
+  total_scheduled: number;
+  total_failed: number;
+  status: 'scheduled' | 'completed' | 'failed';
+  created_at: string;
+  completed_at?: string;
+  execution_results?: ExecutionResult[];
+}
+
+export interface SchedulerStatus {
+  running: boolean;
+  pending_briefs: number;
+  check_interval: number;
 }
 
 // ─── Streaming Response Types ───────────────────────────────────────
@@ -196,7 +219,7 @@ export type StreamStatus =
   | "campaign_plan_completed"
   | "briefs_generated"
   | "stage_b_completed"
-  // Stage C
+  // Stage C - Immediate
   | "stage_c_starting"
   | "brief_executing"
   | "image_generating"
@@ -205,6 +228,8 @@ export type StreamStatus =
   | "discord_posted"
   | "discord_post_failed"
   | "stage_c_completed"
+  // Stage C - Scheduled
+  | "stage_c_schedule_proposal"
   | "error";
 
 export interface ClarificationData {
@@ -272,7 +297,9 @@ export type ChatMessageType =
   | 'content_briefs'
   | 'stage_c_proposal'
   // Stage C
-  | 'campaign_results';
+  | 'stage_c_schedule_proposal'
+  | 'campaign_results'
+  | 'schedule_manager';
 
 export interface ChatMessage {
   id: string;
@@ -308,8 +335,18 @@ export interface ChatMessage {
   stageCProposalData?: {
     briefs: ContentBrief[];
   };
+  // Stage C scheduled proposal
+  stageCScheduleProposalData?: {
+    briefs: ContentBrief[];
+    mongodbId?: string;
+  };
   // Stage C
   campaignLogData?: CampaignLog;
+  // Schedule manager
+  scheduleManagerData?: {
+    campaigns: ScheduledCampaign[];
+    status: SchedulerStatus;
+  };
 }
 
 // UI State Types (kept for compatibility)

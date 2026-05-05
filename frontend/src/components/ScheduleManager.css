@@ -1,0 +1,407 @@
+/* Schedule Manager Styles */
+
+.schedule-manager {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  max-width: 100%;
+}
+
+.schedule-manager-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.schedule-manager-header h3 {
+  margin: 0;
+  color: #2c3e50;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.refresh-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.refresh-btn:hover:not(:disabled) {
+  background: #f0f0f0;
+}
+
+.refresh-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.scheduler-status {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 20px;
+  padding: 12px 16px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  flex-wrap: wrap;
+}
+
+.status-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.status-label {
+  color: #666;
+  font-weight: 500;
+}
+
+.status-value {
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+.status-value.running {
+  color: #27ae60;
+}
+
+.status-value.stopped {
+  color: #e74c3c;
+}
+
+.error-message {
+  padding: 12px 16px;
+  background: #fee;
+  border-left: 4px solid #e74c3c;
+  border-radius: 6px;
+  color: #c23;
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+
+.campaigns-container {
+  min-height: 100px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: #999;
+}
+
+.empty-state p {
+  margin: 8px 0;
+  font-size: 14px;
+}
+
+.empty-hint {
+  color: #bbb;
+  font-size: 12px;
+}
+
+.campaigns-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.campaign-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.campaign-card:hover {
+  border-color: #5865F2;
+  box-shadow: 0 4px 12px rgba(88, 101, 242, 0.1);
+}
+
+.campaign-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: #f8f9fa;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.2s ease;
+}
+
+.campaign-header:hover {
+  background: #f0f3f8;
+}
+
+.campaign-title-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.campaign-title-section h4 {
+  margin: 0;
+  color: #2c3e50;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.campaign-status {
+  padding: 4px 12px;
+  border-radius: 20px;
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.expand-icon {
+  color: #999;
+  font-size: 12px;
+  transition: transform 0.2s ease;
+}
+
+.campaign-stats {
+  display: flex;
+  gap: 12px;
+  padding: 12px 16px;
+  border-top: 1px solid #eee;
+  flex-wrap: wrap;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 12px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  min-width: 60px;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: #666;
+}
+
+.stat-value {
+  font-size: 20px;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+.stat.success {
+  background: #d4edda;
+  color: #155724;
+}
+
+.stat.success .stat-value {
+  color: #27ae60;
+}
+
+.stat.pending {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.stat.pending .stat-value {
+  color: #f39c12;
+}
+
+.stat.error {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.stat.error .stat-value {
+  color: #e74c3c;
+}
+
+.campaign-details {
+  padding: 16px;
+  background: #fafafa;
+  border-top: 1px solid #eee;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 8px 0;
+  font-size: 13px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.detail-label {
+  color: #666;
+  font-weight: 500;
+}
+
+.detail-value {
+  color: #2c3e50;
+  font-family: 'Monaco', 'Courier New', monospace;
+  font-size: 12px;
+}
+
+.results-section {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid #ddd;
+}
+
+.results-section h5 {
+  margin: 0 0 12px 0;
+  color: #2c3e50;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.results-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.result-item {
+  padding: 8px 12px;
+  background: white;
+  border-left: 3px solid #999;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.result-item.success {
+  border-left-color: #27ae60;
+  background: #f0f8f5;
+}
+
+.result-item.failed {
+  border-left-color: #e74c3c;
+  background: #fdf5f5;
+}
+
+.result-item.scheduled {
+  border-left-color: #f39c12;
+  background: #fffbf0;
+}
+
+.result-item.pending {
+  border-left-color: #3498db;
+  background: #f0f7ff;
+}
+
+.result-title {
+  color: #2c3e50;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.result-meta {
+  font-size: 11px;
+  color: #666;
+  margin: 4px 0;
+}
+
+.result-error {
+  font-size: 11px;
+  color: #e74c3c;
+  margin-top: 4px;
+  padding: 4px;
+  background: #ffe6e6;
+  border-radius: 3px;
+}
+
+.detail-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  justify-content: flex-end;
+}
+
+.detail-btn,
+.detail-btn-secondary {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.detail-btn {
+  background: #5865F2;
+  color: white;
+}
+
+.detail-btn:hover {
+  background: #4752C4;
+}
+
+.detail-btn-secondary {
+  background: #e0e0e0;
+  color: #333;
+}
+
+.detail-btn-secondary:hover {
+  background: #d0d0d0;
+}
+
+.schedule-manager-footer {
+  text-align: center;
+  padding-top: 12px;
+  border-top: 1px solid #f0f0f0;
+  color: #999;
+  font-size: 12px;
+  margin-top: 16px;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .schedule-manager {
+    padding: 16px;
+  }
+
+  .scheduler-status {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .campaign-stats {
+    justify-content: space-around;
+  }
+
+  .stat {
+    flex: 1;
+  }
+
+  .detail-row {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .detail-actions {
+    flex-direction: column;
+  }
+
+  .detail-btn,
+  .detail-btn-secondary {
+    width: 100%;
+  }
+}
