@@ -13,7 +13,7 @@ from typing import Dict, List, Optional, Generator
 from rich import print as rprint
 
 from .data_models_c import ExecutionResult, CampaignLog, StageCInput
-from .image_generator import generate_image, check_image_api_health
+from .image_generator import generate_image, check_image_api_health, get_image_api_url
 from .campaign_scheduler import get_scheduler
 from .content_expander import expand_content_brief
 
@@ -104,7 +104,7 @@ def run_stage_c_pipeline(stage_c_input: StageCInput, llm=None) -> Generator[dict
     """
     briefs = stage_c_input.approved_briefs
     webhook_url = stage_c_input.webhook_url or get_webhook_url()
-    image_api_url = stage_c_input.image_api_url
+    image_api_url = get_image_api_url()
     skip_images = stage_c_input.skip_image_generation
     execution_mode = stage_c_input.execution_mode or "immediate"
     scheduled_times = stage_c_input.scheduled_times or []
@@ -156,7 +156,6 @@ def run_stage_c_pipeline(stage_c_input: StageCInput, llm=None) -> Generator[dict
                 briefs=briefs,
                 scheduled_times=scheduled_times,
                 webhook_url=webhook_url,
-                image_api_url=image_api_url,
                 skip_images=skip_images,
             )
             

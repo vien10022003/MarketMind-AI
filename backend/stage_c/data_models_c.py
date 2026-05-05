@@ -41,7 +41,6 @@ class StageCInput(BaseModel):
     """Input for Stage C pipeline"""
     approved_briefs: List[dict] = Field(default_factory=list, description="List of approved content briefs")
     webhook_url: Optional[str] = Field(default=None, description="Discord webhook URL override")
-    image_api_url: Optional[str] = Field(default=None, description="Image generation API URL override")
     skip_image_generation: bool = Field(default=False, description="Skip image generation")
     mongodb_stage_a_id: Optional[str] = Field(default=None, description="Stage A report MongoDB ID")
     execution_mode: str = Field(default="immediate", description="immediate | scheduled")

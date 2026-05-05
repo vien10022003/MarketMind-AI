@@ -24,8 +24,8 @@ export function CampaignDashboard() {
 
   useEffect(() => {
     loadCampaigns();
-    // Auto-refresh every 10 seconds
-    const interval = setInterval(loadCampaigns, 10000);
+    // Auto-refresh every 2 minutes (120000 ms)
+    const interval = setInterval(loadCampaigns, 120000);
     return () => clearInterval(interval);
   }, [filterStatus]);
 

@@ -149,7 +149,6 @@ export const researchService = {
     request: {
       approved_briefs: ContentBrief[];
       webhook_url?: string;
-      image_api_url?: string;
       skip_image_generation?: boolean;
       mongodb_stage_a_id?: string;
     },
@@ -168,7 +167,6 @@ export const researchService = {
       approved_briefs: ContentBrief[];
       scheduled_times: string[]; // ISO 8601 datetimes
       webhook_url?: string;
-      image_api_url?: string;
       skip_image_generation?: boolean;
       mongodb_stage_a_id?: string;
     },

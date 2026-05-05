@@ -456,7 +456,6 @@ def run_stage_c_generator(req_data: dict):
         stage_c_input = StageCInput(
             approved_briefs=req_data.get("approved_briefs", []),
             webhook_url=req_data.get("webhook_url"),
-            image_api_url=req_data.get("image_api_url"),
             skip_image_generation=req_data.get("skip_image_generation", False),
             mongodb_stage_a_id=req_data.get("mongodb_stage_a_id"),
         )
@@ -515,7 +514,6 @@ def api_campaign_stage_c_scheduled():
         stage_c_input = StageCInput(
             approved_briefs=data.get("approved_briefs", []),
             webhook_url=data.get("webhook_url"),
-            image_api_url=data.get("image_api_url"),
             skip_image_generation=data.get("skip_image_generation", False),
             mongodb_stage_a_id=data.get("mongodb_stage_a_id"),
             execution_mode="scheduled",  # Mark as scheduled mode

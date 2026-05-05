@@ -38,7 +38,6 @@ class CampaignScheduler:
         briefs: List[Dict[str, Any]],
         scheduled_times: List[str],
         webhook_url: str,
-        image_api_url: Optional[str] = None,
         skip_images: bool = False,
     ) -> str:
         """
@@ -50,7 +49,6 @@ class CampaignScheduler:
             briefs: List of content briefs
             scheduled_times: List of ISO datetimes for posting
             webhook_url: Discord webhook URL
-            image_api_url: Image API URL
             skip_images: Whether to skip image generation
         
         Returns:
@@ -62,7 +60,6 @@ class CampaignScheduler:
             "briefs": briefs,
             "scheduled_times": scheduled_times,
             "webhook_url": webhook_url,
-            "image_api_url": image_api_url,
             "skip_images": skip_images,
             "status": "scheduled",
             "created_at": datetime.now(timezone.utc).isoformat(),

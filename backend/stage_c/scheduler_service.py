@@ -13,7 +13,7 @@ from rich import print as rprint
 
 from .campaign_scheduler import CampaignScheduler, get_scheduler
 from .discord_publisher import post_to_discord, format_discord_embed
-from .image_generator import generate_image, check_image_api_health
+from .image_generator import generate_image, check_image_api_health, get_image_api_url
 from .data_models_c import ExecutionResult
 
 
@@ -93,7 +93,7 @@ class SchedulerService:
         campaign_doc = campaign_info["campaign_doc"]
         
         webhook_url = campaign_doc.get("webhook_url")
-        image_api_url = campaign_doc.get("image_api_url")
+        image_api_url = get_image_api_url()
         skip_images = campaign_doc.get("skip_images", False)
         briefs = campaign_doc.get("briefs", [])
         scheduled_times = campaign_doc.get("scheduled_times", [])
