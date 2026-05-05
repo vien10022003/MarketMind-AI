@@ -22,7 +22,7 @@ class CampaignScheduler:
         """Initialize scheduler with MongoDB connection"""
         self.mongodb_uri = mongodb_uri or os.getenv("MONGO_URI", "mongodb://localhost:27017")
         self.client = MongoClient(self.mongodb_uri)
-        self.db = self.client.get_database("marketmind")
+        self.db = self.client.get_database("marketmind_ai")
         self.scheduled_campaigns = self.db["scheduled_campaigns"]
         self.campaign_logs = self.db["campaign_logs"]
         

@@ -110,6 +110,19 @@ JSON thuan tuy."""
     return result
 
 
+def _ensure_string(value, default: str = "") -> str:
+    """Convert any value to string, handling dict/list types."""
+    if isinstance(value, str):
+        return value
+    elif isinstance(value, dict):
+        # Convert dict to comma-separated values
+        return ", ".join(str(v) for v in value.values() if v)
+    elif isinstance(value, list):
+        return ", ".join(str(v) for v in value if v)
+    else:
+        return str(value) if value else default
+
+
 def refine_persona(llm, stage_a_report: dict, stage_a_input: dict, usp: USPResult) -> BuyerPersona:
     """Refine buyer persona for Discord marketing."""
     rprint("[yellow][STAGE B] Refining Buyer Persona...[/yellow]")
@@ -132,13 +145,13 @@ JSON thuan tuy."""
     data = _extract_json(raw)
     if data:
         result = BuyerPersona(
-            name=data.get("name", "Khách hàng mục tiêu"),
-            age_range=data.get("age_range", "20-35"),
-            interests=data.get("interests", []),
-            pain_points=data.get("pain_points", []),
-            discord_behavior=data.get("discord_behavior", "Hoạt động trên Discord"),
-            preferred_content_types=data.get("preferred_content_types", ["tips", "infographic"]),
-            goals=data.get("goals", []),
+            name=_ensure_string(data.get("name"), "Khách hàng mục tiêu"),
+            age_range=_ensure_string(data.get("age_range"), "20-35"),
+            interests=data.get("interests", []) if isinstance(data.get("interests"), list) else [],
+            pain_points=data.get("pain_points", []) if isinstance(data.get("pain_points"), list) else [],
+            discord_behavior=_ensure_string(data.get("discord_behavior"), "Hoạt động trên Discord"),
+            preferred_content_types=data.get("preferred_content_types", ["tips", "infographic"]) if isinstance(data.get("preferred_content_types"), list) else ["tips"],
+            goals=data.get("goals", []) if isinstance(data.get("goals"), list) else [],
         )
     else:
         rprint("[red]⚠️ Persona parse failed, using defaults[/red]")

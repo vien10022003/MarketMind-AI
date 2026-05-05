@@ -16,6 +16,12 @@ def create_scheduler_blueprint() -> Blueprint:
     """Create Flask blueprint for scheduler endpoints"""
     bp = Blueprint("scheduler", __name__, url_prefix="/api/stage-c/scheduler")
     
+    @bp.route("/<path:path>", methods=["OPTIONS"])
+    @bp.route("/", methods=["OPTIONS"])
+    def handle_options(path=None):
+        """Handle CORS preflight requests"""
+        return '', 200
+    
     @bp.route("/status", methods=["GET"])
     def get_scheduler_status():
         """Get current scheduler service status"""
@@ -230,5 +236,17 @@ def create_scheduler_blueprint() -> Blueprint:
                 "success": False,
                 "error": str(e)
             }), 500
+    
+    @bp.after_request
+    def add_cors_headers(response):
+        """Add CORS headers to all scheduler blueprint responses"""
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type,Authorization'
+        response.headers['Access-Control-Allow-Methods'] = 'GET,PUT,POST,DELETE,OPTIONS'
+        response.headers['Access-Control-Max-Age'] = '3600'
+        response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+        response.headers['Pragma'] = 'no-cache'
+        response.headers['Expires'] = '0'
+        return response
     
     return bp

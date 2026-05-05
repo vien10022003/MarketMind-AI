@@ -31,6 +31,7 @@ function App() {
 
   // Stage B/C state
   const [lastReportData, setLastReportData] = useState<ResearchReport | null>(null);
+  const lastReportDataRef = useRef<ResearchReport | null>(null);
   const [lastReportInput, setLastReportInput] = useState<Record<string, unknown> | null>(null);
   const [lastMongodbId, setLastMongodbId] = useState<string | undefined>(undefined);
   const [lastStrategy, setLastStrategy] = useState<StageBOutput | null>(null);
@@ -92,6 +93,7 @@ function App() {
     ]);
     setInputValue('');
     setLastReportData(null);
+    lastReportDataRef.current = null;
     setLastReportInput(null);
     setLastMongodbId(undefined);
     setLastStrategy(null);
@@ -226,6 +228,7 @@ function App() {
         planData: streamMessage.plan,
       });
     } else if (streamMessage.status === 'react_completed' && streamMessage.react_summary) {
+      console.log('streamMessage1 for Stage B react_completed:', streamMessage);
       addMessage({
         type: 'react_summary',
         content: streamMessage.message,
@@ -239,13 +242,15 @@ function App() {
         evidenceCountData: streamMessage.evidence_count,
       });
     } else if (streamMessage.status === 'report_ready' && streamMessage.report) {
+      console.log('streamMessage1 for Stage B report_ready:', streamMessage);
       addMessage({
         type: 'report',
         content: streamMessage.message,
         reportData: streamMessage.report,
       });
-      // Save report data for Stage B
+      // Save report data for Stage B (both state and ref for immediate access)
       setLastReportData(streamMessage.report);
+      lastReportDataRef.current = streamMessage.report;
     } else if (streamMessage.status === 'completed') {
       addMessage({
         type: 'completed',
@@ -256,12 +261,10 @@ function App() {
       setIsLoading(false);
 
       // Show Stage B proposal instead of auto-trigger
-      // Look for report data in recent messages (most recent report_ready)
-      const reportMsg = [...chatMessages].reverse().find(msg => msg.type === 'report');
-      const reportData = streamMessage.report || reportMsg?.reportData || lastReportData;
+      // Use ref for immediate access (not state which is async)
+      const reportData = streamMessage.report || lastReportDataRef.current;
       console.log('Report data for Stage B streamMessage:', streamMessage);
-      console.log('Report data for Stage B reportMsg:', reportMsg);
-      console.log('Report data for Stage B lastReportData:', lastReportData);
+      console.log('Report data for Stage B lastReportDataRef:', lastReportDataRef.current);
       console.log('Report data for Stage B proposal:', reportData);
       if (reportData) {
         addMessage({
