@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { researchService } from '../services/researchService';
+import { CampaignDashboard } from './CampaignDashboard';
 import './ConversationList.css';
 
 interface ConversationListProps {
@@ -21,6 +22,7 @@ export function ConversationList({ onSelectConversation, onCreateNew, currentCon
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [loading, setLoading] = useState(true);
   const [expanded, setExpanded] = useState(false);
+  const [activeTab, setActiveTab] = useState<'conversations' | 'campaigns'>('conversations');
 
   useEffect(() => {
     loadConversations();
@@ -59,50 +61,74 @@ export function ConversationList({ onSelectConversation, onCreateNew, currentCon
   return (
     <div className="conversation-list">
       <button className="conversation-new-btn" onClick={onCreateNew}>
-        ✨ Cuộc Hội Thoại Mới
+        ✨ Mới
       </button>
 
-      <button
-        className="conversation-toggle"
-        onClick={() => setExpanded(!expanded)}
-        title={expanded ? 'Ẩn' : 'Hiện'}
-      >
-        {expanded ? '▼' : '▶'} Lịch Sử ({conversations.length})
-      </button>
+      <div className="sidebar-tabs">
+        <button
+          className={`sidebar-tab ${activeTab === 'conversations' ? 'active' : ''}`}
+          onClick={() => {
+            setActiveTab('conversations');
+            setExpanded(true);
+          }}
+        >
+          💬 Chat
+        </button>
+        <button
+          className={`sidebar-tab ${activeTab === 'campaigns' ? 'active' : ''}`}
+          onClick={() => setActiveTab('campaigns')}
+        >
+          📊 Campaigns
+        </button>
+      </div>
 
-      {expanded && (
-        <div className="conversation-list-container">
-          {loading ? (
-            <div className="conversation-loading">Đang tải...</div>
-          ) : conversations.length === 0 ? (
-            <div className="conversation-empty">Chưa có cuộc hội thoại</div>
-          ) : (
-            <div className="conversation-items">
-              {conversations.map((conv) => (
-                <div
-                  key={conv.conversation_id}
-                  className={`conversation-item ${currentConversationId === conv.conversation_id ? 'active' : ''}`}
-                  onClick={() => onSelectConversation(conv.conversation_id)}
-                >
-                  <div className="conversation-info">
-                    <div className="conversation-title">{conv.title}</div>
-                    <div className="conversation-meta">
-                      {conv.message_count} tin nhắn • {formatDate(conv.updated_at)}
+      {activeTab === 'conversations' && (
+        <>
+          <button
+            className="conversation-toggle"
+            onClick={() => setExpanded(!expanded)}
+            title={expanded ? 'Ẩn' : 'Hiện'}
+          >
+            {expanded ? '▼' : '▶'} Lịch Sử ({conversations.length})
+          </button>
+
+          {expanded && (
+            <div className="conversation-list-container">
+              {loading ? (
+                <div className="conversation-loading">Đang tải...</div>
+              ) : conversations.length === 0 ? (
+                <div className="conversation-empty">Chưa có cuộc hội thoại</div>
+              ) : (
+                <div className="conversation-items">
+                  {conversations.map((conv) => (
+                    <div
+                      key={conv.conversation_id}
+                      className={`conversation-item ${currentConversationId === conv.conversation_id ? 'active' : ''}`}
+                      onClick={() => onSelectConversation(conv.conversation_id)}
+                    >
+                      <div className="conversation-info">
+                        <div className="conversation-title">{conv.title}</div>
+                        <div className="conversation-meta">
+                          {conv.message_count} tin nhắn • {formatDate(conv.updated_at)}
+                        </div>
+                      </div>
+                      <button
+                        className="conversation-delete"
+                        onClick={(e) => handleDelete(e, conv.conversation_id)}
+                        title="Xóa"
+                      >
+                        🗑️
+                      </button>
                     </div>
-                  </div>
-                  <button
-                    className="conversation-delete"
-                    onClick={(e) => handleDelete(e, conv.conversation_id)}
-                    title="Xóa"
-                  >
-                    🗑️
-                  </button>
+                  ))}
                 </div>
-              ))}
+              )}
             </div>
           )}
-        </div>
+        </>
       )}
+
+      {activeTab === 'campaigns' && <CampaignDashboard />}
     </div>
   );
 }

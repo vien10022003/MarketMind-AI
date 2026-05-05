@@ -9,3 +9,4 @@ export { CampaignResultsBubble } from './CampaignResultsBubble';
 export { ScheduleEditor } from './ScheduleEditor';
 export { ScheduleManager } from './ScheduleManager';
 export { ConversationList } from './ConversationList';
+export { CampaignDashboard } from './CampaignDashboard';
