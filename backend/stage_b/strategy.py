@@ -40,6 +40,7 @@ def _extract_json(text: str) -> dict:
 def generate_swot_analysis(llm, stage_a_report: dict, stage_a_input: dict) -> SWOTAnalysis:
     """Generate SWOT analysis from Stage A research report."""
     rprint("[yellow][STAGE B] Generating SWOT Analysis...[/yellow]")
+    product_context = stage_a_input.get('user_prompt', stage_a_input.get('nganh_hang', 'Sản phẩm/Dịch vụ'))
     report_ctx = (
         f"Tong quan: {stage_a_report.get('tong_quan_thi_truong', '')[:600]}\n"
         f"Doi thu: {stage_a_report.get('phan_tich_doi_thu', '')[:600]}\n"
@@ -47,7 +48,8 @@ def generate_swot_analysis(llm, stage_a_report: dict, stage_a_input: dict) -> SW
         f"Insight: {stage_a_report.get('phan_khuc_va_insight_khach_hang', '')[:600]}"
     )
     prompt = f"""Ban la chuyen gia marketing chien luoc.
-Dua tren bao cao nghien cuu, tao phan tich SWOT.
+Dua tren bao cao nghien cuu va thong tin san pham, tao phan tich SWOT.
+San pham/Yeu cau: {product_context}
 Nganh: {stage_a_input.get('nganh_hang', 'N/A')}
 Thi truong: {stage_a_input.get('thi_truong_muc_tieu', 'N/A')}
 Bao cao:
@@ -78,11 +80,13 @@ Moi muc 3-5 diem cu the. JSON thuan tuy."""
     return result
 
 
-def extract_usp(llm, stage_a_report: dict, swot: SWOTAnalysis) -> USPResult:
+def extract_usp(llm, stage_a_report: dict, swot: SWOTAnalysis, stage_a_input: dict) -> USPResult:
     """Extract Unique Selling Proposition based on research + SWOT."""
     rprint("[yellow][STAGE B] Extracting USP...[/yellow]")
+    product_context = stage_a_input.get('user_prompt', stage_a_input.get('nganh_hang', 'Sản phẩm/Dịch vụ'))
     prompt = f"""Ban la chuyen gia dinh vi thuong hieu.
-Rut ra USP tu SWOT va bao cao.
+Rut ra USP tu SWOT, bao cao va dac diem san pham.
+San pham/Yeu cau: {product_context}
 Diem manh: {', '.join(swot.strengths[:3])}
 Co hoi: {', '.join(swot.opportunities[:3])}
 Tong quan: {stage_a_report.get('tong_quan_thi_truong', '')[:400]}
@@ -129,8 +133,10 @@ def refine_persona(llm, stage_a_report: dict, stage_a_input: dict, usp: USPResul
     segments = stage_a_input.get('phan_khuc_quan_tam', [])
     segments_text = ', '.join(segments) if segments else 'Chưa xác định'
 
+    product_context = stage_a_input.get('user_prompt', stage_a_input.get('nganh_hang', 'Sản phẩm/Dịch vụ'))
     prompt = f"""Ban la chuyen gia buyer persona cho Discord.
-Tao persona cho chien dich Discord.
+Tao persona cho chien dich Discord phu hop voi san pham nay.
+San pham/Yeu cau: {product_context}
 Nganh: {stage_a_input.get('nganh_hang', 'N/A')}
 Thi truong: {stage_a_input.get('thi_truong_muc_tieu', 'N/A')}
 Phan khuc: {segments_text}
@@ -167,11 +173,14 @@ JSON thuan tuy."""
     return result
 
 
-def define_content_pillars(llm, stage_a_report: dict, persona: BuyerPersona, usp: USPResult) -> List[ContentPillar]:
+def define_content_pillars(llm, stage_a_report: dict, persona: BuyerPersona, usp: USPResult, stage_a_input: dict) -> List[ContentPillar]:
     """Define 3-5 content pillars for the Discord campaign."""
     rprint("[yellow][STAGE B] Defining Content Pillars...[/yellow]")
+    product_context = stage_a_input.get('user_prompt', stage_a_input.get('nganh_hang', 'Sản phẩm/Dịch vụ'))
     prompt = f"""Ban la chuyen gia content strategy cho Discord.
-Xac dinh 4 content pillars.
+Xac dinh 4 content pillars phu hop voi san pham va yeu cau quang cao sau:
+San pham/Yeu cau: {product_context}
+
 Persona: {persona.name} ({persona.age_range})
 Content ua thich: {', '.join(persona.preferred_content_types[:3])}
 USP: {usp.usp_statement}

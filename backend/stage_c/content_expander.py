@@ -15,11 +15,13 @@ def expand_content_brief(llm, brief: dict) -> dict:
     image_prompt = brief.get("image_prompt", "")
     content_type = brief.get("content_type", "")
     pillar = brief.get("pillar", "")
+    product_context = brief.get("product_context", "")
     
     prompt = f"""Bạn là một chuyên gia viết nội dung Marketing xuất sắc trên nền tảng Discord và một chuyên gia viết prompt sinh ảnh (Midjourney/Stable Diffusion).
-Dựa vào bản tóm tắt bài đăng (Content Brief) dưới đây, hãy hoàn thiện:
-1. Viết một bài đăng (caption) chi tiết, hấp dẫn, có sử dụng emoji phù hợp, văn phong tự nhiên để đăng lên Discord. Nội dung này dùng để thuyết phục và tương tác với người đọc.
-2. Viết một câu lệnh (image_prompt) sinh ảnh chuyên nghiệp bằng TIẾNG ANH (chỉ tiếng Anh), gồm các từ khóa miêu tả chi tiết, rõ nét, phong cách, ánh sáng, phân tách bằng dấu phẩy.
+Dựa vào bản tóm tắt bài đăng (Content Brief) dưới đây, hãy hoàn thiện bài đăng quảng bá sản phẩm:
+Sản phẩm/Yêu cầu quảng cáo: {product_context}
+1. Viết một bài đăng (caption) chi tiết, hấp dẫn, có sử dụng emoji phù hợp, văn phong tự nhiên để đăng lên Discord. Nội dung này dùng để thuyết phục và tương tác với người đọc, nhấn mạnh vào sản phẩm/yêu cầu đã nêu.
+2. Viết một câu lệnh (image_prompt) sinh ảnh chuyên nghiệp bằng TIẾNG ANH (chỉ tiếng Anh), gồm các từ khóa miêu tả chi tiết, rõ nét, phong cách, ánh sáng, phân tách bằng dấu phẩy. Ảnh phải mang phong cách phù hợp với sản phẩm.
 
 --- Bản tóm tắt ---
 Tiêu đề: {title}

@@ -74,6 +74,7 @@ class ContentBrief(BaseModel):
     scheduled_time: str = Field(default="19:00", description="Giờ đăng")
     status: str = Field(default="pending", description="pending | approved | rejected | edited")
     embed_color: int = Field(default=0x5865F2, description="Màu embed Discord (hex)")
+    product_context: str = Field(default="", description="Thông tin sản phẩm/yêu cầu quảng cáo")
 
 
 class StageBInput(BaseModel):

@@ -19,22 +19,24 @@ from .strategy import (
 
 
 def create_campaign_plan(
-    llm, pillars: List[ContentPillar], persona: BuyerPersona
+    llm, pillars: List[ContentPillar], persona: BuyerPersona, stage_a_input: dict
 ) -> CampaignPlan:
     """Create a 7-day campaign plan with schedule."""
     rprint("[yellow][STAGE B] Creating Campaign Plan...[/yellow]")
 
     pillar_names = [f"{p.emoji} {p.name}" for p in pillars]
+    product_context = stage_a_input.get('user_prompt', stage_a_input.get('nganh_hang', 'Sản phẩm/Dịch vụ'))
 
     prompt = f"""Ban la chuyen gia lap ke hoach chien dich Discord.
-Tao ke hoach chien dich 7 ngay.
+Tao ke hoach chien dich 7 ngay xoay quanh viec quang ba san pham nay.
 
+San pham/Yeu cau: {product_context}
 Content Pillars: {', '.join(pillar_names)}
 Persona: {persona.name} ({persona.age_range})
 Content types ua thich: {', '.join(persona.preferred_content_types[:4])}
 
 Tra ve CHINH XAC JSON:
-{{"duration_days":7,"posting_frequency":"1 post/ngay","campaign_goal":"Muc tieu chien dich","content_types":["tip","infographic","meme"],"schedule":[{{"day":1,"time":"19:00","content_type":"tip","pillar_name":"Ten pillar"}}]}}
+{{"duration_days":7,"posting_frequency":"1 post/ngay","campaign_goal":"Muc tieu chien dich lien quan den san pham","content_types":["tip","infographic","meme"],"schedule":[{{"day":1,"time":"19:00","content_type":"tip","pillar_name":"Ten pillar"}}]}}
 Tao 7 schedule entries (1 moi ngay). JSON thuan tuy."""
 
     raw = llm.generate(prompt, max_new_tokens=600)
@@ -84,9 +86,11 @@ def generate_content_briefs(
     pillars: List[ContentPillar],
     persona: BuyerPersona,
     usp: USPResult,
+    stage_a_input: dict,
 ) -> List[ContentBrief]:
     """Generate content briefs for each scheduled post."""
     rprint("[yellow][STAGE B] Generating Content Briefs...[/yellow]")
+    product_context = stage_a_input.get('user_prompt', stage_a_input.get('nganh_hang', 'Sản phẩm/Dịch vụ'))
 
     briefs = []
     colors = [0x57F287, 0x5865F2, 0xFEE75C, 0xED4245, 0xEB459E, 0x3498DB, 0xE67E22]
@@ -99,8 +103,9 @@ def generate_content_briefs(
         topics_text = ', '.join(topics[:2]) if topics else entry.content_type
 
         prompt = f"""Ban la copywriter cho Discord.
-Tao content brief cho 1 bai dang Discord.
+Tao content brief cho 1 bai dang Discord de quang ba san pham.
 
+San pham/Yeu cau: {product_context}
 Ngay: {entry.day}, Gio: {entry.time}
 Pillar: {entry.pillar_name} - {pillar_desc}
 Content type: {entry.content_type}
@@ -109,7 +114,7 @@ Persona: {persona.name} ({persona.age_range})
 USP: {usp.usp_statement}
 
 Tra ve CHINH XAC JSON:
-{{"title":"Tieu de bai dang (ngan gon, hap dan)","caption":"Noi dung caption day du cho Discord embed (2-4 cau, co emoji)","image_prompt":"English prompt for AI image generation (descriptive, specific)"}}
+{{"title":"Tieu de bai dang (ngan gon, hap dan)","caption":"Noi dung caption day du cho Discord embed (2-4 cau, co emoji) va nhac den san pham hoac quang cao loi ich","image_prompt":"English prompt for AI image generation (descriptive, specific, related to the topic and product style)"}}
 JSON thuan tuy."""
 
         raw = llm.generate(prompt, max_new_tokens=400)
@@ -126,6 +131,7 @@ JSON thuan tuy."""
                 scheduled_time=entry.time,
                 status="pending",
                 embed_color=colors[(entry.day - 1) % len(colors)],
+                product_context=product_context,
             )
         else:
             brief = ContentBrief(
@@ -138,6 +144,7 @@ JSON thuan tuy."""
                 scheduled_time=entry.time,
                 status="pending",
                 embed_color=colors[(entry.day - 1) % len(colors)],
+                product_context=product_context,
             )
 
         briefs.append(brief)
@@ -168,7 +175,7 @@ def run_stage_b_pipeline(llm, stage_b_input: StageBInput) -> Generator[dict, Non
 
     # Step 2: USP
     yield {"status": "progress", "message": "🎯 Đang rút trích USP..."}
-    usp = extract_usp(llm, report, swot)
+    usp = extract_usp(llm, report, swot, input_cfg)
     yield {
         "status": "usp_completed",
         "message": f"✅ USP: {usp.usp_statement[:80]}",
@@ -186,7 +193,7 @@ def run_stage_b_pipeline(llm, stage_b_input: StageBInput) -> Generator[dict, Non
 
     # Step 4: Content Pillars
     yield {"status": "progress", "message": "📌 Đang xác định Content Pillars..."}
-    pillars = define_content_pillars(llm, report, persona, usp)
+    pillars = define_content_pillars(llm, report, persona, usp, input_cfg)
     yield {
         "status": "pillars_completed",
         "message": f"✅ {len(pillars)} Content Pillars xác định",
@@ -195,7 +202,7 @@ def run_stage_b_pipeline(llm, stage_b_input: StageBInput) -> Generator[dict, Non
 
     # Step 5: Campaign Plan
     yield {"status": "progress", "message": "📅 Đang lập kế hoạch chiến dịch..."}
-    campaign_plan = create_campaign_plan(llm, pillars, persona)
+    campaign_plan = create_campaign_plan(llm, pillars, persona, input_cfg)
     yield {
         "status": "campaign_plan_completed",
         "message": f"✅ Kế hoạch: {campaign_plan.duration_days} ngày, {len(campaign_plan.schedule)} bài",
@@ -204,7 +211,7 @@ def run_stage_b_pipeline(llm, stage_b_input: StageBInput) -> Generator[dict, Non
 
     # Step 6: Content Briefs
     yield {"status": "progress", "message": "📝 Đang tạo Content Briefs..."}
-    briefs = generate_content_briefs(llm, campaign_plan, pillars, persona, usp)
+    briefs = generate_content_briefs(llm, campaign_plan, pillars, persona, usp, input_cfg)
     yield {
         "status": "briefs_generated",
         "message": f"✅ {len(briefs)} content briefs đã tạo",
