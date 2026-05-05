@@ -1,6 +1,16 @@
 import type { ResearchRequest, StreamMessage, ContentBrief } from '../types';
 import { config, getApiUrl } from '../config';
 
+// Custom fetch wrapper to always include ngrok bypass headers
+const apiFetch = async (input: RequestInfo | URL, init?: RequestInit) => {
+  const customInit = { ...init };
+  customInit.headers = {
+    ...customInit.headers,
+    'ngrok-skip-browser-warning': 'true',
+  };
+  return fetch(input, customInit);
+};
+
 async function streamFetch(
   url: string,
   request: object,
@@ -9,7 +19,7 @@ async function streamFetch(
 ): Promise<void> {
   try {
     console.log('API call:', url);
-    const response = await fetch(url, {
+    const response = await apiFetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -179,7 +189,7 @@ export const researchService = {
   } | null> {
     try {
       const url = getApiUrl('/api/stage-c/scheduler/status');
-      const response = await fetch(url);
+      const response = await apiFetch(url);
       if (response.ok) {
         const data = await response.json();
         return data.data;
@@ -199,7 +209,7 @@ export const researchService = {
       const url = status
         ? getApiUrl(`/api/stage-c/scheduler/campaigns?status=${status}`)
         : getApiUrl('/api/stage-c/scheduler/campaigns');
-      const response = await fetch(url);
+      const response = await apiFetch(url);
       if (response.ok) {
         const data = await response.json();
         return data.data?.campaigns || [];
@@ -217,7 +227,7 @@ export const researchService = {
   async getCampaignDetails(campaignId: string): Promise<any | null> {
     try {
       const url = getApiUrl(`/api/stage-c/scheduler/campaigns/${campaignId}`);
-      const response = await fetch(url);
+      const response = await apiFetch(url);
       if (response.ok) {
         const data = await response.json();
         return data.data;
@@ -235,7 +245,7 @@ export const researchService = {
   async getPendingBriefs(): Promise<any> {
     try {
       const url = getApiUrl('/api/stage-c/scheduler/pending');
-      const response = await fetch(url);
+      const response = await apiFetch(url);
       if (response.ok) {
         const data = await response.json();
         return data.data;
@@ -257,7 +267,7 @@ export const researchService = {
   async listConversations(skip = 0, limit = 10): Promise<any> {
     try {
       const url = getApiUrl(`/api/conversations?skip=${skip}&limit=${limit}`);
-      const response = await fetch(url);
+      const response = await apiFetch(url);
       if (response.ok) {
         const data = await response.json();
         return data.data || { conversations: [], total: 0 };
@@ -275,7 +285,7 @@ export const researchService = {
   async getConversation(conversationId: string): Promise<any | null> {
     try {
       const url = getApiUrl(`/api/conversations/${conversationId}`);
-      const response = await fetch(url);
+      const response = await apiFetch(url);
       if (response.ok) {
         const data = await response.json();
         return data.data;
@@ -293,7 +303,7 @@ export const researchService = {
   async createConversation(title?: string): Promise<any | null> {
     try {
       const url = getApiUrl('/api/conversations');
-      const response = await fetch(url, {
+      const response = await apiFetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title }),
@@ -315,7 +325,7 @@ export const researchService = {
   async saveMessagesToConversation(conversationId: string, messages: any[]): Promise<boolean> {
     try {
       const url = getApiUrl(`/api/conversations/${conversationId}/messages`);
-      const response = await fetch(url, {
+      const response = await apiFetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ messages }),
@@ -333,7 +343,7 @@ export const researchService = {
   async updateConversationTitle(conversationId: string, title: string): Promise<boolean> {
     try {
       const url = getApiUrl(`/api/conversations/${conversationId}/title`);
-      const response = await fetch(url, {
+      const response = await apiFetch(url, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title }),
@@ -351,7 +361,7 @@ export const researchService = {
   async deleteConversation(conversationId: string): Promise<boolean> {
     try {
       const url = getApiUrl(`/api/conversations/${conversationId}`);
-      const response = await fetch(url, { method: 'DELETE' });
+      const response = await apiFetch(url, { method: 'DELETE' });
       return response.ok;
     } catch (err) {
       console.error('Failed to delete conversation:', err);

@@ -69,7 +69,7 @@ except Exception as e:
 def add_cors_headers(response):
     """Add CORS headers to all responses"""
     response.headers['Access-Control-Allow-Origin'] = '*'
-    response.headers['Access-Control-Allow-Headers'] = 'Content-Type,Authorization'
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type,Authorization,ngrok-skip-browser-warning'
     response.headers['Access-Control-Allow-Methods'] = 'GET,PUT,POST,DELETE,OPTIONS'
     response.headers['Access-Control-Max-Age'] = '3600'
     response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
