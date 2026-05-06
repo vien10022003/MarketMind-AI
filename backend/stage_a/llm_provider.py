@@ -1,6 +1,12 @@
 """
 LLM Provider Architecture - Abstract factory pattern for multiple LLM backends
 Supports: Local Llama, Gemini 2.5, Gemini 3.1
+
+Instance Caching:
+- LocalLlamaProvider instances are cached globally to avoid reloading the model
+  into VRAM. The first instantiation loads the model, subsequent instantiations
+  reuse the cached instance.
+- Use clear_llama_cache() to explicitly unload the model if needed.
 """
 
 import os
@@ -21,6 +27,9 @@ warnings.filterwarnings('ignore', message='.*max_new_tokens.*')
 warnings.filterwarnings('ignore', message='.*LangChainTracer.*')
 os.environ['LANGCHAIN_TRACING_V2'] = 'false'
 
+# Global cache for LocalLlamaProvider instances
+_local_llama_instance = None
+
 
 # ─────────────────────────────────────────────────────────────────────────
 # ABSTRACT BASE CLASS
@@ -34,7 +43,7 @@ class LLMProvider(ABC):
         self,
         prompt: str,
         temperature: float = 0.2,
-        max_tokens: int = 1000
+        max_new_tokens: int = 1000
     ) -> str:
         """Generate text from prompt"""
         pass
@@ -64,7 +73,18 @@ class LocalLlamaProvider(LLMProvider):
     """Local LLM provider using Llama model"""
     
     def __init__(self, cfg: Optional[LocalLLMConfig] = None):
+        global _local_llama_instance
+        
         self.cfg = cfg or LocalLLMConfig()
+        
+        # Check if instance already exists with same model_name
+        if _local_llama_instance is not None and _local_llama_instance.cfg.model_name == self.cfg.model_name:
+            # Reuse existing instance - copy references
+            self.tokenizer = _local_llama_instance.tokenizer
+            self.model = _local_llama_instance.model
+            self.pipe = _local_llama_instance.pipe
+            rprint(f"[green]✅ Reusing cached Local LLM: {self.cfg.model_name}[/green]")
+            return
         
         # HuggingFace login
         hf_token = os.getenv("HUGGINGFACEHUB_API_TOKEN", "hf..")
@@ -90,6 +110,9 @@ class LocalLlamaProvider(LLMProvider):
             tokenizer=self.tokenizer,
         )
         
+        # Cache this instance globally
+        _local_llama_instance = self
+        
         rprint(f"[green]✅ Local LLM loaded: {self.cfg.model_name}[/green]")
     
     @property
@@ -100,10 +123,10 @@ class LocalLlamaProvider(LLMProvider):
         self,
         prompt: str,
         temperature: float = 0.2,
-        max_tokens: int = 1000
+        max_new_tokens: int = 1000
     ) -> str:
         """Generate text based on prompt"""
-        max_tokens = max_tokens or self.cfg.max_new_tokens
+        max_new_tokens = max_new_tokens or self.cfg.max_new_tokens
         temp = temperature if temperature is not None else self.cfg.temperature
 
         # Prepare messages
@@ -128,7 +151,7 @@ class LocalLlamaProvider(LLMProvider):
         # Generate output
         output = self.pipe(
             model_input,
-            max_new_tokens=max_tokens,
+            max_new_tokens=max_new_tokens,
             do_sample=temp > 0,
             temperature=temp,
             top_p=0.9,
@@ -188,7 +211,7 @@ class GeminiProvider(LLMProvider):
         self,
         prompt: str,
         temperature: float = 0.2,
-        max_tokens: int = 1000
+        max_new_tokens: int = 1000
     ) -> str:
         """Generate text using Gemini API with retry logic"""
         messages = [
@@ -207,7 +230,7 @@ class GeminiProvider(LLMProvider):
                     contents=messages,
                     config={
                         "temperature": temperature,
-                        "max_output_tokens": max_tokens,
+                        "max_output_tokens": max_new_tokens,
                     }
                 )
                 
@@ -259,6 +282,11 @@ def get_llm_provider(provider_name: str = "llama") -> LLMProvider:
     
     Raises:
         ValueError: If provider_name is invalid or required env vars are missing
+    
+    Note:
+        For LocalLlamaProvider, instances are cached globally to avoid reloading
+        the model into VRAM. The first call to get_llm_provider("llama") will 
+        load the model, subsequent calls will reuse the cached instance.
     """
     provider_name = provider_name.lower().strip()
     
@@ -276,6 +304,13 @@ def get_llm_provider(provider_name: str = "llama") -> LLMProvider:
             f"Unknown provider: {provider_name}. "
             f"Supported providers: 'llama', 'gemini-2.5', 'gemini-3.1'"
         )
+
+
+def clear_llama_cache():
+    """Clear the cached LocalLlamaProvider instance (useful for memory cleanup)"""
+    global _local_llama_instance
+    _local_llama_instance = None
+    rprint("[yellow]⚠️  Cleared cached Local LLM instance[/yellow]")
 
 
 # ─────────────────────────────────────────────────────────────────────────
