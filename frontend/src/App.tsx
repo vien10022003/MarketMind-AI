@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { ChatMessageBubble, ConversationList } from './components';
+import { ChatMessageBubble, ConversationList, ModelSelector } from './components';
 import type { ChatMessage, ResearchRequest, ConversationTurn, ContentBrief, StageBOutput, ResearchReport } from './types';
 import { researchService } from './services/researchService';
 import { initializeBackendUrl } from './config';
@@ -13,6 +13,7 @@ function nextId() {
 function App() {
   // Conversation state
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
+  const [selectedLLMProvider, setSelectedLLMProvider] = useState<'llama' | 'gemini-2.5' | 'gemini-3.1'>('llama');
 
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
     {
@@ -166,6 +167,7 @@ function App() {
     const request: ResearchRequest = {
       user_prompt: text,
       conversation_history: conversationHistory,
+      llm_provider: selectedLLMProvider,
     };
 
     await runPipeline(request);
@@ -391,6 +393,7 @@ function App() {
           stage_a_report: reportData as unknown as Record<string, unknown>,
           stage_a_input: lastReportInput || {},
           mongodb_id: mongodbId || lastMongodbId,
+          llm_provider: selectedLLMProvider,
         },
         handleStageBStreamMessage,
         (errorMsg) => {
@@ -446,6 +449,7 @@ function App() {
         {
           approved_briefs: briefs,
           mongodb_stage_a_id: lastMongodbId,
+          llm_provider: selectedLLMProvider,
         },
         handleStageCStreamMessage,
         (errorMsg) => {
@@ -495,6 +499,7 @@ function App() {
           approved_briefs: briefs,
           scheduled_times: scheduledTimes,
           mongodb_stage_a_id: mongodbId || lastMongodbId,
+          llm_provider: selectedLLMProvider,
         },
         handleStageCStreamMessage,
         (errorMsg) => {
@@ -538,6 +543,7 @@ function App() {
         {
           approved_briefs: approvedBriefs,
           mongodb_stage_a_id: lastMongodbId,
+          llm_provider: selectedLLMProvider,
         },
         handleStageCStreamMessage,
         (errorMsg) => {
@@ -563,9 +569,15 @@ function App() {
     // Save form data for Stage B
     setLastReportInput(formData as unknown as Record<string, unknown>);
 
+    // Ensure llm_provider is set
+    const formDataWithProvider: ResearchRequest = {
+      ...formData,
+      llm_provider: selectedLLMProvider,
+    };
+
     try {
       await researchService.callMarketingResearch(
-        formData,
+        formDataWithProvider,
         handleStreamMessage,
         (errorMsg) => {
           addMessage({ type: 'error', content: errorMsg });
@@ -669,9 +681,15 @@ function App() {
             </svg>
           </button>
         </div>
-        <small className="input-hint">
-          Nhấn <kbd>Enter</kbd> để gửi · <kbd>Shift+Enter</kbd> xuống dòng
-        </small>
+        <div className="input-footer">
+          <small className="input-hint">
+            Nhấn <kbd>Enter</kbd> để gửi · <kbd>Shift+Enter</kbd> xuống dòng
+          </small>
+          <ModelSelector
+            currentProvider={selectedLLMProvider}
+            onProviderChange={setSelectedLLMProvider}
+          />
+        </div>
       </footer>
       </div>
     </div>

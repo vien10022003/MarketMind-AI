@@ -15,6 +15,7 @@ export interface SearchSource {
 export interface ResearchRequest {
   user_prompt: string; // Required: user's research requirement
   conversation_history?: ConversationTurn[]; // Recent Q&A pairs for context
+  llm_provider?: 'llama' | 'gemini-2.5' | 'gemini-3.1'; // LLM provider selection
   nganh_hang?: string;
   thi_truong_muc_tieu?: string;
   phan_khuc_quan_tam?: string[];

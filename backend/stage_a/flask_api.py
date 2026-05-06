@@ -13,6 +13,7 @@ from rich import print as rprint
 from .data_models import StageAInput, StageAOutput, EvidenceItem
 from .environment import load_environment
 from .llm_config import initialize_llm
+from .llm_provider import get_llm_provider, LLMProvider
 from .clarification import clarify_user_prompt
 from .router import classify_intent_and_respond
 from .knowledge_handler import handle_knowledge_query
@@ -88,11 +89,31 @@ except Exception as e:
     rprint(f"[yellow]⚠️  Scheduler blueprint registration failed: {e}[/yellow]")
 
 
-def run_stage_a_pipeline_generator(req_data: dict):
-    """Generator function for streaming pipeline execution"""
+def run_stage_a_pipeline_generator(req_data: dict, llm: LLMProvider = None):
+    """Generator function for streaming pipeline execution
+    
+    Args:
+        req_data: Request data dictionary
+        llm: Optional LLMProvider instance. If None, will create one from request llm_provider field
+    """
     rprint(f"[yellow][PIPELINE START] Input: {list(req_data.keys())}[/yellow]")
 
     try:
+        # Get or initialize LLM provider
+        if llm is None:
+            provider_name = req_data.get("llm_provider", "llama").lower().strip()
+            rprint(f"[cyan]Initializing LLM provider: {provider_name}[/cyan]")
+            try:
+                llm = get_llm_provider(provider_name)
+                rprint(f"[green]✅ LLM provider initialized: {provider_name}[/green]")
+            except Exception as e:
+                rprint(f"[red]❌ Failed to initialize LLM provider '{provider_name}': {e}[/red]")
+                yield json.dumps({
+                    "status": "error",
+                    "message": f"Failed to initialize LLM provider: {str(e)}"
+                }) + "\n"
+                return
+        
         # Validate input
         user_prompt = req_data.get("user_prompt", "").strip()
         if not user_prompt:
@@ -378,6 +399,16 @@ def api_research_stage_a_marketing():
 def run_stage_b_generator(req_data: dict):
     """Generator for Stage B strategy pipeline streaming."""
     try:
+        # Get or initialize LLM provider for Stage B
+        provider_name = req_data.get("llm_provider", "llama").lower().strip()
+        try:
+            stage_b_llm = get_llm_provider(provider_name)
+            rprint(f"[cyan]Stage B using provider: {provider_name}[/cyan]")
+        except Exception as e:
+            rprint(f"[red]❌ Failed to initialize LLM for Stage B: {e}[/red]")
+            yield json.dumps({"status": "error", "message": f"Failed to initialize LLM: {str(e)}"}) + "\n"
+            return
+        
         stage_b_input = StageBInput(
             stage_a_report=req_data.get("stage_a_report", {}),
             stage_a_input=req_data.get("stage_a_input", {}),
@@ -388,7 +419,7 @@ def run_stage_b_generator(req_data: dict):
             yield json.dumps({"status": "error", "message": "Thiếu stage_a_report"}) + "\n"
             return
 
-        for event in run_stage_b_pipeline(llm, stage_b_input):
+        for event in run_stage_b_pipeline(stage_b_llm, stage_b_input):
             yield json.dumps(event) + "\n"
 
     except Exception as e:
@@ -453,6 +484,16 @@ def api_strategy_stage_b_approve():
 def run_stage_c_generator(req_data: dict):
     """Generator for Stage C campaign execution streaming."""
     try:
+        # Get or initialize LLM provider for Stage C
+        provider_name = req_data.get("llm_provider", "llama").lower().strip()
+        try:
+            stage_c_llm = get_llm_provider(provider_name)
+            rprint(f"[cyan]Stage C using provider: {provider_name}[/cyan]")
+        except Exception as e:
+            rprint(f"[red]❌ Failed to initialize LLM for Stage C: {e}[/red]")
+            yield json.dumps({"status": "error", "message": f"Failed to initialize LLM: {str(e)}"}) + "\n"
+            return
+        
         stage_c_input = StageCInput(
             approved_briefs=req_data.get("approved_briefs", []),
             webhook_url=req_data.get("webhook_url"),
@@ -460,7 +501,7 @@ def run_stage_c_generator(req_data: dict):
             mongodb_stage_a_id=req_data.get("mongodb_stage_a_id"),
         )
 
-        for event in run_stage_c_pipeline(stage_c_input, llm=llm):
+        for event in run_stage_c_pipeline(stage_c_input, llm=stage_c_llm):
             yield json.dumps(event) + "\n"
 
             # Save campaign log to MongoDB when completed

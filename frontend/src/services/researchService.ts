@@ -111,6 +111,7 @@ export const researchService = {
       stage_a_report: Record<string, unknown>;
       stage_a_input: Record<string, unknown>;
       mongodb_id?: string;
+      llm_provider?: 'llama' | 'gemini-2.5' | 'gemini-3.1';
     },
     onMessage: (msg: StreamMessage) => void,
     onError: (err: string) => void
@@ -151,6 +152,7 @@ export const researchService = {
       webhook_url?: string;
       skip_image_generation?: boolean;
       mongodb_stage_a_id?: string;
+      llm_provider?: 'llama' | 'gemini-2.5' | 'gemini-3.1';
     },
     onMessage: (msg: StreamMessage) => void,
     onError: (err: string) => void
@@ -169,6 +171,7 @@ export const researchService = {
       webhook_url?: string;
       skip_image_generation?: boolean;
       mongodb_stage_a_id?: string;
+      llm_provider?: 'llama' | 'gemini-2.5' | 'gemini-3.1';
     },
     onMessage: (msg: StreamMessage) => void,
     onError: (err: string) => void
