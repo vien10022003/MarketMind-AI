@@ -18,6 +18,26 @@ from .strategy import (
 )
 
 
+def _stringify_field(value):
+    """
+    Convert list/dict/nested structures to string.
+    Handles cases where LLM returns list or dict instead of string.
+    """
+    if isinstance(value, str):
+        return value
+    elif isinstance(value, list):
+        # Join list items with newline
+        return "\n".join([str(item) for item in value])
+    elif isinstance(value, dict):
+        # Convert dict to readable format
+        if len(value) == 1 and 'description' in value:
+            return str(value.get('description', ''))
+        else:
+            return json.dumps(value, ensure_ascii=False)
+    else:
+        return str(value)
+
+
 def create_campaign_plan(
     llm, pillars: List[ContentPillar], persona: BuyerPersona, stage_a_input: dict
 ) -> CampaignPlan:
@@ -123,8 +143,8 @@ JSON thuan tuy."""
         if data:
             brief = ContentBrief(
                 title=data.get("title", f"Bài đăng ngày {entry.day}"),
-                caption=data.get("caption", f"Nội dung về {entry.pillar_name}"),
-                image_prompt=data.get("image_prompt", f"Modern marketing visual for {entry.content_type}"),
+                caption=_stringify_field(data.get("caption", f"Nội dung về {entry.pillar_name}")),
+                image_prompt=_stringify_field(data.get("image_prompt", f"Modern marketing visual for {entry.content_type}")),
                 content_type=entry.content_type,
                 pillar=entry.pillar_name,
                 scheduled_day=entry.day,
