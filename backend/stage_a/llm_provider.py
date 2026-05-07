@@ -13,9 +13,10 @@ import os
 import gc
 import time
 import warnings
+import json
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, List, Dict, Any
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
 from huggingface_hub import login
@@ -36,16 +37,41 @@ _local_llama_instance = None
 # ─────────────────────────────────────────────────────────────────────────
 
 class LLMProvider(ABC):
-    """Abstract base class for LLM providers"""
+    """Abstract base class for LLM providers
+    
+    Supports both legacy (prompt-only) and new (structured) API:
+    - New: generate(messages=[...], system_message="...", tools=[...])
+    - Legacy: generate(prompt="...") - still supported for backward compatibility
+    """
     
     @abstractmethod
     def generate(
         self,
-        prompt: str,
+        messages: Optional[List[Dict[str, str]]] = None,
+        prompt: Optional[str] = None,
+        system_message: Optional[str] = None,
+        tools: Optional[List[Dict[str, Any]]] = None,
         temperature: float = 0.2,
         max_new_tokens: int = 1000
     ) -> str:
-        """Generate text from prompt"""
+        """
+        Generate text from messages or prompt.
+        
+        Args:
+            messages: List of {"role": "user"|"assistant", "content": "..."} dicts
+            prompt: Legacy single prompt string (if messages not provided)
+            system_message: System instruction (prepended to messages if provided)
+            tools: List of tool definitions {"name": "...", "description": "...", "parameters": {...}}
+            temperature: Sampling temperature (0.0-1.0)
+            max_new_tokens: Maximum tokens to generate
+        
+        Returns:
+            Generated text string (caller responsible for JSON parsing)
+        
+        Note:
+            If both messages and prompt provided, messages takes precedence.
+            If system_message provided, it's prepended to the messages list.
+        """
         pass
     
     @property
@@ -121,32 +147,50 @@ class LocalLlamaProvider(LLMProvider):
     
     def generate(
         self,
-        prompt: str,
+        messages: Optional[List[Dict[str, str]]] = None,
+        prompt: Optional[str] = None,
+        system_message: Optional[str] = None,
+        tools: Optional[List[Dict[str, Any]]] = None,
         temperature: float = 0.2,
         max_new_tokens: int = 1000
     ) -> str:
-        """Generate text based on prompt"""
+        """Generate text based on messages or prompt"""
         max_new_tokens = max_new_tokens or self.cfg.max_new_tokens
         temp = temperature if temperature is not None else self.cfg.temperature
 
-        # Prepare messages
-        messages = [
-            {
+        # Build messages list
+        if messages is None:
+            if prompt is None:
+                raise ValueError("Either 'messages' or 'prompt' must be provided")
+            # Legacy: build messages from prompt
+            final_messages = [
+                {"role": "user", "content": prompt}
+            ]
+        else:
+            final_messages = list(messages)  # Copy to avoid mutation
+        
+        # Prepend system message if provided
+        if system_message:
+            final_messages.insert(0, {"role": "system", "content": system_message})
+        elif not any(m.get("role") == "system" for m in final_messages):
+            # Add default system message if none exists
+            final_messages.insert(0, {
                 "role": "system",
                 "content": "You are a precise market research analyst. Return concise and structured outputs."
-            },
-            {"role": "user", "content": prompt},
-        ]
+            })
 
-        # Apply chat template if available
+        # Apply chat template
         if hasattr(self.tokenizer, "apply_chat_template"):
             model_input = self.tokenizer.apply_chat_template(
-                messages,
+                final_messages,
+                tools=tools,  # Pass tools if available
                 tokenize=False,
                 add_generation_prompt=True,
             )
         else:
-            model_input = prompt
+            # Fallback: use last user message as prompt
+            user_msgs = [m.get("content", "") for m in final_messages if m.get("role") == "user"]
+            model_input = user_msgs[-1] if user_msgs else prompt or ""
 
         # Generate output
         output = self.pipe(
@@ -209,17 +253,53 @@ class GeminiProvider(LLMProvider):
     
     def generate(
         self,
-        prompt: str,
+        messages: Optional[List[Dict[str, str]]] = None,
+        prompt: Optional[str] = None,
+        system_message: Optional[str] = None,
+        tools: Optional[List[Dict[str, Any]]] = None,
         temperature: float = 0.2,
         max_new_tokens: int = 1000
     ) -> str:
-        """Generate text using Gemini API with retry logic"""
-        messages = [
-            {
-                "role": "user",
-                "content": f"You are a precise market research analyst. Return concise and structured outputs.\n\n{prompt}"
-            }
-        ]
+        """Generate text using Gemini API with structured tools support"""
+        # Build messages list
+        if messages is None:
+            if prompt is None:
+                raise ValueError("Either 'messages' or 'prompt' must be provided")
+            # Legacy: build messages from prompt
+            final_messages = [
+                {"role": "user", "content": prompt}
+            ]
+        else:
+            final_messages = list(messages)  # Copy to avoid mutation
+        
+        # Prepend system message if provided
+        if system_message:
+            final_messages.insert(0, {"role": "system", "content": system_message})
+        elif not any(m.get("role") == "system" for m in final_messages):
+            # Add default system message if none exists
+            final_messages.insert(0, {
+                "role": "system",
+                "content": "You are a precise market research analyst. Return concise and structured outputs."
+            })
+        
+        # Build GenerateContentConfig
+        try:
+            from google.genai import types
+            from .tool_definitions import convert_tools_to_gemini_format
+        except ImportError:
+            raise ImportError("google-genai package required. Install with: pip install google-genai")
+        
+        config_dict = {
+            "temperature": temperature,
+            "max_output_tokens": max_new_tokens,
+        }
+        
+        # Convert tools to Gemini format if provided
+        if tools:
+            tool_declarations = convert_tools_to_gemini_format(tools)
+            config_dict["tools"] = [types.Tool(function_declarations=tool_declarations)]
+        
+        config = types.GenerateContentConfig(**config_dict)
         
         # Retry logic with exponential backoff
         max_retries = 3
@@ -227,11 +307,8 @@ class GeminiProvider(LLMProvider):
             try:
                 response = self.client.models.generate_content(
                     model=self.model_variant,
-                    contents=messages,
-                    config={
-                        "temperature": temperature,
-                        "max_output_tokens": max_new_tokens,
-                    }
+                    contents=final_messages,
+                    config=config
                 )
                 
                 if response and response.text:
@@ -312,14 +389,6 @@ def clear_llama_cache():
     _local_llama_instance = None
     rprint("[yellow]⚠️  Cleared cached Local LLM instance[/yellow]")
 
-
-# ─────────────────────────────────────────────────────────────────────────
-# BACKWARDS COMPATIBILITY - LocalTextGenerator wrapper
-# ─────────────────────────────────────────────────────────────────────────
-
-class LocalTextGenerator(LocalLlamaProvider):
-    """Backwards compatibility wrapper - same as LocalLlamaProvider"""
-    pass
 
 
 # ─────────────────────────────────────────────────────────────────────────

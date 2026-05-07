@@ -4,18 +4,24 @@ Reasoning + Acting loop for intelligent search planning
 """
 
 import json
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 from rich import print as rprint
 
-from .llm_config import LocalTextGenerator
+from .llm_provider import LLMProvider
+from .tool_definitions import (
+    REACT_TOOLS,
+    SYSTEM_MESSAGE_REACT_DECIDER,
+    build_messages_from_history
+)
 from .clarification import extract_first_json_block
 from .tavily_search import tavily_search_with_retry
 
 
 def react_decide_action(
-    llm: LocalTextGenerator,
+    llm: LLMProvider,
     step: str,
-    collected_evidence_count: int
+    collected_evidence_count: int,
+    conversation_history: Optional[List[Dict[str, str]]] = None
 ) -> Dict[str, Any]:
     """
     ReAct controller decides next action
@@ -25,23 +31,17 @@ def react_decide_action(
         - query: Search query or statement
         - reason: Reasoning for action
     """
-    prompt = f"""
-Ban la ReAct controller cho nghien cuu thi truong.
-Nhiem vu hien tai: {step}
-So bang chung da co: {collected_evidence_count}
-
-Chi tra ve JSON duy nhat:
-{{
-  "action": "search" | "refine_query" | "summarize",
-  "query": "...",
-  "reason": "..."
-}}
-
-Rule:
-- Neu chua co du bang chung thi uu tien search hoac refine_query.
-- Khong viet van ban ngoai JSON.
-"""
-    raw = llm.generate(prompt, max_new_tokens=220)
+    prompt = f"""Nhiem vu hien tai: {step}
+So bang chung da co: {collected_evidence_count}"""
+    
+    messages = build_messages_from_history(prompt, conversation_history, max_history=2)
+    
+    raw = llm.generate(
+        messages=messages,
+        system_message=SYSTEM_MESSAGE_REACT_DECIDER,
+        tools=REACT_TOOLS,
+        max_new_tokens=220
+    )
     block = extract_first_json_block(raw)
     
     if block:
@@ -62,16 +62,18 @@ Rule:
 
 
 def run_react_loop(
-    llm: LocalTextGenerator,
+    llm: LLMProvider,
     plan: Dict[str, Any],
+    conversation_history: Optional[List[Dict[str, str]]] = None,
     max_tool_calls: int = 14
 ) -> Dict[str, Any]:
     """
     Run ReAct loop with search steps
     
     Args:
-        llm: LocalTextGenerator instance
+        llm: LLM provider instance
         plan: Plan with search steps
+        conversation_history: Previous conversation messages
         max_tool_calls: Max search calls
     
     Returns:
@@ -89,7 +91,7 @@ def run_react_loop(
             break
 
         # Decide action
-        decision = react_decide_action(llm, step, len(evidence))
+        decision = react_decide_action(llm, step, len(evidence), conversation_history)
         # Ensure query is a string (step might be dict or string)
         query_raw = decision.get("query") or step
         query = str(query_raw).strip() if query_raw else ""

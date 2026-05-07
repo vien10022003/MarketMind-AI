@@ -5,11 +5,17 @@ LLM-based clarification of user input with validation and suggestions
 
 import json
 import re
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, List
 from rich import print as rprint
 
 from .data_models import StageAInput
-from .llm_config import LocalTextGenerator
+from .llm_provider import LLMProvider
+from .tool_definitions import (
+    INPUT_VALIDATION_TOOLS,
+    CLARIFICATION_TOOLS,
+    SYSTEM_MESSAGE_INPUT_VALIDATOR,
+    build_messages_from_history
+)
 
 
 def extract_first_json_block(text: str) -> Optional[str]:
@@ -29,9 +35,10 @@ def extract_first_json_block(text: str) -> Optional[str]:
 
 
 def validate_input_completeness(
-    llm: LocalTextGenerator,
+    llm: LLMProvider,
     user_prompt: str,
-    partial_input: StageAInput
+    partial_input: StageAInput,
+    conversation_history: Optional[List[Dict[str, str]]] = None
 ) -> Dict[str, Any]:
     """
     STEP 1: LLM validates what info is present and missing
@@ -41,11 +48,7 @@ def validate_input_completeness(
     - completeness_score: 0-100
     - can_proceed_with_suggestions: bool
     """
-    prompt = f"""
-Ban la AI validator phan tich tih nhan ban da cung cap.
-Tac vu: XAC NHAN thong tin co, thong tin nao CHUA CO, muc do quan trong.
-
-User prompt (chi tieu hang): "{user_prompt}"
+    prompt = f"""User prompt (chi tieu hang): "{user_prompt}"
 
 Thong tin hien co:
 - nganh_hang: {partial_input.nganh_hang if partial_input.nganh_hang else '(CHUA CO)'}
@@ -53,23 +56,16 @@ Thong tin hien co:
 - phan_khuc_quan_tam: {partial_input.phan_khuc_quan_tam if partial_input.phan_khuc_quan_tam else '(CHUA CO)'}
 - doi_thu_seed: {partial_input.doi_thu_seed if partial_input.doi_thu_seed else '(CHUA CO)'}
 - khung_thoi_gian: {partial_input.khung_thoi_gian if partial_input.khung_thoi_gian else '(CHUA CO)'}
-- muc_tieu_nghien_cuu: {partial_input.muc_tieu_nghien_cuu if partial_input.muc_tieu_nghien_cuu else '(CHUA CO)'}
-
-YEU CAU (Chi tra ve JSON, khong van ban):
-1. DETECT tu user_prompt: thong tin nao DA RAO RANG?
-2. MISSING: Loai nao CHUA CO? Muc do quan trong?
-3. COMPLETENESS: % thong tin da co (0-100)
-
-JSON:
-{{
-  "can_infer_from_prompt": {{"nganh_hang": "...", "thi_truong_muc_tieu": "..."}},
-  "missing_fields": {{"field": {{"importance": "high|medium|low", "reason": "..."}}}},
-  "completeness_score": 75,
-  "can_proceed_with_suggestions": false,
-  "notes": "..."
-}}
-"""
-    raw = llm.generate(prompt, max_new_tokens=400)
+- muc_tieu_nghien_cuu: {partial_input.muc_tieu_nghien_cuu if partial_input.muc_tieu_nghien_cuu else '(CHUA CO)'}"""
+    
+    messages = build_messages_from_history(prompt, conversation_history, max_history=2)
+    
+    raw = llm.generate(
+        messages=messages,
+        system_message=SYSTEM_MESSAGE_INPUT_VALIDATOR,
+        tools=INPUT_VALIDATION_TOOLS,
+        max_new_tokens=400
+    )
     block = extract_first_json_block(raw)
     
     result = {
@@ -94,10 +90,11 @@ JSON:
 
 
 def request_additional_information(
-    llm: LocalTextGenerator,
+    llm: LLMProvider,
     user_prompt: str,
     partial_input: StageAInput,
-    validation_result: Dict[str, Any]
+    validation_result: Dict[str, Any],
+    conversation_history: Optional[List[Dict[str, str]]] = None
 ) -> Dict[str, Any]:
     """
     STEP 2: LLM generates questions and suggestions based on validation
@@ -115,25 +112,19 @@ def request_additional_information(
         if details.get("importance") in ["high", "medium"]:
             missing_list.append(f"- {field}: {details.get('reason', '')}")
     
-    prompt = f"""
-Ban la AI consultant huong dan user cap them thong tin chi tiet.
-Tac vu: TAO CAU HOI SPECIFIC va SUGGEST gia tri.
-
-User prompt: "{user_prompt}"
+    prompt = f"""User prompt: "{user_prompt}"
 
 Completeness: {validation_result.get('completeness_score', 0)}%
-Missing (high+medium): {missing_list if missing_list else 'Khong co'}
-
-JSON:
-{{
-  "has_critical_gaps": false,
-  "questions_to_ask": ["...", "..."],
-  "suggested_values": {{"nganh_hang": "...", "thi_truong_muc_tieu": "..."}},
-  "explanations": {{"nganh_hang": "..."}},
-  "ready_to_proceed": true
-}}
-"""
-    raw = llm.generate(prompt, max_new_tokens=500)
+Missing (high+medium): {missing_list if missing_list else 'Khong co'}"""
+    
+    messages = build_messages_from_history(prompt, conversation_history, max_history=2)
+    
+    raw = llm.generate(
+        messages=messages,
+        system_message="Ban la AI consultant huong dan user cap them thong tin chi tiet. Tao cau hoi SPECIFIC va SUGGEST gia tri.",
+        tools=CLARIFICATION_TOOLS,
+        max_new_tokens=500
+    )
     block = extract_first_json_block(raw)
     
     result = {
@@ -162,10 +153,11 @@ JSON:
 
 
 def clarify_user_prompt(
-    llm: LocalTextGenerator,
+    llm: LLMProvider,
     user_prompt: str,
     partial_input: StageAInput,
-    user_responses: Optional[Dict[str, Any]] = None
+    user_responses: Optional[Dict[str, Any]] = None,
+    conversation_history: Optional[List[Dict[str, str]]] = None
 ) -> Dict[str, Any]:
     """
     2-Step clarification workflow:
@@ -175,10 +167,10 @@ def clarify_user_prompt(
     Returns refined StageAInput and clarification status
     """
     rprint("[yellow]Step 1: Validating input...[/yellow]")
-    validation = validate_input_completeness(llm, user_prompt, partial_input)
+    validation = validate_input_completeness(llm, user_prompt, partial_input, conversation_history)
     
     rprint("[yellow]Step 2: Generating suggestions...[/yellow]")
-    request = request_additional_information(llm, user_prompt, partial_input, validation)
+    request = request_additional_information(llm, user_prompt, partial_input, validation, conversation_history)
     
     # Merge user responses or use suggestions
     final_input = StageAInput(

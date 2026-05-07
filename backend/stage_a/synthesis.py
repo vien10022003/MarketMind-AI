@@ -4,10 +4,12 @@ Generate final report sections using LLM
 """
 
 import pandas as pd
+from typing import Optional, List, Dict, Any
 from rich import print as rprint
 
 from .data_models import StageAInput, StageAOutput, EvidenceItem
-from .llm_config import LocalTextGenerator
+from .llm_provider import LLMProvider
+from .tool_definitions import build_messages_from_history
 
 
 def dataframe_to_compact_context(df: pd.DataFrame, top_n: int = 10, snippet_max: int = 150) -> str:
@@ -37,9 +39,10 @@ def dataframe_to_compact_context(df: pd.DataFrame, top_n: int = 10, snippet_max:
 
 
 def synthesize_tong_quan_thi_truong(
-    llm: LocalTextGenerator,
+    llm: LLMProvider,
     research_input: StageAInput,
-    df: pd.DataFrame
+    df: pd.DataFrame,
+    conversation_history: Optional[List[Dict[str, str]]] = None
 ) -> str:
     """Generate market overview section"""
     evidence_context = dataframe_to_compact_context(df, top_n=10)
@@ -48,9 +51,6 @@ def synthesize_tong_quan_thi_truong(
         return "Không có đủ dữ liệu để tạo báo cáo. Vui lòng thử lại với từ khóa khác."
     
     prompt = f"""
-Ban la senior market analyst chuyen gia chi tiet.
-Nhiem vu: Tao TONG QUAN THI TRUONG chi tiet va tong hop.
-
 Input:
 - Nganh hang: {research_input.nganh_hang}
 - Thi truong: {research_input.thi_truong_muc_tieu}
@@ -68,14 +68,20 @@ Evidence (top 10 items):
 
 Chi tra ve phan tich chi tiet, khong JSON, khong mo dau/ket luan.
 """
-    raw = llm.generate(prompt, max_new_tokens=400)
+    messages = build_messages_from_history(prompt, conversation_history, max_history=2)
+    raw = llm.generate(
+        messages=messages,
+        system_message="Ban la senior market analyst chuyen gia chi tiet. Nhiem vu: Tao TONG QUAN THI TRUONG chi tiet va tong hop.",
+        max_new_tokens=400
+    )
     return raw.strip() if raw else "Khong du du lieu."
 
 
 def synthesize_phan_tich_doi_thu(
-    llm: LocalTextGenerator,
+    llm: LLMProvider,
     research_input: StageAInput,
-    df: pd.DataFrame
+    df: pd.DataFrame,
+    conversation_history: Optional[List[Dict[str, str]]] = None
 ) -> str:
     """Generate competitor analysis section"""
     evidence_context = dataframe_to_compact_context(df, top_n=10)
@@ -84,9 +90,6 @@ def synthesize_phan_tich_doi_thu(
         return "Không có đủ dữ liệu để phân tích đối thủ."
     
     prompt = f"""
-Ban la chuyen gia phan tich canh tranh.
-Nhiem vu: Phan tich cac DOI THU chinh va chien luoc.
-
 Input:
 - Nganh hang: {research_input.nganh_hang}
 - Thi truong: {research_input.thi_truong_muc_tieu}
@@ -105,14 +108,20 @@ Evidence (top 10 items):
 
 Chi tra ve phan tich chi tiet, khong JSON, khong mo dau/ket luan.
 """
-    raw = llm.generate(prompt, max_new_tokens=400)
+    messages = build_messages_from_history(prompt, conversation_history, max_history=2)
+    raw = llm.generate(
+        messages=messages,
+        system_message="Ban la chuyen gia phan tich canh tranh. Nhiem vu: Phan tich cac DOI THU chinh va chien luoc.",
+        max_new_tokens=400
+    )
     return raw.strip() if raw else "Khong du du lieu."
 
 
 def synthesize_xu_huong_nganh(
-    llm: LocalTextGenerator,
+    llm: LLMProvider,
     research_input: StageAInput,
-    df: pd.DataFrame
+    df: pd.DataFrame,
+    conversation_history: Optional[List[Dict[str, str]]] = None
 ) -> str:
     """Generate industry trends section"""
     evidence_context = dataframe_to_compact_context(df, top_n=10)
@@ -121,9 +130,6 @@ def synthesize_xu_huong_nganh(
         return "Không có đủ dữ liệu để phân tích xu hướng ngành."
     
     prompt = f"""
-Ban la chuyen gia xu huong nganh hang.
-Nhiem vu: Xuat hien cac XU HUONG chinh dang dinh hinh nganh hang.
-
 Input:
 - Nganh hang: {research_input.nganh_hang}
 - Thi truong: {research_input.thi_truong_muc_tieu}
@@ -142,14 +148,20 @@ Evidence (top 10 items):
 
 Chi tra ve phan tich chi tiet, khong JSON, khong mo dau/ket luan.
 """
-    raw = llm.generate(prompt, max_new_tokens=400)
+    messages = build_messages_from_history(prompt, conversation_history, max_history=2)
+    raw = llm.generate(
+        messages=messages,
+        system_message="Ban la chuyen gia xu huong nganh hang. Nhiem vu: Xuat hien cac XU HUONG chinh dang dinh hinh nganh hang.",
+        max_new_tokens=400
+    )
     return raw.strip() if raw else "Khong du du lieu."
 
 
 def synthesize_phan_khuc_va_insight(
-    llm: LocalTextGenerator,
+    llm: LLMProvider,
     research_input: StageAInput,
-    df: pd.DataFrame
+    df: pd.DataFrame,
+    conversation_history: Optional[List[Dict[str, str]]] = None
 ) -> str:
     """Generate customer segment and insights section"""
     evidence_context = dataframe_to_compact_context(df, top_n=10)
@@ -158,9 +170,6 @@ def synthesize_phan_khuc_va_insight(
         return "Không có đủ dữ liệu để phân tích phân khúc khách hàng."
     
     prompt = f"""
-Ban la chuyen gia hang vi khach hang va hanh vi pham.
-Nhiem vu: Tao PHAN KHUC KHACH HANG va INSIGHT HANH VI.
-
 Input:
 - Nganh hang: {research_input.nganh_hang}
 - Thi truong: {research_input.thi_truong_muc_tieu}
@@ -179,23 +188,29 @@ Evidence (top 10 items):
 
 Chi tra ve phan tich chi tiet, khong JSON, khong mo dau/ket luan.
 """
-    raw = llm.generate(prompt, max_new_tokens=400)
+    messages = build_messages_from_history(prompt, conversation_history, max_history=2)
+    raw = llm.generate(
+        messages=messages,
+        system_message="Ban la chuyen gia hang vi khach hang va hanh vi pham. Nhiem vu: Tao PHAN KHUC KHACH HANG va INSIGHT HANH VI.",
+        max_new_tokens=400
+    )
     return raw.strip() if raw else "Khong du du lieu."
 
 
 def synthesize_stage_a_report(
-    llm: LocalTextGenerator,
+    llm: LLMProvider,
     research_input: StageAInput,
-    df: pd.DataFrame
+    df: pd.DataFrame,
+    conversation_history: Optional[List[Dict[str, str]]] = None
 ) -> StageAOutput:
     """Generate complete Stage A report"""
     rprint("[yellow]Synthesizing report sections...[/yellow]")
     
     # Generate each section
-    tong_quan = synthesize_tong_quan_thi_truong(llm, research_input, df)
-    phan_tich_doi_thu = synthesize_phan_tich_doi_thu(llm, research_input, df)
-    xu_huong = synthesize_xu_huong_nganh(llm, research_input, df)
-    phan_khuc_insight = synthesize_phan_khuc_va_insight(llm, research_input, df)
+    tong_quan = synthesize_tong_quan_thi_truong(llm, research_input, df, conversation_history)
+    phan_tich_doi_thu = synthesize_phan_tich_doi_thu(llm, research_input, df, conversation_history)
+    xu_huong = synthesize_xu_huong_nganh(llm, research_input, df, conversation_history)
+    phan_khuc_insight = synthesize_phan_khuc_va_insight(llm, research_input, df, conversation_history)
 
     # Create citations
     citations = []

@@ -5,18 +5,22 @@ This is the "knowledge" intent path in the 3-way routing system.
 """
 
 import json
-from typing import Dict, Any, Generator
+from typing import Dict, Any, Generator, Optional, List
 from rich import print as rprint
 
-from .llm_config import LocalTextGenerator
+from .llm_provider import LLMProvider
+from .tool_definitions import (
+    KNOWLEDGE_SEARCH_DECISION_TOOLS,
+    build_messages_from_history
+)
 from .clarification import extract_first_json_block
 from .tavily_search import tavily_search_with_retry
 
 
 def assess_need_for_search(
-    llm: LocalTextGenerator,
+    llm: LLMProvider,
     user_prompt: str,
-    conversation_history: list = None,
+    conversation_history: Optional[List[Dict[str, str]]] = None,
 ) -> Dict[str, Any]:
     """
     LLM evaluates whether the question requires a web search for an accurate answer.
@@ -28,40 +32,29 @@ def assess_need_for_search(
             "reasoning": "why search is needed or not"
         }
     """
-    history_context = ""
-    if conversation_history:
-        history_parts = []
-        for turn in conversation_history:
-            role_label = "User" if turn.get("role") == "user" else "Assistant"
-            history_parts.append(f"{role_label}: {turn.get('content', '')}")
-        history_context = "\n".join(history_parts)
-
-    prompt = f"""
-Ban la mot he thong danh gia cau hoi. Nhiem vu: xac dinh xem cau hoi cua nguoi dung co CAN TIM KIEM TREN INTERNET de tra loi chinh xac hay khong.
+    prompt = f"""Cau hoi nguoi dung: "{user_prompt}" """
+    
+    messages = build_messages_from_history(prompt, conversation_history, max_history=2)
+    
+    system_msg = """Ban la he thong danh gia cau hoi. Nhiem vu: xac dinh xem cau hoi co CAN TIM KIEM TREN INTERNET de tra loi chinh xac hay khong.
 
 CAN tim kiem khi:
-- Hoi ve du kien cu the, con so, thong ke (vi du: GDP, dan so, gia ca)
+- Hoi ve du kien cu the, con so, thong ke
 - Hoi ve su kien, tin tuc moi nhat
 - Hoi ve san pham, cong ty, thuong hieu cu the
 - Hoi ve thong tin co the thay doi theo thoi gian
 
 KHONG can tim kiem khi:
-- Giai thich khai niem chung (vi du: "blockchain la gi?")
+- Giai thich khai niem chung
 - Cau hoi ve ly thuyet, nguyen ly co ban
-- So sanh tong quat giua cac cong nghe/khai niem
-- Cau hoi ma kien thuc co san cua LLM da du de tra loi tot
-
-{f"Lich su hoi thoai:{chr(10)}{history_context}{chr(10)}" if history_context else ""}
-Cau hoi nguoi dung: "{user_prompt}"
-
-Chi tra ve JSON:
-{{
-  "needs_search": true | false,
-  "search_query": "Cau truy van tim kiem toi uu bang tieng Anh hoac tieng Viet (neu can search, nguoc lai de trong)",
-  "reasoning": "Ly do ngan gon"
-}}
-"""
-    raw = llm.generate(prompt, max_new_tokens=250)
+- So sanh tong quat giua cac khai niem"""
+    
+    raw = llm.generate(
+        messages=messages,
+        system_message=system_msg,
+        tools=KNOWLEDGE_SEARCH_DECISION_TOOLS,
+        max_new_tokens=250
+    )
     block = extract_first_json_block(raw)
 
     result = {
@@ -84,10 +77,10 @@ Chi tra ve JSON:
 
 
 def answer_with_search(
-    llm: LocalTextGenerator,
+    llm: LLMProvider,
     user_prompt: str,
     search_results: list,
-    conversation_history: list = None,
+    conversation_history: Optional[List[Dict[str, str]]] = None,
 ) -> str:
     """
     Generate a high-quality answer using search results as context.
@@ -100,69 +93,62 @@ def answer_with_search(
         url = result.get("url", "")
         sources_text += f"\n[{i}] {title}\n    URL: {url}\n    Noi dung: {snippet}\n"
 
-    history_context = ""
-    if conversation_history:
-        history_parts = []
-        for turn in conversation_history:
-            role_label = "User" if turn.get("role") == "user" else "Assistant"
-            history_parts.append(f"{role_label}: {turn.get('content', '')}")
-        history_context = "\n".join(history_parts)
-
-    prompt = f"""
-Ban la tro ly AI thong minh. Hay tra loi cau hoi cua nguoi dung mot cach CHINH XAC va CHI TIET dua tren thong tin tim kiem duoc ben duoi.
-
-Cau hoi: "{user_prompt}"
+    prompt = f"""Cau hoi: "{user_prompt}"
 
 Thong tin tim kiem duoc:
-{sources_text}
+{sources_text}"""
+    
+    messages = build_messages_from_history(prompt, conversation_history, max_history=2)
+    
+    system_msg = """Ban la tro ly AI thong minh. Hay tra loi cau hoi mot cach CHINH XAC va CHI TIET dua tren thong tin tim kiem.
 
 Yeu cau:
 Su dung thong tin tu nguon tim kiem de dam bao chinh xac
 Neu co so lieu cu the, hay trich dan
-Tra loi truc tiep, khong can noi "theo ket qua tim kiem"
-"""
-    answer = llm.generate(prompt, max_new_tokens=1000)
+Tra loi truc tiep
+Chi tra ve noi dung tra loi, KHONG JSON"""
+    
+    answer = llm.generate(
+        messages=messages,
+        system_message=system_msg,
+        max_new_tokens=1000
+    )
     return answer.strip()
 
 
 def answer_directly(
-    llm: LocalTextGenerator,
+    llm: LLMProvider,
     user_prompt: str,
-    conversation_history: list = None,
+    conversation_history: Optional[List[Dict[str, str]]] = None,
 ) -> str:
     """
     Generate a high-quality direct answer (no search needed).
     This produces more detailed responses than the simple chat path.
     """
-    history_context = ""
-    if conversation_history:
-        history_parts = []
-        for turn in conversation_history:
-            role_label = "User" if turn.get("role") == "user" else "Assistant"
-            history_parts.append(f"{role_label}: {turn.get('content', '')}")
-        history_context = "\n".join(history_parts)
-
-    prompt = f"""
-Ban la tro ly AI thong minh va co kien thuc sau rong. Hay tra loi cau hoi sau mot cach CHI TIET, CHINH XAC va DE HIEU.
-
-{f"Lich su hoi thoai:{chr(10)}{history_context}{chr(10)}" if history_context else ""}
-
-Cau hoi: "{user_prompt}"
+    prompt = f"""Cau hoi: "{user_prompt}" """
+    
+    messages = build_messages_from_history(prompt, conversation_history, max_history=2)
+    
+    system_msg = """Ban la tro ly AI thong minh va co kien thuc sau rong. Hay tra loi cau hoi mot cach CHI TIET, CHINH XAC va DE HIEU.
 
 Yeu cau:
 1. Tra loi bang tieng Viet
 2. Giai thich ro rang, co cau truc
 3. Neu can, dua ra vi du cu the
-4. Chi tra ve noi dung tra loi, KHONG tra ve JSON
-"""
-    answer = llm.generate(prompt, max_new_tokens=600)
+4. Chi tra ve noi dung tra loi, KHONG JSON"""
+    
+    answer = llm.generate(
+        messages=messages,
+        system_message=system_msg,
+        max_new_tokens=600
+    )
     return answer.strip()
 
 
 def handle_knowledge_query(
-    llm: LocalTextGenerator,
+    llm: LLMProvider,
     user_prompt: str,
-    conversation_history: list = None,
+    conversation_history: Optional[List[Dict[str, str]]] = None,
 ) -> Generator[Dict[str, Any], None, None]:
     """
     Main handler for the 'knowledge' intent path.

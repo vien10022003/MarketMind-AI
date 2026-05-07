@@ -1,7 +1,8 @@
 import json
+from typing import Optional, List, Dict, Any
 from rich import print as rprint
 
-def expand_content_brief(llm, brief: dict) -> dict:
+def expand_content_brief(llm, brief: dict, conversation_history: Optional[List[Dict[str, str]]] = None) -> dict:
     """
     Sử dụng LLM để hoàn thiện Content Brief thành nội dung chi tiết và prompt ảnh chuyên nghiệp.
     Trả về một bản copy của brief đã được cập nhật 'caption' và 'image_prompt'.
@@ -17,8 +18,7 @@ def expand_content_brief(llm, brief: dict) -> dict:
     pillar = brief.get("pillar", "")
     product_context = brief.get("product_context", "")
     
-    prompt = f"""Bạn là một chuyên gia viết nội dung Marketing xuất sắc trên nền tảng Discord và một chuyên gia viết prompt sinh ảnh (Midjourney/Stable Diffusion).
-Dựa vào bản tóm tắt bài đăng (Content Brief) dưới đây, hãy hoàn thiện bài đăng quảng bá sản phẩm:
+    prompt = f"""Dựa vào bản tóm tắt bài đăng (Content Brief) dưới đây, hãy hoàn thiện bài đăng quảng bá sản phẩm:
 Sản phẩm/Yêu cầu quảng cáo: {product_context}
 1. Viết một bài đăng (caption) chi tiết, hấp dẫn, có sử dụng emoji phù hợp, văn phong tự nhiên để đăng lên Discord. Nội dung này dùng để thuyết phục và tương tác với người đọc, nhấn mạnh vào sản phẩm/yêu cầu đã nêu.
 2. Viết một câu lệnh (image_prompt) sinh ảnh chuyên nghiệp bằng TIẾNG ANH (chỉ tiếng Anh), gồm các từ khóa miêu tả chi tiết, rõ nét, phong cách, ánh sáng, phân tách bằng dấu phẩy. Ảnh phải mang phong cách phù hợp với sản phẩm.
@@ -39,7 +39,14 @@ Trả về kết quả ở định dạng JSON chuẩn. Không có markdown text
     
     try:
         rprint(f"[cyan]🧠 Đang dùng LLM hoàn thiện nội dung cho: {title}[/cyan]")
-        output = llm.generate(prompt, max_new_tokens=800, temperature=0.7)
+        from .tool_definitions import build_messages_from_history
+        messages = build_messages_from_history(prompt, conversation_history, max_history=2)
+        output = llm.generate(
+            messages=messages,
+            system_message="Ban la mot chuyen gia viet noi dung Marketing xuất sắc trên nền tảng Discord va mot chuyen gia viet prompt sinh anh chuyên nghiệp.",
+            max_new_tokens=800,
+            temperature=0.7
+        )
         
         # Xử lý parse JSON an toàn
         output_clean = output.strip()

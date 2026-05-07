@@ -5,7 +5,7 @@ Campaign Plan creation and Content Brief generation for Discord.
 
 import json
 import re
-from typing import List, Generator
+from typing import List, Generator, Optional, Dict, Any
 from rich import print as rprint
 
 from .data_models_b import (
@@ -39,7 +39,11 @@ def _stringify_field(value):
 
 
 def create_campaign_plan(
-    llm, pillars: List[ContentPillar], persona: BuyerPersona, stage_a_input: dict
+    llm,
+    pillars: List[ContentPillar],
+    persona: BuyerPersona,
+    stage_a_input: dict,
+    conversation_history: Optional[List[Dict[str, str]]] = None
 ) -> CampaignPlan:
     """Create a 7-day campaign plan with schedule."""
     rprint("[yellow][STAGE B] Creating Campaign Plan...[/yellow]")
@@ -47,8 +51,7 @@ def create_campaign_plan(
     pillar_names = [f"{p.emoji} {p.name}" for p in pillars]
     product_context = stage_a_input.get('user_prompt', stage_a_input.get('nganh_hang', 'Sản phẩm/Dịch vụ'))
 
-    prompt = f"""Ban la chuyen gia lap ke hoach chien dich Discord.
-Tao ke hoach chien dich 7 ngay xoay quanh viec quang ba san pham nay.
+    prompt = f"""Tao ke hoach chien dich 7 ngay xoay quanh viec quang ba san pham nay.
 
 San pham/Yeu cau: {product_context}
 Content Pillars: {', '.join(pillar_names)}
@@ -56,10 +59,16 @@ Persona: {persona.name} ({persona.age_range})
 Content types ua thich: {', '.join(persona.preferred_content_types[:4])}
 
 Tra ve CHINH XAC JSON:
-{{"duration_days":7,"posting_frequency":"1 post/ngay","campaign_goal":"Muc tieu chien dich lien quan den san pham","content_types":["tip","infographic","meme"],"schedule":[{{"day":1,"time":"19:00","content_type":"tip","pillar_name":"Ten pillar"}}]}}
+{{"duration_days":7,"posting_frequency":"1 post/ngay","campaign_goal":"Muc tieu chien dich lien quan den san pham","content_types":["tip","infographic","meme"],"schedule":[["day":1,"time":"19:00","content_type":"tip","pillar_name":"Ten pillar"}]}}
 Tao 7 schedule entries (1 moi ngay). JSON thuan tuy."""
 
-    raw = llm.generate(prompt, max_new_tokens=600)
+    from .tool_definitions import build_messages_from_history
+    messages = build_messages_from_history(prompt, conversation_history, max_history=2)
+    raw = llm.generate(
+        messages=messages,
+        system_message="Ban la chuyen gia lap ke hoach chien dich Discord. Tao ke hoach chien dich 7 ngay xoay quanh viec quang ba san pham.",
+        max_new_tokens=600
+    )
     data = _extract_json(raw)
 
     if data and "schedule" in data:
@@ -107,6 +116,7 @@ def generate_content_briefs(
     persona: BuyerPersona,
     usp: USPResult,
     stage_a_input: dict,
+    conversation_history: Optional[List[Dict[str, str]]] = None
 ) -> List[ContentBrief]:
     """Generate content briefs for each scheduled post."""
     rprint("[yellow][STAGE B] Generating Content Briefs...[/yellow]")
@@ -115,6 +125,7 @@ def generate_content_briefs(
     briefs = []
     colors = [0x57F287, 0x5865F2, 0xFEE75C, 0xED4245, 0xEB459E, 0x3498DB, 0xE67E22]
 
+    from .tool_definitions import build_messages_from_history
     for entry in campaign_plan.schedule:
         # Find pillar details
         pillar_detail = next((p for p in pillars if p.name == entry.pillar_name), None)
@@ -122,8 +133,7 @@ def generate_content_briefs(
         topics = pillar_detail.example_topics if pillar_detail else []
         topics_text = ', '.join(topics[:2]) if topics else entry.content_type
 
-        prompt = f"""Ban la copywriter cho Discord.
-Tao content brief cho 1 bai dang Discord de quang ba san pham.
+        prompt = f"""Tao content brief cho 1 bai dang Discord de quang ba san pham.
 
 San pham/Yeu cau: {product_context}
 Ngay: {entry.day}, Gio: {entry.time}
@@ -137,7 +147,12 @@ Tra ve CHINH XAC JSON:
 {{"title":"Tieu de bai dang (ngan gon, hap dan)","caption":"Noi dung caption day du cho Discord embed (2-4 cau, co emoji) va nhac den san pham hoac quang cao loi ich","image_prompt":"English prompt for AI image generation (descriptive, specific, related to the topic and product style)"}}
 JSON thuan tuy."""
 
-        raw = llm.generate(prompt, max_new_tokens=400)
+        messages = build_messages_from_history(prompt, conversation_history, max_history=2)
+        raw = llm.generate(
+            messages=messages,
+            system_message="Ban la copywriter cho Discord. Tao content brief cho 1 bai dang Discord de quang ba san pham.",
+            max_new_tokens=400
+        )
         data = _extract_json(raw)
 
         if data:

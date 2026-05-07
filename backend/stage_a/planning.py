@@ -5,60 +5,53 @@ Planner chain that generates research questions and search steps
 
 import json
 import re
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, List
 from rich import print as rprint
 
 from .data_models import StageAInput
-from .llm_config import LocalTextGenerator
+from .llm_provider import LLMProvider
+from .tool_definitions import (
+    PLANNING_TOOLS,
+    SYSTEM_MESSAGE_PLANNER,
+    build_messages_from_history
+)
 from .clarification import extract_first_json_block
 
 
 def planner_chain(
-    llm: LocalTextGenerator,
+    llm: LLMProvider,
     research_input: StageAInput,
+    conversation_history: Optional[List[Dict[str, str]]] = None,
     max_steps: int = 8
 ) -> Dict[str, Any]:
     """
     Generate research plan with questions and search steps
     
     Args:
-        llm: LocalTextGenerator instance
+        llm: LLM provider instance
         research_input: StageAInput configuration
+        conversation_history: Previous conversation messages
         max_steps: Max number of search steps
     
     Returns:
         Dict with research_questions, hypotheses, steps, success_criteria
     """
-    prompt = f"""
-Ban la Planner cho Stage A marketing research.
-Hay tao ke hoach thu thap bang chung machine-readable JSON, KHONG ghi giai thich ngoai JSON.
-
-Yeu cau:
-1) Tao 5-8 cau hoi nghien cuu.
-2) Tao danh sach steps (moi step la 1 truy van web_search cu the).
-3) Steps phai huong den 4 deliverables:
-   - tong quan thi truong
-   - phan tich doi thu
-   - xu huong nganh
-   - phan khuc va insight khach hang
-
-Input:
+    prompt = f"""Input:
 - nganh_hang: {research_input.nganh_hang}
 - thi_truong_muc_tieu: {research_input.thi_truong_muc_tieu}
 - phan_khuc_quan_tam: {research_input.phan_khuc_quan_tam}
 - doi_thu_seed: {research_input.doi_thu_seed}
 - khung_thoi_gian: {research_input.khung_thoi_gian}
-- muc_tieu_nghien_cuu: {research_input.muc_tieu_nghien_cuu}
-
-JSON schema:
-{{
-  "research_questions": ["...", "..."],
-  "hypotheses": ["...", "..."],
-  "steps": ["web search query 1", "web search query 2"],
-  "success_criteria": ["..."]
-}}
-"""
-    raw = llm.generate(prompt, max_new_tokens=1200)
+- muc_tieu_nghien_cuu: {research_input.muc_tieu_nghien_cuu}"""
+    
+    messages = build_messages_from_history(prompt, conversation_history, max_history=2)
+    
+    raw = llm.generate(
+        messages=messages,
+        system_message=SYSTEM_MESSAGE_PLANNER,
+        tools=PLANNING_TOOLS,
+        max_new_tokens=1200
+    )
     rprint(f"[blue]Raw output:[/blue] {raw}")
     block = extract_first_json_block(raw)
     rprint(f"[blue]block:[/blue] {block}")

@@ -5,7 +5,7 @@ LLM-powered strategy generation: SWOT, USP, Persona, Content Pillars
 
 import json
 import re
-from typing import List
+from typing import List, Optional, Dict, Any
 from rich import print as rprint
 
 from .data_models_b import (
@@ -37,7 +37,7 @@ def _extract_json(text: str) -> dict:
         return {}
 
 
-def generate_swot_analysis(llm, stage_a_report: dict, stage_a_input: dict) -> SWOTAnalysis:
+def generate_swot_analysis(llm, stage_a_report: dict, stage_a_input: dict, conversation_history: Optional[List[Dict[str, str]]] = None) -> SWOTAnalysis:
     """Generate SWOT analysis from Stage A research report."""
     rprint("[yellow][STAGE B] Generating SWOT Analysis...[/yellow]")
     product_context = stage_a_input.get('user_prompt', stage_a_input.get('nganh_hang', 'Sản phẩm/Dịch vụ'))
@@ -47,8 +47,7 @@ def generate_swot_analysis(llm, stage_a_report: dict, stage_a_input: dict) -> SW
         f"Xu huong: {stage_a_report.get('xu_huong_nganh', '')[:600]}\n"
         f"Insight: {stage_a_report.get('phan_khuc_va_insight_khach_hang', '')[:600]}"
     )
-    prompt = f"""Ban la chuyen gia marketing chien luoc.
-Dua tren bao cao nghien cuu va thong tin san pham, tao phan tich SWOT.
+    prompt = f"""Dua tren bao cao nghien cuu va thong tin san pham, tao phan tich SWOT.
 San pham/Yeu cau: {product_context}
 Nganh: {stage_a_input.get('nganh_hang', 'N/A')}
 Thi truong: {stage_a_input.get('thi_truong_muc_tieu', 'N/A')}
@@ -59,7 +58,13 @@ Tra ve CHINH XAC JSON (KHONG text khac):
 {{"strengths":["s1","s2","s3"],"weaknesses":["w1","w2","w3"],"opportunities":["o1","o2","o3"],"threats":["t1","t2","t3"]}}
 Moi muc 3-5 diem cu the. JSON thuan tuy."""
 
-    raw = llm.generate(prompt, max_new_tokens=600)
+    from .tool_definitions import build_messages_from_history
+    messages = build_messages_from_history(prompt, conversation_history, max_history=2)
+    raw = llm.generate(
+        messages=messages,
+        system_message="Ban la chuyen gia marketing chien luoc. Tao phan tich SWOT dua tren bao cao.",
+        max_new_tokens=600
+    )
     data = _extract_json(raw)
     if data:
         result = SWOTAnalysis(
@@ -80,12 +85,11 @@ Moi muc 3-5 diem cu the. JSON thuan tuy."""
     return result
 
 
-def extract_usp(llm, stage_a_report: dict, swot: SWOTAnalysis, stage_a_input: dict) -> USPResult:
+def extract_usp(llm, stage_a_report: dict, swot: SWOTAnalysis, stage_a_input: dict, conversation_history: Optional[List[Dict[str, str]]] = None) -> USPResult:
     """Extract Unique Selling Proposition based on research + SWOT."""
     rprint("[yellow][STAGE B] Extracting USP...[/yellow]")
     product_context = stage_a_input.get('user_prompt', stage_a_input.get('nganh_hang', 'Sản phẩm/Dịch vụ'))
-    prompt = f"""Ban la chuyen gia dinh vi thuong hieu.
-Rut ra USP tu SWOT, bao cao va dac diem san pham.
+    prompt = f"""Rut ra USP tu SWOT, bao cao va dac diem san pham.
 San pham/Yeu cau: {product_context}
 Diem manh: {', '.join(swot.strengths[:3])}
 Co hoi: {', '.join(swot.opportunities[:3])}
@@ -95,7 +99,13 @@ Tra ve CHINH XAC JSON (KHONG text khac):
 {{"usp_statement":"Tuyen bo USP 1-2 cau","supporting_points":["p1","p2","p3"],"competitive_advantage":"Loi the canh tranh"}}
 JSON thuan tuy."""
 
-    raw = llm.generate(prompt, max_new_tokens=400)
+    from .tool_definitions import build_messages_from_history
+    messages = build_messages_from_history(prompt, conversation_history, max_history=2)
+    raw = llm.generate(
+        messages=messages,
+        system_message="Ban la chuyen gia dinh vi thuong hieu. Rut ra USP tu SWOT va bao cao.",
+        max_new_tokens=400
+    )
     data = _extract_json(raw)
     if data:
         result = USPResult(
@@ -127,15 +137,14 @@ def _ensure_string(value, default: str = "") -> str:
         return str(value) if value else default
 
 
-def refine_persona(llm, stage_a_report: dict, stage_a_input: dict, usp: USPResult) -> BuyerPersona:
+def refine_persona(llm, stage_a_report: dict, stage_a_input: dict, usp: USPResult, conversation_history: Optional[List[Dict[str, str]]] = None) -> BuyerPersona:
     """Refine buyer persona for Discord marketing."""
     rprint("[yellow][STAGE B] Refining Buyer Persona...[/yellow]")
     segments = stage_a_input.get('phan_khuc_quan_tam', [])
     segments_text = ', '.join(segments) if segments else 'Chưa xác định'
 
     product_context = stage_a_input.get('user_prompt', stage_a_input.get('nganh_hang', 'Sản phẩm/Dịch vụ'))
-    prompt = f"""Ban la chuyen gia buyer persona cho Discord.
-Tao persona cho chien dich Discord phu hop voi san pham nay.
+    prompt = f"""Tao persona cho chien dich Discord phu hop voi san pham nay.
 San pham/Yeu cau: {product_context}
 Nganh: {stage_a_input.get('nganh_hang', 'N/A')}
 Thi truong: {stage_a_input.get('thi_truong_muc_tieu', 'N/A')}
@@ -147,7 +156,13 @@ Tra ve CHINH XAC JSON:
 {{"name":"Ten persona","age_range":"18-25","interests":["i1","i2"],"pain_points":["p1","p2"],"discord_behavior":"Mo ta hanh vi Discord","preferred_content_types":["tips","memes"],"goals":["g1","g2"]}}
 JSON thuan tuy."""
 
-    raw = llm.generate(prompt, max_new_tokens=500)
+    from .tool_definitions import build_messages_from_history
+    messages = build_messages_from_history(prompt, conversation_history, max_history=2)
+    raw = llm.generate(
+        messages=messages,
+        system_message="Ban la chuyen gia buyer persona cho Discord. Tao persona cho chien dich Discord.",
+        max_new_tokens=500
+    )
     data = _extract_json(raw)
     if data:
         result = BuyerPersona(
@@ -173,12 +188,11 @@ JSON thuan tuy."""
     return result
 
 
-def define_content_pillars(llm, stage_a_report: dict, persona: BuyerPersona, usp: USPResult, stage_a_input: dict) -> List[ContentPillar]:
+def define_content_pillars(llm, stage_a_report: dict, persona: BuyerPersona, usp: USPResult, stage_a_input: dict, conversation_history: Optional[List[Dict[str, str]]] = None) -> List[ContentPillar]:
     """Define 3-5 content pillars for the Discord campaign."""
     rprint("[yellow][STAGE B] Defining Content Pillars...[/yellow]")
     product_context = stage_a_input.get('user_prompt', stage_a_input.get('nganh_hang', 'Sản phẩm/Dịch vụ'))
-    prompt = f"""Ban la chuyen gia content strategy cho Discord.
-Xac dinh 4 content pillars phu hop voi san pham va yeu cau quang cao sau:
+    prompt = f"""Xac dinh 4 content pillars phu hop voi san pham va yeu cau quang cao sau:
 San pham/Yeu cau: {product_context}
 
 Persona: {persona.name} ({persona.age_range})
@@ -187,10 +201,16 @@ USP: {usp.usp_statement}
 Xu huong: {stage_a_report.get('xu_huong_nganh', '')[:300]}
 
 Tra ve CHINH XAC JSON:
-{{"pillars":[{{"name":"Ten","description":"Mo ta","example_topics":["t1","t2"],"emoji":"📌"}}]}}
+{{"pillars":[["name":"Ten","description":"Mo ta","example_topics":["t1","t2"],"emoji":"📌"}]}}
 Tao 4 pillars. JSON thuan tuy."""
 
-    raw = llm.generate(prompt, max_new_tokens=600)
+    from .tool_definitions import build_messages_from_history
+    messages = build_messages_from_history(prompt, conversation_history, max_history=2)
+    raw = llm.generate(
+        messages=messages,
+        system_message="Ban la chuyen gia content strategy cho Discord. Xac dinh content pillars phu hop.",
+        max_new_tokens=600
+    )
     data = _extract_json(raw)
     pillars = []
     if data and "pillars" in data:

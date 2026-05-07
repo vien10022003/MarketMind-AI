@@ -1,11 +1,20 @@
 import json
-from typing import Dict, Any
+from typing import Dict, Any, Optional, List
 from rich import print as rprint
 
-from .llm_config import LocalTextGenerator
+from .llm_provider import LLMProvider
+from .tool_definitions import (
+    INTENT_CLASSIFICATION_TOOLS,
+    SYSTEM_MESSAGE_INTENT_CLASSIFIER,
+    build_messages_from_history
+)
 from .clarification import extract_first_json_block
 
-def classify_intent_and_respond(llm: LocalTextGenerator, user_prompt: str, conversation_history: list = None) -> Dict[str, Any]:
+def classify_intent_and_respond(
+    llm: LLMProvider,
+    user_prompt: str,
+    conversation_history: Optional[List[Dict[str, str]]] = None
+) -> Dict[str, Any]:
     """
     Classifies the user's prompt into one of three intents:
       - "chat": casual greeting or simple conversation
@@ -15,39 +24,35 @@ def classify_intent_and_respond(llm: LocalTextGenerator, user_prompt: str, conve
     If intent is "chat", generates a friendly response.
     
     Args:
-        llm: The LLM text generator instance
+        llm: The LLM provider instance (LocalLlamaProvider or GeminiProvider)
         user_prompt: The current user prompt
         conversation_history: List of recent conversation turns [{"role": "user"|"assistant", "content": "..."}]
     
     Returns:
         Dict with keys: intent, response, reasoning
     """
-    # Build conversation context string from history
-    history_context = ""
-    if conversation_history:
-        history_parts = []
-        for turn in conversation_history:
-            role_label = "User" if turn.get("role") == "user" else "Assistant"
-            history_parts.append(f"{role_label}: {turn.get('content', '')}")
-        history_context = "\n".join(history_parts)
-
-    prompt = f"""Ban la he thong phan loai y dinh nguoi dung. NHIEM VU: Phan loai prompt vao dung 1 trong 3 loai:
-
-1. "chat" - Chao hoi, tro chuyen don gian, cam on, hoi ve chatbot, thong tin ai cung biet. Vi du: "Xin chao", "Ban la ai?"
-2. "knowledge" - Khi bạn không có đủ thông tin như thông tin mới thay đổi liên tục, tin chi tiết cần độ chính xác cao. Vi du: "GDP 2024 la bao nhieu?"
-3. "research" - Yeu cau marketing, phan tich thi truong, chien luoc marketing, nghien cuu doi thu canh tranh. Vi du: "Phan tich thi truong ca phe"
-
-{f"Lich su:{chr(10)}{history_context}{chr(10)}" if history_context else ""}Prompt: "{user_prompt}"
-
-RESPONSE DUNG DUNG DAY (CHI JSON, KHONG THEM GI):
-{{"intent": "chat|knowledge|research", "response": "Chi dien neu chat", "reasoning": "Ly do"}}"""
-    rprint(f"[blue]--- Intent Classification prompt ---[/blue]")
-    rprint(prompt)
-    raw = llm.generate(prompt, max_new_tokens=1000)
+    # Build messages list from conversation history (max 2 previous messages + current prompt)
+    messages = build_messages_from_history(user_prompt, conversation_history, max_history=2)
+    
+    # Debug output
+    rprint(f"[blue]--- Intent Classification ---[/blue]")
+    rprint(f"[dim]Messages being sent to LLM:[/dim]")
+    for msg in messages:
+        rprint(f"  {msg['role']}: {msg['content'][:100]}...")
+    
+    # Call generate with structured parameters
+    raw = llm.generate(
+        messages=messages,
+        system_message=SYSTEM_MESSAGE_INTENT_CLASSIFIER,
+        tools=INTENT_CLASSIFICATION_TOOLS,
+        max_new_tokens=500
+    )
+    
     block = extract_first_json_block(raw)
     
-    rprint(f"[cyan]--- Intent Classification raw ---[/cyan]")
+    rprint(f"[cyan]--- Intent Classification Response ---[/cyan]")
     rprint(raw)
+    
     result = {
         "intent": "research",
         "response": "",
