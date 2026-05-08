@@ -289,18 +289,6 @@ class GeminiProvider(LLMProvider):
         except ImportError:
             raise ImportError("google-genai package required. Install with: pip install google-genai")
         
-        config_dict = {
-            "temperature": temperature,
-            "max_output_tokens": max_new_tokens,
-        }
-        
-        # Convert tools to Gemini format if provided
-        if tools:
-            tool_declarations = convert_tools_to_gemini_format(tools)
-            config_dict["tools"] = [types.Tool(function_declarations=tool_declarations)]
-        
-        config = types.GenerateContentConfig(**config_dict)
-        
         # Convert messages to Gemini format
         # Gemini API expects different format than OpenAI
         gemini_contents = []
@@ -323,6 +311,23 @@ class GeminiProvider(LLMProvider):
             last_msg = final_messages[-1]
             gemini_contents.append(types.Content(role="user", parts=[types.Part(text=last_msg.get("content", ""))]))
         
+        # Build GenerateContentConfig with system instruction
+        config_dict = {
+            "temperature": temperature,
+            "max_output_tokens": max_new_tokens,
+        }
+        
+        # Add system instruction to config if available
+        if gemini_system:
+            config_dict["system_instruction"] = gemini_system
+        
+        # Convert tools to Gemini format if provided
+        if tools:
+            tool_declarations = convert_tools_to_gemini_format(tools)
+            config_dict["tools"] = [types.Tool(function_declarations=tool_declarations)]
+        
+        config = types.GenerateContentConfig(**config_dict)
+        
         # Retry logic with exponential backoff
         max_retries = 3
         for attempt in range(max_retries):
@@ -333,10 +338,6 @@ class GeminiProvider(LLMProvider):
                     "contents": gemini_contents,
                     "config": config
                 }
-                
-                # Add system instruction if available
-                if gemini_system:
-                    request_kwargs["system_instruction"] = gemini_system
                 
                 response = self.client.models.generate_content(**request_kwargs)
                 

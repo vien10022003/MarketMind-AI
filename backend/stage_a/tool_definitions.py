@@ -59,7 +59,7 @@ INTENT_CLASSIFICATION_TOOLS = [
             },
             "response": {
                 "type": "string",
-                "description": "Required if the purpose is 'chat'"
+                "description": "Response for user, required if the purpose is 'chat'"
             },
             "reasoning": {
                 "type": "string",
