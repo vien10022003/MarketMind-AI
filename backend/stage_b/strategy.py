@@ -192,6 +192,9 @@ def define_content_pillars(llm, stage_a_report: dict, persona: BuyerPersona, usp
     """Define 3-5 content pillars for the Discord campaign."""
     rprint("[yellow][STAGE B] Defining Content Pillars...[/yellow]")
     product_context = stage_a_input.get('user_prompt', stage_a_input.get('nganh_hang', 'Sản phẩm/Dịch vụ'))
+    
+    json_example = '{"pillars":[{"name":"Ten","description":"Mo ta","example_topics":["t1","t2"],"emoji":"📌"}]}'
+    
     prompt = f"""Xac dinh 4 content pillars phu hop voi san pham va yeu cau quang cao sau:
 San pham/Yeu cau: {product_context}
 
@@ -201,7 +204,7 @@ USP: {usp.usp_statement}
 Xu huong: {stage_a_report.get('xu_huong_nganh', '')[:300]}
 
 Tra ve CHINH XAC JSON:
-{{"pillars":[["name":"Ten","description":"Mo ta","example_topics":["t1","t2"],"emoji":"📌"}]}}
+{json_example}
 Tao 4 pillars. JSON thuan tuy."""
 
     from .tool_definitions import build_messages_from_history
