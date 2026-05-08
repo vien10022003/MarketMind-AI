@@ -15,7 +15,7 @@ from .tool_definitions import (
     SYSTEM_MESSAGE_PLANNER,
     build_messages_from_history
 )
-from .clarification import extract_first_json_block
+from .clarification import extract_first_json_block, normalize_tool_response
 
 
 def planner_chain(
@@ -59,6 +59,8 @@ def planner_chain(
     if block:
         try:
             plan = json.loads(block)
+            # Normalize tool calling response format
+            plan = normalize_tool_response(plan)
             plan["steps"] = plan.get("steps", [])[:max_steps]
             rprint("[green]✅ Planning completed[/green]")
             rprint(f"  Steps: {len(plan.get('steps', []))} search queries")

@@ -13,7 +13,7 @@ from .tool_definitions import (
     KNOWLEDGE_SEARCH_DECISION_TOOLS,
     build_messages_from_history
 )
-from .clarification import extract_first_json_block
+from .clarification import extract_first_json_block, normalize_tool_response
 from .tavily_search import tavily_search_with_retry
 
 
@@ -66,6 +66,8 @@ KHONG can tim kiem khi:
     if block:
         try:
             parsed = json.loads(block)
+            # Normalize tool calling response format
+            parsed = normalize_tool_response(parsed)
             result.update(parsed)
             # Ensure boolean type
             result["needs_search"] = bool(result.get("needs_search", False))

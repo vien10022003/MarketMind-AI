@@ -59,7 +59,7 @@ INTENT_CLASSIFICATION_TOOLS = [
             },
             "response": {
                 "type": "string",
-                "description": "Direct response only if intent is 'chat', otherwise empty"
+                "description": "Required if the purpose is 'chat'"
             },
             "reasoning": {
                 "type": "string",

@@ -301,15 +301,44 @@ class GeminiProvider(LLMProvider):
         
         config = types.GenerateContentConfig(**config_dict)
         
+        # Convert messages to Gemini format
+        # Gemini API expects different format than OpenAI
+        gemini_contents = []
+        gemini_system = None
+        
+        for msg in final_messages:
+            role = msg.get("role", "user")
+            content = msg.get("content", "")
+            
+            if role == "system":
+                # Store system message separately
+                gemini_system = content
+            elif role == "user":
+                gemini_contents.append(types.Content(role="user", parts=[types.Part(text=content)]))
+            elif role == "assistant":
+                gemini_contents.append(types.Content(role="model", parts=[types.Part(text=content)]))
+        
+        # If no user/assistant messages, just send the last content as user message
+        if not gemini_contents and final_messages:
+            last_msg = final_messages[-1]
+            gemini_contents.append(types.Content(role="user", parts=[types.Part(text=last_msg.get("content", ""))]))
+        
         # Retry logic with exponential backoff
         max_retries = 3
         for attempt in range(max_retries):
             try:
-                response = self.client.models.generate_content(
-                    model=self.model_variant,
-                    contents=final_messages,
-                    config=config
-                )
+                # Build request parameters
+                request_kwargs = {
+                    "model": self.model_variant,
+                    "contents": gemini_contents,
+                    "config": config
+                }
+                
+                # Add system instruction if available
+                if gemini_system:
+                    request_kwargs["system_instruction"] = gemini_system
+                
+                response = self.client.models.generate_content(**request_kwargs)
                 
                 if response and response.text:
                     return response.text.strip()

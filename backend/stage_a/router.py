@@ -8,7 +8,7 @@ from .tool_definitions import (
     SYSTEM_MESSAGE_INTENT_CLASSIFIER,
     build_messages_from_history
 )
-from .clarification import extract_first_json_block
+from .clarification import extract_first_json_block, normalize_tool_response
 
 def classify_intent_and_respond(
     llm: LLMProvider,
@@ -62,6 +62,9 @@ def classify_intent_and_respond(
     if block:
         try:
             parsed = json.loads(block)
+            # Normalize tool calling response format
+            parsed = normalize_tool_response(parsed)
+            
             # Validate intent value
             valid_intents = {"chat", "knowledge", "research"}
             if parsed.get("intent") not in valid_intents:

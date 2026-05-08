@@ -18,6 +18,23 @@ from .tool_definitions import (
 )
 
 
+def normalize_tool_response(parsed: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Normalize tool calling response format to direct response format.
+    
+    Handles both:
+    - Direct format: {"key": "value", ...}
+    - Tool format: {"name": "tool_name", "parameters": {"key": "value", ...}}
+    
+    Returns the normalized parameters dict.
+    """
+    # If response has "parameters" key (tool calling format), extract it
+    if "parameters" in parsed and isinstance(parsed["parameters"], dict):
+        return parsed["parameters"]
+    # Otherwise return as-is (direct format)
+    return parsed
+
+
 def extract_first_json_block(text: str) -> Optional[str]:
     """Extract first JSON object or array from text"""
     if not text:
@@ -79,6 +96,8 @@ Thong tin hien co:
     if block:
         try:
             parsed = json.loads(block)
+            # Normalize tool calling response format
+            parsed = normalize_tool_response(parsed)
             result.update(parsed)
             rprint("[green]✅ Validation completed[/green]")
             rprint(f"  Completeness: {parsed.get('completeness_score', 0)}%")
@@ -144,6 +163,8 @@ Missing (high+medium): {missing_list if missing_list else 'Khong co'}"""
     if block:
         try:
             parsed = json.loads(block)
+            # Normalize tool calling response format
+            parsed = normalize_tool_response(parsed)
             result.update(parsed)
             rprint("[green]✅ Suggestions generated[/green]")
         except json.JSONDecodeError:

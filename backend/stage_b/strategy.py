@@ -14,13 +14,15 @@ from .data_models_b import (
 
 
 def _extract_json(text: str) -> dict:
-    """Extract JSON from LLM output, handling markdown code blocks."""
+    """Extract JSON from LLM output, handling markdown code blocks and tool calling format."""
     code_block = re.search(r'```(?:json)?\s*\n?(.*?)```', text, re.DOTALL)
     if code_block:
         text = code_block.group(1).strip()
+    
     brace_start = text.find('{')
     if brace_start == -1:
         return {}
+    
     depth = 0
     for i in range(brace_start, len(text)):
         if text[i] == '{': depth += 1
@@ -28,11 +30,20 @@ def _extract_json(text: str) -> dict:
             depth -= 1
             if depth == 0:
                 try:
-                    return json.loads(text[brace_start:i+1])
+                    parsed = json.loads(text[brace_start:i+1])
+                    # Normalize tool calling format
+                    if "parameters" in parsed and isinstance(parsed["parameters"], dict):
+                        return parsed["parameters"]
+                    return parsed
                 except json.JSONDecodeError:
                     break
+    
     try:
-        return json.loads(text.strip())
+        parsed = json.loads(text.strip())
+        # Normalize tool calling format
+        if "parameters" in parsed and isinstance(parsed["parameters"], dict):
+            return parsed["parameters"]
+        return parsed
     except json.JSONDecodeError:
         return {}
 

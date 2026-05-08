@@ -13,7 +13,7 @@ from .tool_definitions import (
     SYSTEM_MESSAGE_REACT_DECIDER,
     build_messages_from_history
 )
-from .clarification import extract_first_json_block
+from .clarification import extract_first_json_block, normalize_tool_response
 from .tavily_search import tavily_search_with_retry
 
 
@@ -47,6 +47,8 @@ So bang chung da co: {collected_evidence_count}"""
     if block:
         try:
             decision = json.loads(block)
+            # Normalize tool calling response format
+            decision = normalize_tool_response(decision)
             action = decision.get("action", "search")
             if action not in {"search", "refine_query", "summarize"}:
                 action = "search"
