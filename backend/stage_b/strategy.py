@@ -47,6 +47,8 @@ def generate_swot_analysis(llm, stage_a_report: dict, stage_a_input: dict, conve
         f"Xu huong: {stage_a_report.get('xu_huong_nganh', '')[:600]}\n"
         f"Insight: {stage_a_report.get('phan_khuc_va_insight_khach_hang', '')[:600]}"
     )
+    json_example = '{"strengths":["s1","s2","s3"],"weaknesses":["w1","w2","w3"],"opportunities":["o1","o2","o3"],"threats":["t1","t2","t3"]}'
+    
     prompt = f"""Dua tren bao cao nghien cuu va thong tin san pham, tao phan tich SWOT.
 San pham/Yeu cau: {product_context}
 Nganh: {stage_a_input.get('nganh_hang', 'N/A')}
@@ -55,7 +57,7 @@ Bao cao:
 {report_ctx}
 
 Tra ve CHINH XAC JSON (KHONG text khac):
-{{"strengths":["s1","s2","s3"],"weaknesses":["w1","w2","w3"],"opportunities":["o1","o2","o3"],"threats":["t1","t2","t3"]}}
+{json_example}
 Moi muc 3-5 diem cu the. JSON thuan tuy."""
 
     from .tool_definitions import build_messages_from_history
@@ -89,6 +91,9 @@ def extract_usp(llm, stage_a_report: dict, swot: SWOTAnalysis, stage_a_input: di
     """Extract Unique Selling Proposition based on research + SWOT."""
     rprint("[yellow][STAGE B] Extracting USP...[/yellow]")
     product_context = stage_a_input.get('user_prompt', stage_a_input.get('nganh_hang', 'Sản phẩm/Dịch vụ'))
+    
+    json_example = '{"usp_statement":"Tuyen bo USP 1-2 cau","supporting_points":["p1","p2","p3"],"competitive_advantage":"Loi the canh tranh"}'
+    
     prompt = f"""Rut ra USP tu SWOT, bao cao va dac diem san pham.
 San pham/Yeu cau: {product_context}
 Diem manh: {', '.join(swot.strengths[:3])}
@@ -96,7 +101,7 @@ Co hoi: {', '.join(swot.opportunities[:3])}
 Tong quan: {stage_a_report.get('tong_quan_thi_truong', '')[:400]}
 
 Tra ve CHINH XAC JSON (KHONG text khac):
-{{"usp_statement":"Tuyen bo USP 1-2 cau","supporting_points":["p1","p2","p3"],"competitive_advantage":"Loi the canh tranh"}}
+{json_example}
 JSON thuan tuy."""
 
     from .tool_definitions import build_messages_from_history
@@ -144,6 +149,9 @@ def refine_persona(llm, stage_a_report: dict, stage_a_input: dict, usp: USPResul
     segments_text = ', '.join(segments) if segments else 'Chưa xác định'
 
     product_context = stage_a_input.get('user_prompt', stage_a_input.get('nganh_hang', 'Sản phẩm/Dịch vụ'))
+    
+    json_example = '{"name":"Ten persona","age_range":"18-25","interests":["i1","i2"],"pain_points":["p1","p2"],"discord_behavior":"Mo ta hanh vi Discord","preferred_content_types":["tips","memes"],"goals":["g1","g2"]}'
+    
     prompt = f"""Tao persona cho chien dich Discord phu hop voi san pham nay.
 San pham/Yeu cau: {product_context}
 Nganh: {stage_a_input.get('nganh_hang', 'N/A')}
@@ -153,7 +161,7 @@ USP: {usp.usp_statement}
 Insight: {stage_a_report.get('phan_khuc_va_insight_khach_hang', '')[:400]}
 
 Tra ve CHINH XAC JSON:
-{{"name":"Ten persona","age_range":"18-25","interests":["i1","i2"],"pain_points":["p1","p2"],"discord_behavior":"Mo ta hanh vi Discord","preferred_content_types":["tips","memes"],"goals":["g1","g2"]}}
+{json_example}
 JSON thuan tuy."""
 
     from .tool_definitions import build_messages_from_history

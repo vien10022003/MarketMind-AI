@@ -51,6 +51,8 @@ def create_campaign_plan(
     pillar_names = [f"{p.emoji} {p.name}" for p in pillars]
     product_context = stage_a_input.get('user_prompt', stage_a_input.get('nganh_hang', 'Sản phẩm/Dịch vụ'))
 
+    json_example = '{"duration_days":7,"posting_frequency":"1 post/ngay","campaign_goal":"Muc tieu chien dich lien quan den san pham","content_types":["tip","infographic","meme"],"schedule":[{"day":1,"time":"19:00","content_type":"tip","pillar_name":"Ten pillar"}]}'
+    
     prompt = f"""Tao ke hoach chien dich 7 ngay xoay quanh viec quang ba san pham nay.
 
 San pham/Yeu cau: {product_context}
@@ -59,7 +61,7 @@ Persona: {persona.name} ({persona.age_range})
 Content types ua thich: {', '.join(persona.preferred_content_types[:4])}
 
 Tra ve CHINH XAC JSON:
-{{"duration_days":7,"posting_frequency":"1 post/ngay","campaign_goal":"Muc tieu chien dich lien quan den san pham","content_types":["tip","infographic","meme"],"schedule":[["day":1,"time":"19:00","content_type":"tip","pillar_name":"Ten pillar"}]}}
+{json_example}
 Tao 7 schedule entries (1 moi ngay). JSON thuan tuy."""
 
     from .tool_definitions import build_messages_from_history
@@ -133,6 +135,8 @@ def generate_content_briefs(
         topics = pillar_detail.example_topics if pillar_detail else []
         topics_text = ', '.join(topics[:2]) if topics else entry.content_type
 
+        json_example = '{"title":"Tieu de bai dang (ngan gon, hap dan)","caption":"Noi dung caption day du cho Discord embed (2-4 cau, co emoji) va nhac den san pham hoac quang cao loi ich","image_prompt":"English prompt for AI image generation (descriptive, specific, related to the topic and product style)"}'
+        
         prompt = f"""Tao content brief cho 1 bai dang Discord de quang ba san pham.
 
 San pham/Yeu cau: {product_context}
@@ -144,7 +148,7 @@ Persona: {persona.name} ({persona.age_range})
 USP: {usp.usp_statement}
 
 Tra ve CHINH XAC JSON:
-{{"title":"Tieu de bai dang (ngan gon, hap dan)","caption":"Noi dung caption day du cho Discord embed (2-4 cau, co emoji) va nhac den san pham hoac quang cao loi ich","image_prompt":"English prompt for AI image generation (descriptive, specific, related to the topic and product style)"}}
+{json_example}
 JSON thuan tuy."""
 
         messages = build_messages_from_history(prompt, conversation_history, max_history=2)
