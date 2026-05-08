@@ -4,7 +4,7 @@ Local LLM-based pipeline: Planning -> ReAct -> Tool Use
 """
 
 from .data_models import StageAInput, EvidenceItem, StageAOutput
-from .llm_config import LocalLLMConfig, LocalTextGenerator
+from .llm_config import LocalLLMConfig
 from .environment import load_environment, setup_directories
 from .clarification import (
     validate_input_completeness,
@@ -33,7 +33,6 @@ __all__ = [
     "EvidenceItem",
     "StageAOutput",
     "LocalLLMConfig",
-    "LocalTextGenerator",
     "load_environment",
     "setup_directories",
     "validate_input_completeness",

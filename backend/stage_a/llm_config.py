@@ -9,7 +9,7 @@ from typing import Optional
 # Import from new provider architecture
 from .llm_provider import (
     LocalLLMConfig,
-    LocalTextGenerator,
+    LocalLlamaProvider,
     LLMProvider,
     get_llm_provider,
     initialize_llm as init_llm,
