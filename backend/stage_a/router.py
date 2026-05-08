@@ -70,8 +70,20 @@ def classify_intent_and_respond(
             if parsed.get("intent") not in valid_intents:
                 rprint(f"[yellow]⚠️ Invalid intent '{parsed.get('intent')}', defaulting to research[/yellow]")
                 parsed["intent"] = "research"
+            
             result.update(parsed)
             rprint(f"[green]✅ Intent Classification: {result.get('intent')}[/green]")
+            
+            # Fallback: If intent is chat but response is empty, generate one
+            if result.get("intent") == "chat" and not result.get("response", "").strip():
+                rprint(f"[yellow]⚠️  Chat intent detected but response is empty, generating fallback response[/yellow]")
+                fallback_response = llm.generate(
+                    messages=[{"role": "user", "content": user_prompt}],
+                    system_message="You are a friendly AI assistant. Respond naturally and helpfully to the user's message.",
+                    max_new_tokens=300
+                )
+                result["response"] = fallback_response.strip() if fallback_response else "Xin lỗi, tôi không thể trả lời lúc này. Vui lòng thử lại."
+                rprint(f"[green]✅ Generated fallback response[/green]")
         except json.JSONDecodeError as e:
             rprint(f"[yellow]⚠️ JSON parse failed: {e}, trying to extract intent from raw text[/yellow]")
             # Fallback: try to detect intent from raw response

@@ -340,9 +340,28 @@ class GeminiProvider(LLMProvider):
                 }
                 
                 response = self.client.models.generate_content(**request_kwargs)
-                
-                if response and response.text:
-                    return response.text.strip()
+                print(f"[green]✅ Gemini response received (attempt {attempt + 1})[/green]")
+                print(response)
+                if response:
+                    # Try to get text response
+                    if response.text:
+                        return response.text.strip()
+                    
+                    # If response has candidates with parts, try to extract text
+                    if hasattr(response, 'candidates') and response.candidates:
+                        for candidate in response.candidates:
+                            if hasattr(candidate, 'content') and candidate.content:
+                                # Concatenate text from all text parts
+                                text_parts = []
+                                for part in candidate.content.parts:
+                                    if hasattr(part, 'text') and part.text:
+                                        text_parts.append(part.text)
+                                
+                                if text_parts:
+                                    return ' '.join(text_parts).strip()
+                    
+                    rprint(f"[yellow]⚠️  Gemini returned no text content[/yellow]")
+                    return ""
                 else:
                     rprint(f"[yellow]⚠️  Gemini returned empty response[/yellow]")
                     return ""
