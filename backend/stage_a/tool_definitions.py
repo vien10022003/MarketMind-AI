@@ -59,11 +59,7 @@ INTENT_CLASSIFICATION_TOOLS = [
             },
             "response": {
                 "type": "string",
-                "description": "For 'chat' intent: provide a friendly, helpful response to the user. For 'knowledge' or 'research' intent: can be empty string. ALWAYS populate this field with actual content when intent='chat'."
-            },
-            "reasoning": {
-                "type": "string",
-                "description": "Brief reasoning for the classification"
+                "description": "Provide a friendly, helpful response to the user"
             }
         },
         required=["intent", "response", "reasoning"]
@@ -301,11 +297,7 @@ Classify user prompts into exactly one of three categories:
 1. "chat" - Casual greetings, simple conversation, thanking, asking about chatbot, common knowledge
 2. "knowledge" - Questions requiring current information or high accuracy (e.g., GDP 2024, currency rates)
 3. "research" - Marketing analysis, market research, competitive analysis, strategy questions
-
-CRITICAL RULES:
-- When intent='chat': ALWAYS provide a friendly, helpful response to the user. This field must NOT be empty.
-- When intent='knowledge' or 'research': You can leave response empty.
-- The response field must contain actual helpful text when classifying as 'chat'."""
+"""
 
 # System message for input validation
 SYSTEM_MESSAGE_INPUT_VALIDATOR = """You are an input validation system for market research. You must always respond with valid JSON.
