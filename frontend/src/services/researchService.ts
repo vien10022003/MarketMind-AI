@@ -303,14 +303,13 @@ export const researchService = {
   /**
    * Create a new conversation
    */
-  async createConversation(title?: string): Promise<any | null> {
+  async createConversation(firstMessage?: string, title?: string): Promise<any | null> {
     try {
-      console.log('Creating conversation...', title);
       const url = getApiUrl('/api/conversations');
       const response = await apiFetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title }),
+        body: JSON.stringify({ first_message: firstMessage, title }),
       });
       if (response.ok) {
         const data = await response.json();

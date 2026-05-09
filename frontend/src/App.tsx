@@ -39,13 +39,8 @@ function App() {
 
   // Initialize backend URL from Firebase on app startup
   useEffect(() => {
-    const initializeApp = async () => {
-      await initializeBackendUrl();
-      await waitForBackendInitialization();
-      // Only create conversation after backend URL is fully initialized
-      handleCreateNewConversation();
-    };
-    initializeApp();
+    initializeBackendUrl();
+    // handleCreateNewConversation(); // Removed: Don't create by default
   }, []);
 
   // Auto-scroll to latest message
@@ -74,9 +69,9 @@ function App() {
     };
   }, [chatMessages, currentConversationId]);
 
-  const createNewConversation = async (title?: string) => {
+  const createNewConversation = async (firstMessage?: string, title?: string) => {
     try {
-      const conv = await researchService.createConversation(title);
+      const conv = await researchService.createConversation(firstMessage, title);
       if (conv && conv.conversation_id) {
         setCurrentConversationId(conv.conversation_id);
         return conv.conversation_id;
@@ -87,8 +82,8 @@ function App() {
     return null;
   };
 
-  const handleCreateNewConversation = async () => {
-    // Reset state
+  const handleCreateNewConversation = () => {
+    // Reset UI state
     setChatMessages([
       {
         id: 'welcome',
@@ -106,11 +101,8 @@ function App() {
     msgIdCounter = 0;
     messagesSaveBuffer.current = [];
 
-    // Create new conversation
-    const convId = await createNewConversation();
-    if (convId) {
-      setCurrentConversationId(convId);
-    }
+    // Just reset ID, don't create in backend yet
+    setCurrentConversationId(null);
   };
 
   const handleLoadConversation = async (conversationId: string) => {
@@ -159,6 +151,14 @@ function App() {
   const handleSend = async (prompt?: string) => {
     const text = prompt ?? inputValue.trim();
     if (!text || isLoading) return;
+
+    let convId = currentConversationId;
+    
+    // Create conversation on first message if it doesn't exist
+    if (!convId) {
+      convId = await createNewConversation(text);
+      if (!convId) return;
+    }
 
     // Build conversation history BEFORE adding the new user message
     const conversationHistory = getRecentHistory(3);

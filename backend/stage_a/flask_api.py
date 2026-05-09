@@ -636,6 +636,23 @@ def api_get_conversation(conversation_id):
         return {"error": str(e)}, 500
 
 
+def generate_conversation_title(user_prompt: str) -> str:
+    """Generate a concise title using LLM"""
+    if not llm:
+        return "Cuộc hội thoại mới"
+    
+    try:
+        system_message = "Bạn là trợ lý nghiên cứu thị trường. Hãy tạo một tiêu đề cực kỳ ngắn gọn (tối đa 5-6 từ) bằng tiếng Việt cho cuộc hội thoại bắt đầu bằng yêu cầu sau. Chỉ trả về văn bản tiêu đề, không thêm dấu ngoặc kép hay tiền tố."
+        messages = [{"role": "user", "content": f"Tạo tiêu đề cho: {user_prompt}"}]
+        title = llm.generate(messages=messages, system_message=system_message, max_new_tokens=20).strip()
+        # Remove quotes if LLM added them
+        title = title.strip('"').strip("'")
+        return title
+    except Exception as e:
+        rprint(f"[yellow]⚠️ Title generation failed: {e}[/yellow]")
+        return "Cuộc hội thoại mới"
+
+
 @app.route('/api/conversations', methods=['POST', 'OPTIONS'])
 def api_create_conversation():
     """Create a new conversation"""
@@ -651,7 +668,14 @@ def api_create_conversation():
         
         data = request.get_json() or {}
         conversation_id = str(uuid.uuid4())
+        
+        # Generate title if first_message is provided
+        first_message = data.get('first_message')
         title = data.get('title')
+        
+        if first_message and not title:
+            rprint(f"[cyan]Generating title for new conversation...[/cyan]")
+            title = generate_conversation_title(first_message)
         
         cm = get_conversation_manager(mongo.db)
         conversation = cm.create_conversation(conversation_id, title=title)
