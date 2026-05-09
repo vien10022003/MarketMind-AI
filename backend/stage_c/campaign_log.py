@@ -21,7 +21,7 @@ def save_campaign_log(mongo, campaign_log: CampaignLog) -> Optional[str]:
     Returns:
         MongoDB document ID or None
     """
-    if not mongo or not mongo.client:
+    if mongo is None or mongo.client is None:
         rprint("[yellow]⚠️ MongoDB not connected. Skipping campaign log save.[/yellow]")
         return None
 
@@ -51,7 +51,7 @@ def save_campaign_log(mongo, campaign_log: CampaignLog) -> Optional[str]:
 
 def get_campaign_log(mongo, campaign_id: str) -> Optional[Dict[str, Any]]:
     """Retrieve campaign log by campaign_id."""
-    if not mongo or not mongo.client:
+    if mongo is None or mongo.client is None:
         return None
 
     try:

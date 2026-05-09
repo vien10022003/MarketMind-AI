@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { ChatMessageBubble, ConversationList, ModelSelector } from './components';
 import type { ChatMessage, ResearchRequest, ConversationTurn, ContentBrief, StageBOutput, ResearchReport } from './types';
 import { researchService } from './services/researchService';
-import { initializeBackendUrl } from './config';
+import { initializeBackendUrl, waitForBackendInitialization } from './config';
 import './App.css';
 
 let msgIdCounter = 0;
@@ -39,8 +39,13 @@ function App() {
 
   // Initialize backend URL from Firebase on app startup
   useEffect(() => {
-    initializeBackendUrl();
-    handleCreateNewConversation(); // Create a new conversation on app start
+    const initializeApp = async () => {
+      await initializeBackendUrl();
+      await waitForBackendInitialization();
+      // Only create conversation after backend URL is fully initialized
+      handleCreateNewConversation();
+    };
+    initializeApp();
   }, []);
 
   // Auto-scroll to latest message

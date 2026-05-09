@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { researchService } from '../services/researchService';
+import { waitForBackendInitialization } from '../config';
 import './CampaignDashboard.css';
 
 interface Campaign {
@@ -23,10 +24,15 @@ export function CampaignDashboard() {
   const [filterStatus, setFilterStatus] = useState<'all' | 'active' | 'completed'>('all');
 
   useEffect(() => {
-    loadCampaigns();
-    // Auto-refresh every 2 minutes (120000 ms)
-    const interval = setInterval(loadCampaigns, 120000);
-    return () => clearInterval(interval);
+    const initLoadCampaigns = async () => {
+      // Wait for backend URL to be initialized before loading campaigns
+      await waitForBackendInitialization();
+      loadCampaigns();
+      // Auto-refresh every 2 minutes (120000 ms)
+      const interval = setInterval(loadCampaigns, 120000);
+      return () => clearInterval(interval);
+    };
+    initLoadCampaigns();
   }, [filterStatus]);
 
   const loadCampaigns = async () => {

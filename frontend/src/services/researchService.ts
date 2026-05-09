@@ -267,6 +267,7 @@ export const researchService = {
    */
   async listConversations(skip = 0, limit = 10): Promise<any> {
     try {
+      console.log('Listing conversations...');
       const url = getApiUrl(`/api/conversations?skip=${skip}&limit=${limit}`);
       const response = await apiFetch(url);
       if (response.ok) {
@@ -285,6 +286,7 @@ export const researchService = {
    */
   async getConversation(conversationId: string): Promise<any | null> {
     try {
+      console.log('Getting conversation...', conversationId);
       const url = getApiUrl(`/api/conversations/${conversationId}`);
       const response = await apiFetch(url);
       if (response.ok) {
@@ -303,6 +305,7 @@ export const researchService = {
    */
   async createConversation(title?: string): Promise<any | null> {
     try {
+      console.log('Creating conversation...', title);
       const url = getApiUrl('/api/conversations');
       const response = await apiFetch(url, {
         method: 'POST',
@@ -325,6 +328,7 @@ export const researchService = {
    */
   async saveMessagesToConversation(conversationId: string, messages: any[]): Promise<boolean> {
     try {
+      console.log('Saving messages to conversation...', conversationId, messages);
       const url = getApiUrl(`/api/conversations/${conversationId}/messages`);
       const response = await apiFetch(url, {
         method: 'POST',
@@ -343,6 +347,7 @@ export const researchService = {
    */
   async updateConversationTitle(conversationId: string, title: string): Promise<boolean> {
     try {
+      console.log('Updating conversation title...', conversationId, title);
       const url = getApiUrl(`/api/conversations/${conversationId}/title`);
       const response = await apiFetch(url, {
         method: 'PUT',
@@ -361,6 +366,7 @@ export const researchService = {
    */
   async deleteConversation(conversationId: string): Promise<boolean> {
     try {
+      console.log('Deleting conversation...', conversationId);
       const url = getApiUrl(`/api/conversations/${conversationId}`);
       const response = await apiFetch(url, { method: 'DELETE' });
       return response.ok;

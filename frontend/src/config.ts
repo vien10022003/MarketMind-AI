@@ -19,6 +19,9 @@ const FIREBASE_API_URL = 'https://vienvipvail-default-rtdb.firebaseio.com/api-gr
 // Default backend URL (will be overridden by Firebase if available)
 let ACTIVE_BACKEND_URL = BACKEND_NGROK;
 
+// Track initialization state
+let isBackendUrlInitialized = false;
+
 // ========================================
 
 export const config = {
@@ -88,16 +91,49 @@ export const initializeBackendUrl = async (): Promise<void> => {
     // Firebase returns the ngrok URL directly or wrapped in an object
     const backendUrl = typeof data === 'string' ? data : data.url || data.backend_url;
     
-    if (backendUrl && backendUrl.startsWith('https://') || backendUrl.startsWith('http://')) {
+    if (backendUrl && (backendUrl.startsWith('https://') || backendUrl.startsWith('http://'))) {
       ACTIVE_BACKEND_URL = backendUrl;
       config.api.baseURL = ACTIVE_BACKEND_URL;
       console.log(`✅ Backend URL loaded from Firebase: ${ACTIVE_BACKEND_URL}`);
     } else {
-      console.warn('⚠️ Invalid URL from Firebase, using default:',ACTIVE_BACKEND_URL);
+      console.warn('⚠️ Invalid URL from Firebase, using default:', ACTIVE_BACKEND_URL);
     }
   } catch (error) {
     console.warn('⚠️ Failed to fetch backend URL from Firebase:', error);
     console.log(`📌 Using default backend URL: ${ACTIVE_BACKEND_URL}`);
     // Will continue with default ACTIVE_BACKEND_URL
+  } finally {
+    // Mark initialization as complete regardless of success or failure
+    isBackendUrlInitialized = true;
   }
+};
+
+/**
+ * Check if backend URL has been initialized
+ */
+export const isBackendInitialized = (): boolean => {
+  return isBackendUrlInitialized;
+};
+
+/**
+ * Wait for backend URL initialization
+ * Returns immediately if already initialized
+ */
+export const waitForBackendInitialization = async (): Promise<void> => {
+  if (isBackendUrlInitialized) {
+    return;
+  }
+  
+  // Poll every 50ms for initialization (max 10 seconds)
+  const startTime = Date.now();
+  const maxWait = 10000;
+  
+  return new Promise((resolve) => {
+    const checkInterval = setInterval(() => {
+      if (isBackendUrlInitialized || Date.now() - startTime > maxWait) {
+        clearInterval(checkInterval);
+        resolve();
+      }
+    }, 50);
+  });
 };

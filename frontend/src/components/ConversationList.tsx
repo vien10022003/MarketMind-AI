@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { researchService } from '../services/researchService';
+import { waitForBackendInitialization } from '../config';
 import { CampaignDashboard } from './CampaignDashboard';
 import './ConversationList.css';
 
@@ -25,7 +26,12 @@ export function ConversationList({ onSelectConversation, onCreateNew, currentCon
   const [activeTab, setActiveTab] = useState<'conversations' | 'campaigns'>('conversations');
 
   useEffect(() => {
-    loadConversations();
+    const initLoadConversations = async () => {
+      // Wait for backend URL to be initialized before loading conversations
+      await waitForBackendInitialization();
+      loadConversations();
+    };
+    initLoadConversations();
   }, []);
 
   const loadConversations = async () => {

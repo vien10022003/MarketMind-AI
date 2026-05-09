@@ -455,7 +455,7 @@ def api_strategy_stage_b_approve():
         return {"error": "Missing JSON body"}, 400
 
     # Save approved strategy + briefs to MongoDB
-    if mongo and mongo.client:
+    if mongo is not None and mongo.client is not None:
         try:
             collection = mongo.db['stage_b_strategies']
             doc = {
@@ -590,7 +590,7 @@ def api_list_conversations():
     try:
         from conversation_manager import get_conversation_manager
         
-        if not mongo or not mongo.db:
+        if mongo is None or mongo.db is None:
             return {"error": "MongoDB not available"}, 500
         
         cm = get_conversation_manager(mongo.db)
@@ -621,7 +621,7 @@ def api_get_conversation(conversation_id):
     try:
         from conversation_manager import get_conversation_manager
         
-        if not mongo or not mongo.db:
+        if mongo is None or mongo.db is None:
             return {"error": "MongoDB not available"}, 500
         
         cm = get_conversation_manager(mongo.db)
@@ -646,7 +646,7 @@ def api_create_conversation():
         from conversation_manager import get_conversation_manager
         import uuid
         
-        if not mongo or not mongo.db:
+        if mongo is None or mongo.db is None:
             return {"error": "MongoDB not available"}, 500
         
         data = request.get_json() or {}
@@ -671,7 +671,7 @@ def api_save_messages(conversation_id):
     try:
         from conversation_manager import get_conversation_manager, ChatMessageDoc
         
-        if not mongo or not mongo.db:
+        if mongo is None or mongo.db is None:
             return {"error": "MongoDB not available"}, 500
         
         data = request.get_json() or {}
@@ -727,7 +727,7 @@ def api_update_conversation_title(conversation_id):
     try:
         from conversation_manager import get_conversation_manager
         
-        if not mongo or not mongo.db:
+        if mongo is None or mongo.db is None:
             return {"error": "MongoDB not available"}, 500
         
         data = request.get_json() or {}
@@ -757,7 +757,7 @@ def api_delete_conversation(conversation_id):
     try:
         from conversation_manager import get_conversation_manager
         
-        if not mongo or not mongo.db:
+        if mongo is None or mongo.db is None:
             return {"error": "MongoDB not available"}, 500
         
         cm = get_conversation_manager(mongo.db)
