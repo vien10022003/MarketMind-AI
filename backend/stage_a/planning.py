@@ -61,6 +61,16 @@ def planner_chain(
             plan = json.loads(block)
             # Normalize tool calling response format
             plan = normalize_tool_response(plan)
+            
+            # Handle stringified JSON arrays in plan fields
+            for key in ['research_questions', 'hypotheses']:
+                if key in plan and isinstance(plan[key], str):
+                    try:
+                        plan[key] = json.loads(plan[key])
+                    except json.JSONDecodeError:
+                        # Keep as string if can't parse
+                        pass
+            
             plan["steps"] = plan.get("steps", [])[:max_steps]
             rprint("[green]✅ Planning completed[/green]")
             rprint(f"  Steps: {len(plan.get('steps', []))} search queries")

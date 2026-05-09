@@ -64,7 +64,7 @@ Tra ve CHINH XAC JSON:
 {json_example}
 Tao 7 schedule entries (1 moi ngay). JSON thuan tuy."""
 
-    from .tool_definitions import build_messages_from_history
+    from stage_a.tool_definitions import build_messages_from_history
     messages = build_messages_from_history(prompt, conversation_history, max_history=2)
     raw = llm.generate(
         messages=messages,
@@ -127,7 +127,7 @@ def generate_content_briefs(
     briefs = []
     colors = [0x57F287, 0x5865F2, 0xFEE75C, 0xED4245, 0xEB459E, 0x3498DB, 0xE67E22]
 
-    from .tool_definitions import build_messages_from_history
+    from stage_a.tool_definitions import build_messages_from_history
     for entry in campaign_plan.schedule:
         # Find pillar details
         pillar_detail = next((p for p in pillars if p.name == entry.pillar_name), None)

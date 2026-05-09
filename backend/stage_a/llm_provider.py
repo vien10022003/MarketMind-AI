@@ -340,18 +340,29 @@ class GeminiProvider(LLMProvider):
                 }
                 
                 response = self.client.models.generate_content(**request_kwargs)
-                print(f"[green]✅ Gemini response received (attempt {attempt + 1})[/green]")
-                print(response)
+                
                 if response:
-                    # Try to get text response
+                    # Try to get text response first
                     if response.text:
                         return response.text.strip()
                     
-                    # If response has candidates with parts, try to extract text
+                    # Handle function call responses
                     if hasattr(response, 'candidates') and response.candidates:
                         for candidate in response.candidates:
                             if hasattr(candidate, 'content') and candidate.content:
-                                # Concatenate text from all text parts
+                                # Check for function calls
+                                for part in candidate.content.parts:
+                                    if hasattr(part, 'function_call') and part.function_call:
+                                        # Extract function call args and convert to JSON
+                                        func_call = part.function_call
+                                        # Build JSON response with function name and parameters
+                                        result = {
+                                            "name": func_call.name,
+                                            "parameters": func_call.args
+                                        }
+                                        return json.dumps(result)
+                                
+                                # Try to extract text from text parts
                                 text_parts = []
                                 for part in candidate.content.parts:
                                     if hasattr(part, 'text') and part.text:
@@ -360,7 +371,7 @@ class GeminiProvider(LLMProvider):
                                 if text_parts:
                                     return ' '.join(text_parts).strip()
                     
-                    rprint(f"[yellow]⚠️  Gemini returned no text content[/yellow]")
+                    rprint(f"[yellow]⚠️  Gemini returned no text or function call content[/yellow]")
                     return ""
                 else:
                     rprint(f"[yellow]⚠️  Gemini returned empty response[/yellow]")

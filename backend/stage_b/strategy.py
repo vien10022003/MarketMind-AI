@@ -71,7 +71,7 @@ Tra ve CHINH XAC JSON (KHONG text khac):
 {json_example}
 Moi muc 3-5 diem cu the. JSON thuan tuy."""
 
-    from .tool_definitions import build_messages_from_history
+    from stage_a.tool_definitions import build_messages_from_history
     messages = build_messages_from_history(prompt, conversation_history, max_history=2)
     raw = llm.generate(
         messages=messages,
@@ -115,7 +115,7 @@ Tra ve CHINH XAC JSON (KHONG text khac):
 {json_example}
 JSON thuan tuy."""
 
-    from .tool_definitions import build_messages_from_history
+    from stage_a.tool_definitions import build_messages_from_history
     messages = build_messages_from_history(prompt, conversation_history, max_history=2)
     raw = llm.generate(
         messages=messages,
@@ -175,7 +175,7 @@ Tra ve CHINH XAC JSON:
 {json_example}
 JSON thuan tuy."""
 
-    from .tool_definitions import build_messages_from_history
+    from stage_a.tool_definitions import build_messages_from_history
     messages = build_messages_from_history(prompt, conversation_history, max_history=2)
     raw = llm.generate(
         messages=messages,
@@ -226,7 +226,7 @@ Tra ve CHINH XAC JSON:
 {json_example}
 Tao 4 pillars. JSON thuan tuy."""
 
-    from .tool_definitions import build_messages_from_history
+    from stage_a.tool_definitions import build_messages_from_history
     messages = build_messages_from_history(prompt, conversation_history, max_history=2)
     raw = llm.generate(
         messages=messages,
