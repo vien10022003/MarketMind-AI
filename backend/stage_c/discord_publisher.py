@@ -219,6 +219,7 @@ def run_stage_c_pipeline(stage_c_input: StageCInput, llm=None) -> Generator[dict
         yield {"status": "progress", "message": "ℹ️ Bỏ qua tạo ảnh theo yêu cầu"}
 
     results: List[ExecutionResult] = []
+    expanded_briefs: List[dict] = []
     total_posted = 0
     total_failed = 0
 
@@ -240,6 +241,8 @@ def run_stage_c_pipeline(stage_c_input: StageCInput, llm=None) -> Generator[dict
                 "brief_index": idx,
             }
             brief_data = expand_content_brief(llm, brief_data)
+        
+        expanded_briefs.append(brief_data)
 
         image_url = None
         image_skipped = True
@@ -297,6 +300,7 @@ def run_stage_c_pipeline(stage_c_input: StageCInput, llm=None) -> Generator[dict
             image_skipped=image_skipped,
             discord_sent=success,
             error=None if success else "Discord post failed",
+            content=brief_data.get("caption", ""),
             posted_at=datetime.now(timezone.utc).isoformat() if success else None,
         )
         results.append(exec_result)
@@ -330,6 +334,24 @@ def run_stage_c_pipeline(stage_c_input: StageCInput, llm=None) -> Generator[dict
         execution_mode="immediate",
         completed_at=datetime.now(timezone.utc).isoformat(),
     )
+
+    # Save to scheduled_campaigns even for immediate mode so it shows in the list
+    try:
+        scheduler = get_scheduler()
+        scheduler.save_scheduled_campaign(
+            campaign_id=campaign_id,
+            mongodb_stage_a_id=stage_c_input.mongodb_stage_a_id or "",
+            briefs=expanded_briefs,
+            scheduled_times=[datetime.now(timezone.utc).isoformat()] * len(briefs),
+            webhook_url=webhook_url,
+            skip_images=skip_images,
+            status="completed",
+            execution_results=[r.model_dump() for r in results],
+            posted_count=total_posted,
+            failed_count=total_failed,
+        )
+    except Exception as e:
+        rprint(f"[yellow]⚠️ Failed to save immediate campaign to scheduler: {e}[/yellow]")
 
     yield {
         "status": "stage_c_completed",

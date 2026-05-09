@@ -39,20 +39,13 @@ class CampaignScheduler:
         scheduled_times: List[str],
         webhook_url: str,
         skip_images: bool = False,
+        status: str = "scheduled",
+        execution_results: List[Dict[str, Any]] = None,
+        posted_count: int = 0,
+        failed_count: int = 0,
     ) -> str:
         """
         Save a scheduled campaign to MongoDB.
-        
-        Args:
-            campaign_id: Unique campaign identifier
-            mongodb_stage_a_id: Reference to Stage A report
-            briefs: List of content briefs
-            scheduled_times: List of ISO datetimes for posting
-            webhook_url: Discord webhook URL
-            skip_images: Whether to skip image generation
-        
-        Returns:
-            MongoDB document ID
         """
         doc = {
             "campaign_id": campaign_id,
@@ -61,11 +54,11 @@ class CampaignScheduler:
             "scheduled_times": scheduled_times,
             "webhook_url": webhook_url,
             "skip_images": skip_images,
-            "status": "scheduled",
+            "status": status,
             "created_at": datetime.now(timezone.utc).isoformat(),
-            "execution_results": [],
-            "posted_count": 0,
-            "failed_count": 0,
+            "execution_results": execution_results or [],
+            "posted_count": posted_count,
+            "failed_count": failed_count,
             "total_scheduled": len(briefs),
         }
         

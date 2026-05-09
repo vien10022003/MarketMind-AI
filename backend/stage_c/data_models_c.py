@@ -18,6 +18,7 @@ class ExecutionResult(BaseModel):
     discord_sent: bool = Field(default=False, description="Whether Discord post succeeded")
     error: Optional[str] = Field(default=None, description="Error message if failed")
     scheduled_post_time: Optional[str] = Field(default=None, description="ISO datetime for scheduled posting")
+    content: Optional[str] = Field(default=None, description="Actual content/caption posted")
     posted_at: Optional[str] = Field(default=None, description="ISO datetime when actually posted")
     created_at: str = Field(default_factory=lambda: datetime.now().isoformat())
 
