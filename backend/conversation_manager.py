@@ -79,7 +79,8 @@ class ConversationManager:
             "stage_c_data": None,
         }
         result = self.conversations.insert_one(doc)
-        return {"_id": str(result.inserted_id), **doc}
+        doc["_id"] = str(result.inserted_id)
+        return doc
 
     def get_conversation(self, conversation_id: str) -> Optional[dict]:
         """Get a conversation by ID"""
