@@ -52,9 +52,9 @@ def synthesize_tong_quan_thi_truong(
     
     prompt = f"""
 Input:
-- Nganh hang: {research_input.nganh_hang}
-- Thi truong: {research_input.thi_truong_muc_tieu}
-- Khung thoi gian: {research_input.khung_thoi_gian}
+- Ban chat san pham: {research_input.ban_chat_san_pham}
+- Khach hang muc tieu: {research_input.khach_hang_muc_tieu}
+- Gia tri cot loi: {research_input.gia_tri_cot_loi}
 
 Yeu cau:
 1. Toc do tang truong, quy mo thi truong
@@ -91,9 +91,9 @@ def synthesize_phan_tich_doi_thu(
     
     prompt = f"""
 Input:
-- Nganh hang: {research_input.nganh_hang}
-- Thi truong: {research_input.thi_truong_muc_tieu}
-- Doi thu seed: {research_input.doi_thu_seed}
+- Ban chat san pham: {research_input.ban_chat_san_pham}
+- Khach hang muc tieu: {research_input.khach_hang_muc_tieu}
+- Gia ca chinh sach: {research_input.gia_ca_chinh_sach}
 
 Yeu cau:
 1. Cac doi thu chinh tren thi truong
@@ -131,9 +131,9 @@ def synthesize_xu_huong_nganh(
     
     prompt = f"""
 Input:
-- Nganh hang: {research_input.nganh_hang}
-- Thi truong: {research_input.thi_truong_muc_tieu}
-- Khung thoi gian: {research_input.khung_thoi_gian}
+- Ban chat san pham: {research_input.ban_chat_san_pham}
+- Khach hang muc tieu: {research_input.khach_hang_muc_tieu}
+- Gia tri cot loi: {research_input.gia_tri_cot_loi}
 
 Yeu cau:
 1. Xu huong cong nghe (AI, tu dong hoa, blockchain, IoT)
@@ -171,9 +171,9 @@ def synthesize_phan_khuc_va_insight(
     
     prompt = f"""
 Input:
-- Nganh hang: {research_input.nganh_hang}
-- Thi truong: {research_input.thi_truong_muc_tieu}
-- Phan khuc quan tam: {research_input.phan_khuc_quan_tam}
+- Ban chat san pham: {research_input.ban_chat_san_pham}
+- Khach hang muc tieu: {research_input.khach_hang_muc_tieu}
+- Gia tri cot loi: {research_input.gia_tri_cot_loi}
 
 Yeu cau:
 1. Phan khuc chinh va dac diem

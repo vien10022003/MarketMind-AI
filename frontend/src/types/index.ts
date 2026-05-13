@@ -16,12 +16,10 @@ export interface ResearchRequest {
   user_prompt: string; // Required: user's research requirement
   conversation_history?: ConversationTurn[]; // Recent Q&A pairs for context
   llm_provider?: 'llama' | 'gemini-2.5' | 'gemini-3.1'; // LLM provider selection
-  nganh_hang?: string;
-  thi_truong_muc_tieu?: string;
-  phan_khuc_quan_tam?: string[];
-  doi_thu_seed?: string[];
-  khung_thoi_gian?: string;
-  muc_tieu_nghien_cuu?: string[];
+  ban_chat_san_pham?: string;
+  khach_hang_muc_tieu?: string;
+  gia_tri_cot_loi?: string;
+  gia_ca_chinh_sach?: string;
 }
 
 // Plan Types

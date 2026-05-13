@@ -37,12 +37,10 @@ def planner_chain(
         Dict with research_questions, hypotheses, steps, success_criteria
     """
     prompt = f"""Input:
-- nganh_hang: {research_input.nganh_hang}
-- thi_truong_muc_tieu: {research_input.thi_truong_muc_tieu}
-- phan_khuc_quan_tam: {research_input.phan_khuc_quan_tam}
-- doi_thu_seed: {research_input.doi_thu_seed}
-- khung_thoi_gian: {research_input.khung_thoi_gian}
-- muc_tieu_nghien_cuu: {research_input.muc_tieu_nghien_cuu}"""
+- ban_chat_san_pham: {research_input.ban_chat_san_pham}
+- khach_hang_muc_tieu: {research_input.khach_hang_muc_tieu}
+- gia_tri_cot_loi: {research_input.gia_tri_cot_loi}
+- gia_ca_chinh_sach: {research_input.gia_ca_chinh_sach}"""
     
     messages = build_messages_from_history(prompt, conversation_history, max_history=2)
     
@@ -82,14 +80,14 @@ def planner_chain(
     # Fallback plan
     rprint("[yellow]⚠️ Using fallback plan[/yellow]")
     fallback_steps = [
-        f"Quy mo va toc do tang truong thi truong {research_input.nganh_hang} tai {research_input.thi_truong_muc_tieu} {research_input.khung_thoi_gian}",
-        f"Top doi thu cua {research_input.nganh_hang} tai {research_input.thi_truong_muc_tieu} va dinh vi san pham",
-        f"Xu huong tieu dung {research_input.nganh_hang} tai {research_input.thi_truong_muc_tieu} {research_input.khung_thoi_gian}",
-        f"Insight hanh vi mua cua cac phan khuc {', '.join(research_input.phan_khuc_quan_tam or ['khach hang muc_tieu'])}",
+        f"Quy mo va toc do tang truong thi truong cho san pham: {research_input.ban_chat_san_pham}",
+        f"Phan tich doi thu canh tranh va dinh vi cho: {research_input.ban_chat_san_pham}",
+        f"Xu huong tieu dung cua khach hang: {research_input.khach_hang_muc_tieu}",
+        f"Insight hanh vi mua cua: {research_input.khach_hang_muc_tieu}",
     ][:max_steps]
     
     return {
-        "research_questions": research_input.muc_tieu_nghien_cuu or ["Market research"],
+        "research_questions": ["Market research"],
         "hypotheses": ["Nguoi dung uu tien san pham an toan, minh bach thanh phan, gia hop ly"],
         "steps": fallback_steps,
         "success_criteria": ["Moi deliverable co citation URL ro rang"],

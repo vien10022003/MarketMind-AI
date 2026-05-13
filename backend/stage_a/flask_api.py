@@ -146,17 +146,15 @@ def run_stage_a_pipeline_generator(req_data: dict, user_id: Optional[str] = None
         # Create initial input
         initial_input = StageAInput(
             user_prompt=user_prompt,
-            nganh_hang=req_data.get("nganh_hang", ""),
-            thi_truong_muc_tieu=req_data.get("thi_truong_muc_tieu", ""),
-            phan_khuc_quan_tam=req_data.get("phan_khuc_quan_tam", []),
-            doi_thu_seed=req_data.get("doi_thu_seed", []),
-            khung_thoi_gian=req_data.get("khung_thoi_gian", "12 thang gan nhat"),
-            muc_tieu_nghien_cuu=req_data.get("muc_tieu_nghien_cuu", [])
+            ban_chat_san_pham=req_data.get("ban_chat_san_pham", ""),
+            khach_hang_muc_tieu=req_data.get("khach_hang_muc_tieu", ""),
+            gia_tri_cot_loi=req_data.get("gia_tri_cot_loi", ""),
+            gia_ca_chinh_sach=req_data.get("gia_ca_chinh_sach", "")
         )
 
-        # Check if nganh_hang is provided - if yes, skip intent routing and go directly to Stage A
-        if initial_input.nganh_hang and initial_input.nganh_hang.strip():
-            rprint("[magenta]nganh_hang provided, skipping intent routing and going directly to Stage A[/magenta]")
+        # Check if ban_chat_san_pham is provided - if yes, skip intent routing and go directly to Stage A
+        if initial_input.ban_chat_san_pham and initial_input.ban_chat_san_pham.strip():
+            rprint("[magenta]ban_chat_san_pham provided, skipping intent routing and going directly to Stage A[/magenta]")
             yield json.dumps({
                 "status": "progress",
                 "message": "Đã nhận dạng ngành hàng, bắt đầu phân tích..."

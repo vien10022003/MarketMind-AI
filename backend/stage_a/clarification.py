@@ -68,12 +68,10 @@ def validate_input_completeness(
     prompt = f"""User prompt (chi tieu hang): "{user_prompt}"
 
 Thong tin hien co:
-- nganh_hang: {partial_input.nganh_hang if partial_input.nganh_hang else '(CHUA CO)'}
-- thi_truong_muc_tieu: {partial_input.thi_truong_muc_tieu if partial_input.thi_truong_muc_tieu else '(CHUA CO)'}
-- phan_khuc_quan_tam: {partial_input.phan_khuc_quan_tam if partial_input.phan_khuc_quan_tam else '(CHUA CO)'}
-- doi_thu_seed: {partial_input.doi_thu_seed if partial_input.doi_thu_seed else '(CHUA CO)'}
-- khung_thoi_gian: {partial_input.khung_thoi_gian if partial_input.khung_thoi_gian else '(CHUA CO)'}
-- muc_tieu_nghien_cuu: {partial_input.muc_tieu_nghien_cuu if partial_input.muc_tieu_nghien_cuu else '(CHUA CO)'}"""
+- ban_chat_san_pham: {partial_input.ban_chat_san_pham if partial_input.ban_chat_san_pham else '(CHUA CO)'}
+- khach_hang_muc_tieu: {partial_input.khach_hang_muc_tieu if partial_input.khach_hang_muc_tieu else '(CHUA CO)'}
+- gia_tri_cot_loi: {partial_input.gia_tri_cot_loi if partial_input.gia_tri_cot_loi else '(CHUA CO)'}
+- gia_ca_chinh_sach: {partial_input.gia_ca_chinh_sach if partial_input.gia_ca_chinh_sach else '(CHUA CO)'}"""
     
     messages = build_messages_from_history(prompt, conversation_history, max_history=2)
     
@@ -150,11 +148,10 @@ Missing (high+medium): {missing_list if missing_list else 'Khong co'}"""
         "has_critical_gaps": len(missing_list) > 0,
         "questions_to_ask": [],
         "suggested_values": {
-            "nganh_hang": partial_input.nganh_hang or "",
-            "thi_truong_muc_tieu": partial_input.thi_truong_muc_tieu or "",
-            "phan_khuc_quan_tam": partial_input.phan_khuc_quan_tam or [],
-            "doi_thu_seed": partial_input.doi_thu_seed or [],
-            "muc_tieu_nghien_cuu": partial_input.muc_tieu_nghien_cuu or []
+            "ban_chat_san_pham": partial_input.ban_chat_san_pham or "",
+            "khach_hang_muc_tieu": partial_input.khach_hang_muc_tieu or "",
+            "gia_tri_cot_loi": partial_input.gia_tri_cot_loi or "",
+            "gia_ca_chinh_sach": partial_input.gia_ca_chinh_sach or ""
         },
         "explanations": {},
         "ready_to_proceed": validation_result.get("completeness_score", 50) >= 70,
@@ -196,27 +193,22 @@ def clarify_user_prompt(
     # Merge user responses or use suggestions
     final_input = StageAInput(
         user_prompt=user_prompt,
-        nganh_hang=(
-            user_responses.get("nganh_hang") if user_responses
-            else request["suggested_values"].get("nganh_hang", "")
+        ban_chat_san_pham=(
+            user_responses.get("ban_chat_san_pham") if user_responses
+            else request["suggested_values"].get("ban_chat_san_pham", "")
         ),
-        thi_truong_muc_tieu=(
-            user_responses.get("thi_truong_muc_tieu") if user_responses
-            else request["suggested_values"].get("thi_truong_muc_tieu", "")
+        khach_hang_muc_tieu=(
+            user_responses.get("khach_hang_muc_tieu") if user_responses
+            else request["suggested_values"].get("khach_hang_muc_tieu", "")
         ),
-        phan_khuc_quan_tam=(
-            user_responses.get("phan_khuc_quan_tam") if user_responses
-            else request["suggested_values"].get("phan_khuc_quan_tam", [])
+        gia_tri_cot_loi=(
+            user_responses.get("gia_tri_cot_loi") if user_responses
+            else request["suggested_values"].get("gia_tri_cot_loi", "")
         ),
-        doi_thu_seed=(
-            user_responses.get("doi_thu_seed") if user_responses
-            else request["suggested_values"].get("doi_thu_seed", [])
-        ),
-        khung_thoi_gian=partial_input.khung_thoi_gian,
-        muc_tieu_nghien_cuu=(
-            user_responses.get("muc_tieu_nghien_cuu") if user_responses
-            else request["suggested_values"].get("muc_tieu_nghien_cuu", [])
-        ),
+        gia_ca_chinh_sach=(
+            user_responses.get("gia_ca_chinh_sach") if user_responses
+            else request["suggested_values"].get("gia_ca_chinh_sach", "")
+        )
     )
     
     has_questions = len(request.get("questions_to_ask", [])) > 0 and not user_responses

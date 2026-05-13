@@ -100,30 +100,30 @@ export function ResearchForm({
               <h3>🎯 Thông Tin Được Đề Xuất (Có Thể Sửa)</h3>
               
               <div className="override-group">
-                <label htmlFor="override-nganh">Ngành Hàng:</label>
-                <input
-                  id="override-nganh"
-                  type="text"
-                  defaultValue={clarification.clarified_input.nganh_hang}
-                  onChange={(e) => handleOverrideChange('nganh_hang', e.target.value)}
+                <label htmlFor="override-ban-chat">Bản Chất Sản Phẩm:</label>
+                <textarea
+                  id="override-ban-chat"
+                  defaultValue={clarification.clarified_input.ban_chat_san_pham}
+                  onChange={(e) => handleOverrideChange('ban_chat_san_pham', e.target.value)}
                   className="override-input"
+                  rows={2}
                 />
-                {clarification.explanations.nganh_hang && (
-                  <small className="explanation">💡 {clarification.explanations.nganh_hang}</small>
+                {clarification.explanations.ban_chat_san_pham && (
+                  <small className="explanation">💡 {clarification.explanations.ban_chat_san_pham}</small>
                 )}
               </div>
 
               <div className="override-group">
-                <label htmlFor="override-market">Thị Trường Mục Tiêu:</label>
-                <input
-                  id="override-market"
-                  type="text"
-                  defaultValue={clarification.clarified_input.thi_truong_muc_tieu}
-                  onChange={(e) => handleOverrideChange('thi_truong_muc_tieu', e.target.value)}
+                <label htmlFor="override-khach-hang">Khách Hàng Mục Tiêu:</label>
+                <textarea
+                  id="override-khach-hang"
+                  defaultValue={clarification.clarified_input.khach_hang_muc_tieu}
+                  onChange={(e) => handleOverrideChange('khach_hang_muc_tieu', e.target.value)}
                   className="override-input"
+                  rows={2}
                 />
-                {clarification.explanations.thi_truong_muc_tieu && (
-                  <small className="explanation">💡 {clarification.explanations.thi_truong_muc_tieu}</small>
+                {clarification.explanations.khach_hang_muc_tieu && (
+                  <small className="explanation">💡 {clarification.explanations.khach_hang_muc_tieu}</small>
                 )}
               </div>
             </div>
@@ -133,13 +133,13 @@ export function ResearchForm({
         <div className="suggested-info-box">
           <h3>💡 Thông Tin Đã Chuẩn Bị</h3>
           <ul>
-            <li><strong>Ngành hàng:</strong> {clarificationOverrides.nganh_hang || clarification.clarified_input.nganh_hang}</li>
-            <li><strong>Thị trường mục tiêu:</strong> {clarificationOverrides.thi_truong_muc_tieu || clarification.clarified_input.thi_truong_muc_tieu}</li>
-            {clarification.clarified_input.phan_khuc_quan_tam && clarification.clarified_input.phan_khuc_quan_tam.length > 0 && (
-              <li><strong>Phân khúc:</strong> {clarification.clarified_input.phan_khuc_quan_tam.join(', ')}</li>
+            <li><strong>Bản chất sản phẩm:</strong> {clarificationOverrides.ban_chat_san_pham || clarification.clarified_input.ban_chat_san_pham}</li>
+            <li><strong>Khách hàng mục tiêu:</strong> {clarificationOverrides.khach_hang_muc_tieu || clarification.clarified_input.khach_hang_muc_tieu}</li>
+            {(clarificationOverrides.gia_tri_cot_loi || clarification.clarified_input.gia_tri_cot_loi) && (
+              <li><strong>Giá trị cốt lõi:</strong> {clarificationOverrides.gia_tri_cot_loi || clarification.clarified_input.gia_tri_cot_loi}</li>
             )}
-            {clarification.clarified_input.doi_thu_seed && clarification.clarified_input.doi_thu_seed.length > 0 && (
-              <li><strong>Đối thủ:</strong> {clarification.clarified_input.doi_thu_seed.join(', ')}</li>
+            {(clarificationOverrides.gia_ca_chinh_sach || clarification.clarified_input.gia_ca_chinh_sach) && (
+              <li><strong>Giá cả & Chính sách:</strong> {clarificationOverrides.gia_ca_chinh_sach || clarification.clarified_input.gia_ca_chinh_sach}</li>
             )}
           </ul>
         </div>

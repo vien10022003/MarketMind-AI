@@ -232,25 +232,25 @@ function ClarificationBubble({
 
         <div className="clarify-fields">
           <div className="clarify-field">
-            <label>Ngành hàng</label>
-            <input
-              type="text"
-              defaultValue={data.clarified_input.nganh_hang}
-              onChange={(e) => handleChange('nganh_hang', e.target.value)}
+            <label>Bản chất sản phẩm</label>
+            <textarea
+              defaultValue={data.clarified_input.ban_chat_san_pham}
+              onChange={(e) => handleChange('ban_chat_san_pham', e.target.value)}
+              rows={2}
             />
-            {data.explanations?.nganh_hang && (
-              <small>💡 {data.explanations.nganh_hang}</small>
+            {data.explanations?.ban_chat_san_pham && (
+              <small>💡 {data.explanations.ban_chat_san_pham}</small>
             )}
           </div>
           <div className="clarify-field">
-            <label>Thị trường mục tiêu</label>
-            <input
-              type="text"
-              defaultValue={data.clarified_input.thi_truong_muc_tieu}
-              onChange={(e) => handleChange('thi_truong_muc_tieu', e.target.value)}
+            <label>Khách hàng mục tiêu</label>
+            <textarea
+              defaultValue={data.clarified_input.khach_hang_muc_tieu}
+              onChange={(e) => handleChange('khach_hang_muc_tieu', e.target.value)}
+              rows={2}
             />
-            {data.explanations?.thi_truong_muc_tieu && (
-              <small>💡 {data.explanations.thi_truong_muc_tieu}</small>
+            {data.explanations?.khach_hang_muc_tieu && (
+              <small>💡 {data.explanations.khach_hang_muc_tieu}</small>
             )}
           </div>
         </div>
@@ -517,12 +517,10 @@ function MarketingFormBubble({
 }) {
   const [formData, setFormData] = useState({
     user_prompt: detectedPrompt,
-    nganh_hang: '',
-    thi_truong_muc_tieu: '',
-    phan_khuc_quan_tam: '',
-    doi_thu_seed: '',
-    khung_thoi_gian: '12 tháng gần nhất',
-    muc_tieu_nghien_cuu: '',
+    ban_chat_san_pham: '',
+    khach_hang_muc_tieu: '',
+    gia_tri_cot_loi: '',
+    gia_ca_chinh_sach: '',
   });
 
   const handleChange = (field: string, value: string) => {
@@ -533,18 +531,10 @@ function MarketingFormBubble({
     if (!onSubmit) return;
     onSubmit({
       user_prompt: formData.user_prompt,
-      nganh_hang: formData.nganh_hang || undefined,
-      thi_truong_muc_tieu: formData.thi_truong_muc_tieu || undefined,
-      phan_khuc_quan_tam: formData.phan_khuc_quan_tam
-        ? formData.phan_khuc_quan_tam.split(',').map((s) => s.trim()).filter(Boolean)
-        : undefined,
-      doi_thu_seed: formData.doi_thu_seed
-        ? formData.doi_thu_seed.split(',').map((s) => s.trim()).filter(Boolean)
-        : undefined,
-      khung_thoi_gian: formData.khung_thoi_gian || undefined,
-      muc_tieu_nghien_cuu: formData.muc_tieu_nghien_cuu
-        ? formData.muc_tieu_nghien_cuu.split(',').map((s) => s.trim()).filter(Boolean)
-        : undefined,
+      ban_chat_san_pham: formData.ban_chat_san_pham || undefined,
+      khach_hang_muc_tieu: formData.khach_hang_muc_tieu || undefined,
+      gia_tri_cot_loi: formData.gia_tri_cot_loi || undefined,
+      gia_ca_chinh_sach: formData.gia_ca_chinh_sach || undefined,
     });
   };
 
@@ -568,70 +558,44 @@ function MarketingFormBubble({
             />
           </div>
 
-          <div className="mkt-form-row">
-            <div className="mkt-form-field">
-              <label>Ngành hàng</label>
-              <input
-                type="text"
-                value={formData.nganh_hang}
-                onChange={(e) => handleChange('nganh_hang', e.target.value)}
-                placeholder="VD: Cà phê, Mỹ phẩm..."
-              />
-            </div>
-            <div className="mkt-form-field">
-              <label>Thị trường mục tiêu</label>
-              <input
-                type="text"
-                value={formData.thi_truong_muc_tieu}
-                onChange={(e) => handleChange('thi_truong_muc_tieu', e.target.value)}
-                placeholder="VD: Việt Nam, Đông Nam Á..."
-              />
-            </div>
+          <div className="mkt-form-field">
+            <label>Bản chất sản phẩm</label>
+            <textarea
+              value={formData.ban_chat_san_pham}
+              onChange={(e) => handleChange('ban_chat_san_pham', e.target.value)}
+              rows={2}
+              placeholder="Tên, danh mục, mô tả, tính năng, USP..."
+            />
           </div>
 
-          <div className="mkt-form-row">
-            <div className="mkt-form-field">
-              <label>Phân khúc quan tâm</label>
-              <input
-                type="text"
-                value={formData.phan_khuc_quan_tam}
-                onChange={(e) => handleChange('phan_khuc_quan_tam', e.target.value)}
-                placeholder="VD: Gen Z, Premium (phân cách bằng dấu phẩy)"
-              />
-            </div>
-            <div className="mkt-form-field">
-              <label>Đối thủ cạnh tranh</label>
-              <input
-                type="text"
-                value={formData.doi_thu_seed}
-                onChange={(e) => handleChange('doi_thu_seed', e.target.value)}
-                placeholder="VD: Highlands, Starbucks (phân cách bằng dấu phẩy)"
-              />
-            </div>
+          <div className="mkt-form-field">
+            <label>Khách hàng mục tiêu</label>
+            <textarea
+              value={formData.khach_hang_muc_tieu}
+              onChange={(e) => handleChange('khach_hang_muc_tieu', e.target.value)}
+              rows={2}
+              placeholder="Ai, nhu cầu, nỗi đau, thói quen..."
+            />
           </div>
 
-          <div className="mkt-form-row">
-            <div className="mkt-form-field">
-              <label>Khung thời gian</label>
-              <select
-                value={formData.khung_thoi_gian}
-                onChange={(e) => handleChange('khung_thoi_gian', e.target.value)}
-              >
-                <option value="3 tháng gần nhất">3 tháng gần nhất</option>
-                <option value="6 tháng gần nhất">6 tháng gần nhất</option>
-                <option value="12 tháng gần nhất">12 tháng gần nhất</option>
-                <option value="2 năm gần nhất">2 năm gần nhất</option>
-              </select>
-            </div>
-            <div className="mkt-form-field">
-              <label>Mục tiêu nghiên cứu</label>
-              <input
-                type="text"
-                value={formData.muc_tieu_nghien_cuu}
-                onChange={(e) => handleChange('muc_tieu_nghien_cuu', e.target.value)}
-                placeholder="VD: Xu hướng, Đối thủ (phân cách bằng dấu phẩy)"
-              />
-            </div>
+          <div className="mkt-form-field">
+            <label>Giá trị cốt lõi & Lý do mua hàng</label>
+            <textarea
+              value={formData.gia_tri_cot_loi}
+              onChange={(e) => handleChange('gia_tri_cot_loi', e.target.value)}
+              rows={2}
+              placeholder="Giải quyết vấn đề gì, lợi ích, bằng chứng xã hội..."
+            />
+          </div>
+
+          <div className="mkt-form-field">
+            <label>Giá cả & Chính sách</label>
+            <textarea
+              value={formData.gia_ca_chinh_sach}
+              onChange={(e) => handleChange('gia_ca_chinh_sach', e.target.value)}
+              rows={2}
+              placeholder="Mức giá, bảo hành, khuyến mãi, giá trị cảm nhận..."
+            />
           </div>
         </div>
 

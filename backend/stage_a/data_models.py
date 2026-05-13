@@ -13,12 +13,10 @@ class StageAInput(BaseModel):
         ...,
         description="User's main research prompt/requirement (required)"
     )
-    nganh_hang: str = Field(default="", description="Industry domain")
-    thi_truong_muc_tieu: str = Field(default="", description="Target market")
-    phan_khuc_quan_tam: List[str] = Field(default_factory=list, description="Segments of interest")
-    doi_thu_seed: List[str] = Field(default_factory=list, description="Competitor seeds")
-    khung_thoi_gian: str = Field(default="12 thang gan nhat", description="Time frame")
-    muc_tieu_nghien_cuu: List[str] = Field(default_factory=list, description="Research objectives")
+    ban_chat_san_pham: str = Field(default="", description="Bản chất sản phẩm (Tên, danh mục, mô tả, tính năng, USP)")
+    khach_hang_muc_tieu: str = Field(default="", description="Khách hàng mục tiêu (Ai, nhu cầu, nỗi đau, thói quen)")
+    gia_tri_cot_loi: str = Field(default="", description="Giá trị cốt lõi & Lý do mua hàng (Giải quyết vấn đề, lợi ích, bằng chứng xã hội)")
+    gia_ca_chinh_sach: str = Field(default="", description="Giá cả & Chính sách (Giá bán, bảo hành, khuyến mãi)")
 
 
 class EvidenceItem(BaseModel):
