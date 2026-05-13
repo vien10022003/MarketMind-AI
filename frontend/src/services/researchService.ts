@@ -1,12 +1,14 @@
 import type { ResearchRequest, StreamMessage, ContentBrief } from '../types';
 import { config, getApiUrl } from '../config';
+import { authService } from './authService';
 
-// Custom fetch wrapper to always include ngrok bypass headers
+// Custom fetch wrapper to include auth and ngrok bypass headers
 const apiFetch = async (input: RequestInfo | URL, init?: RequestInit) => {
   const customInit = { ...init };
   customInit.headers = {
-    ...customInit.headers,
     'ngrok-skip-browser-warning': 'true',
+    ...authService.getAuthHeader(),
+    ...customInit.headers,
   };
   return fetch(input, customInit);
 };

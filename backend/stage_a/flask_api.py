@@ -6,7 +6,9 @@ REST API endpoints for Stage A, B, C pipelines with streaming
 import json
 import gc
 import torch
+import traceback
 from datetime import datetime
+from typing import Optional
 from flask import Flask, request, Response, stream_with_context
 from rich import print as rprint
 
@@ -23,6 +25,10 @@ from .evidence_processing import normalize_and_filter_evidence
 from .synthesis import synthesize_stage_a_report
 from .output_formatting import build_markdown_report, convert_evidence_to_dict
 from .mongodb import MongoDBManager
+
+# Auth imports
+from auth_routes import init_auth_routes
+from auth_middleware import require_auth, get_user_id_from_request
 
 # Stage B & C imports
 from stage_b.data_models_b import StageBInput, StageBOutput
@@ -80,6 +86,14 @@ def add_cors_headers(response):
 
 
 # ─── Register Blueprints ──────────────────────────────────────────────────
+# Register auth blueprint
+try:
+    auth_blueprint = init_auth_routes(mongo)
+    app.register_blueprint(auth_blueprint)
+    rprint("[green]✅ Auth blueprint registered[/green]")
+except Exception as e:
+    rprint(f"[yellow]⚠️  Auth blueprint registration failed: {e}[/yellow]")
+
 try:
     from stage_c.scheduler_routes import create_scheduler_blueprint
     scheduler_blueprint = create_scheduler_blueprint()
@@ -89,11 +103,12 @@ except Exception as e:
     rprint(f"[yellow]⚠️  Scheduler blueprint registration failed: {e}[/yellow]")
 
 
-def run_stage_a_pipeline_generator(req_data: dict, llm: LLMProvider = None):
+def run_stage_a_pipeline_generator(req_data: dict, user_id: Optional[str] = None, llm: LLMProvider = None):
     """Generator function for streaming pipeline execution
     
     Args:
         req_data: Request data dictionary
+        user_id: Optional user ID for data isolation
         llm: Optional LLMProvider instance. If None, will create one from request llm_provider field
     """
     rprint(f"[yellow][PIPELINE START] Input: {list(req_data.keys())}[/yellow]")
@@ -330,7 +345,7 @@ def run_stage_a_pipeline_generator(req_data: dict, llm: LLMProvider = None):
                 },
             }
 
-            mongodb_id = mongo.save_report(metadata, stage_a_output)
+            mongodb_id = mongo.save_report(metadata, stage_a_output, user_id=user_id)
         else:
             mongodb_id = None
 
@@ -353,6 +368,7 @@ def run_stage_a_pipeline_generator(req_data: dict, llm: LLMProvider = None):
 
 
 @app.route('/api/research/stage_a', methods=['POST', 'OPTIONS'])
+@require_auth
 def api_research_stage_a():
     """Main research endpoint - handles chat, knowledge, and initial research classification"""
     if request.method == 'OPTIONS':
@@ -360,24 +376,31 @@ def api_research_stage_a():
 
     rprint(f"[yellow][API] POST /api/research/stage_a[/yellow]")
     
+    # Get user_id from auth context
+    user_id = get_user_id_from_request()
+    
     data = request.get_json()
     if not data:
         return {"error": "Missing JSON body"}, 400
 
     return Response(
-        stream_with_context(run_stage_a_pipeline_generator(data)),
+        stream_with_context(run_stage_a_pipeline_generator(data, user_id=user_id)),
         content_type='application/x-ndjson',
         status=200
     )
 
 
 @app.route('/api/research/stage_a/marketing', methods=['POST', 'OPTIONS'])
+@require_auth
 def api_research_stage_a_marketing():
     """Marketing form submission endpoint - runs full Stage A pipeline skipping intent classification"""
     if request.method == 'OPTIONS':
         return '', 200
 
     rprint(f"[yellow][API] POST /api/research/stage_a/marketing[/yellow]")
+    
+    # Get user_id from auth context
+    user_id = get_user_id_from_request()
     
     data = request.get_json()
     if not data:
@@ -388,7 +411,7 @@ def api_research_stage_a_marketing():
     data["_from_marketing_form"] = True
 
     return Response(
-        stream_with_context(run_stage_a_pipeline_generator(data)),
+        stream_with_context(run_stage_a_pipeline_generator(data, user_id=user_id)),
         content_type='application/x-ndjson',
         status=200
     )
@@ -582,6 +605,7 @@ def api_campaign_stage_c_scheduled():
 # ─── Conversation History ─────────────────────────────────────────────────────
 
 @app.route('/api/conversations', methods=['GET', 'OPTIONS'])
+@require_auth
 def api_list_conversations():
     """List recent conversations"""
     if request.method == 'OPTIONS':
@@ -590,6 +614,9 @@ def api_list_conversations():
     try:
         from conversation_manager import get_conversation_manager
         
+        # Get user_id from auth context
+        user_id = get_user_id_from_request()
+        
         if mongo is None or mongo.db is None:
             return {"error": "MongoDB not available"}, 500
         
@@ -597,7 +624,7 @@ def api_list_conversations():
         skip = request.args.get('skip', default=0, type=int)
         limit = request.args.get('limit', default=10, type=int)
         
-        conversations, total = cm.list_conversations(skip=skip, limit=limit)
+        conversations, total = cm.list_conversations(skip=skip, limit=limit, user_id=user_id)
         
         return {
             "data": {
@@ -613,6 +640,7 @@ def api_list_conversations():
 
 
 @app.route('/api/conversations/<conversation_id>', methods=['GET', 'OPTIONS'])
+@require_auth
 def api_get_conversation(conversation_id):
     """Get a specific conversation"""
     if request.method == 'OPTIONS':
@@ -621,11 +649,14 @@ def api_get_conversation(conversation_id):
     try:
         from conversation_manager import get_conversation_manager
         
+        # Get user_id from auth context
+        user_id = get_user_id_from_request()
+        
         if mongo is None or mongo.db is None:
             return {"error": "MongoDB not available"}, 500
         
         cm = get_conversation_manager(mongo.db)
-        conversation = cm.get_conversation(conversation_id)
+        conversation = cm.get_conversation(conversation_id, user_id=user_id)
         
         if not conversation:
             return {"error": "Conversation not found"}, 404
@@ -654,6 +685,7 @@ def generate_conversation_title(user_prompt: str) -> str:
 
 
 @app.route('/api/conversations', methods=['POST', 'OPTIONS'])
+@require_auth
 def api_create_conversation():
     """Create a new conversation"""
     if request.method == 'OPTIONS':
@@ -662,6 +694,9 @@ def api_create_conversation():
     try:
         from conversation_manager import get_conversation_manager
         import uuid
+        
+        # Get user_id from auth context
+        user_id = get_user_id_from_request()
         
         if mongo is None or mongo.db is None:
             return {"error": "MongoDB not available"}, 500
@@ -678,7 +713,7 @@ def api_create_conversation():
             title = generate_conversation_title(first_message)
         
         cm = get_conversation_manager(mongo.db)
-        conversation = cm.create_conversation(conversation_id, title=title)
+        conversation = cm.create_conversation(conversation_id, title=title, user_id=user_id)
         
         return {"data": conversation}, 201
     except Exception as e:
@@ -687,6 +722,7 @@ def api_create_conversation():
 
 
 @app.route('/api/conversations/<conversation_id>/messages', methods=['POST', 'OPTIONS'])
+@require_auth
 def api_save_messages(conversation_id):
     """Save one or more messages to conversation"""
     if request.method == 'OPTIONS':
@@ -694,6 +730,9 @@ def api_save_messages(conversation_id):
     
     try:
         from conversation_manager import get_conversation_manager, ChatMessageDoc
+        
+        # Get user_id from auth context
+        user_id = get_user_id_from_request()
         
         if mongo is None or mongo.db is None:
             return {"error": "MongoDB not available"}, 500
@@ -731,10 +770,15 @@ def api_save_messages(conversation_id):
             messages.append(msg)
         
         cm = get_conversation_manager(mongo.db)
+        # Verify user owns this conversation
+        conv = cm.get_conversation(conversation_id, user_id=user_id)
+        if not conv:
+            return {"error": "Conversation not found"}, 404
+        
         success = cm.save_batch_messages(conversation_id, messages)
         
         if not success:
-            return {"error": "Conversation not found or no changes made"}, 404
+            return {"error": "Failed to save messages"}, 500
         
         return {"data": {"message_count": len(messages), "success": True}}, 200
     except Exception as e:
@@ -743,6 +787,7 @@ def api_save_messages(conversation_id):
 
 
 @app.route('/api/conversations/<conversation_id>/title', methods=['PUT', 'OPTIONS'])
+@require_auth
 def api_update_conversation_title(conversation_id):
     """Update conversation title"""
     if request.method == 'OPTIONS':
@@ -750,6 +795,9 @@ def api_update_conversation_title(conversation_id):
     
     try:
         from conversation_manager import get_conversation_manager
+        
+        # Get user_id from auth context
+        user_id = get_user_id_from_request()
         
         if mongo is None or mongo.db is None:
             return {"error": "MongoDB not available"}, 500
@@ -761,7 +809,7 @@ def api_update_conversation_title(conversation_id):
             return {"error": "Title is required"}, 400
         
         cm = get_conversation_manager(mongo.db)
-        success = cm.update_title(conversation_id, title)
+        success = cm.update_title(conversation_id, title, user_id=user_id)
         
         if not success:
             return {"error": "Conversation not found"}, 404
@@ -773,6 +821,7 @@ def api_update_conversation_title(conversation_id):
 
 
 @app.route('/api/conversations/<conversation_id>', methods=['DELETE', 'OPTIONS'])
+@require_auth
 def api_delete_conversation(conversation_id):
     """Delete a conversation"""
     if request.method == 'OPTIONS':
@@ -781,11 +830,14 @@ def api_delete_conversation(conversation_id):
     try:
         from conversation_manager import get_conversation_manager
         
+        # Get user_id from auth context
+        user_id = get_user_id_from_request()
+        
         if mongo is None or mongo.db is None:
             return {"error": "MongoDB not available"}, 500
         
         cm = get_conversation_manager(mongo.db)
-        success = cm.delete_conversation(conversation_id)
+        success = cm.delete_conversation(conversation_id, user_id=user_id)
         
         if not success:
             return {"error": "Conversation not found"}, 404

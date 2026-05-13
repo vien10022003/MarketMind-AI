@@ -1,7 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import { ChatMessageBubble, ConversationList, ModelSelector } from './components';
+import AuthPage from './components/AuthPage';
 import type { ChatMessage, ResearchRequest, ConversationTurn, ContentBrief, StageBOutput, ResearchReport } from './types';
 import { researchService } from './services/researchService';
+import { authService } from './services/authService';
 import { initializeBackendUrl, waitForBackendInitialization } from './config';
 import './App.css';
 
@@ -11,6 +13,9 @@ function nextId() {
 }
 
 function App() {
+  // Authentication state
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(authService.isAuthenticated());
+  
   // Conversation state
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
   const [selectedLLMProvider, setSelectedLLMProvider] = useState<'llama' | 'gemini-2.5' | 'gemini-3.1'>('llama');
@@ -41,6 +46,16 @@ function App() {
   useEffect(() => {
     initializeBackendUrl();
     // handleCreateNewConversation(); // Removed: Don't create by default
+  }, []);
+
+  // Check authentication on mount
+  useEffect(() => {
+    const checkAuth = () => {
+      const isAuth = authService.isAuthenticated();
+      setIsAuthenticated(isAuth);
+    };
+    
+    checkAuth();
   }, []);
 
   // Auto-scroll to latest message
@@ -599,12 +614,35 @@ function App() {
     handleCreateNewConversation();
   };
 
+  const handleLogout = () => {
+    authService.logout();
+    setIsAuthenticated(false);
+    setCurrentConversationId(null);
+    setChatMessages([
+      {
+        id: 'welcome',
+        type: 'assistant',
+        content: 'Xin chào! Tôi là MarketMind AI — trợ lý nghiên cứu thị trường thông minh. Hãy mô tả những gì bạn muốn tìm hiểu, tôi sẽ giúp bạn phân tích! 🚀',
+        timestamp: new Date(),
+      },
+    ]);
+  };
+
+  const handleAuthSuccess = () => {
+    setIsAuthenticated(true);
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSend();
     }
   };
+
+  // Show auth page if not authenticated
+  if (!isAuthenticated) {
+    return <AuthPage onAuthSuccess={handleAuthSuccess} />;
+  }
 
   return (
     <div className="app-container">
@@ -625,9 +663,14 @@ function App() {
             <h1>🎯 MarketMind AI</h1>
             <p>Trợ lý nghiên cứu thị trường thông minh</p>
           </div>
-          <button className="header-reset" onClick={handleReset} title="Cuộc hội thoại mới">
-            ✨ Mới
-          </button>
+          <div className="header-actions">
+            <button className="header-reset" onClick={handleReset} title="Cuộc hội thoại mới">
+              ✨ Mới
+            </button>
+            <button className="header-logout" onClick={handleLogout} title="Đăng xuất">
+              🚪 Đăng xuất
+            </button>
+          </div>
         </header>
 
         {/* Chat area */}

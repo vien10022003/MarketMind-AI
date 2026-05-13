@@ -144,6 +144,32 @@ body {
   box-shadow: 0 4px 16px rgba(99, 102, 241, 0.35);
 }
 
+.header-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.header-logout {
+  padding: 0.4rem 1rem;
+  background: rgba(239, 68, 68, 0.1);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 99px;
+  color: var(--text);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.header-logout:hover {
+  background: var(--error);
+  border-color: var(--error);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(239, 68, 68, 0.35);
+}
+
 /* ──────── Chat Area ──────── */
 .chat-area {
   flex: 1;

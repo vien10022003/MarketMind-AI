@@ -29,6 +29,12 @@ export const config = {
   api: {
     baseURL: ACTIVE_BACKEND_URL,
     endpoints: {
+      // Auth endpoints
+      authLogin: '/api/auth/login',
+      authRegister: '/api/auth/register',
+      authGoogleLogin: '/api/auth/google-login',
+      authVerifyToken: '/api/auth/verify-token',
+      // Research endpoints
       stageAResearch: '/api/research/stage_a',
       stageBStrategy: '/api/strategy/stage_b',
       stageBApprove: '/api/strategy/stage_b/approve',

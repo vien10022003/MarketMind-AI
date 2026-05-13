@@ -36,6 +36,7 @@ class ChatMessageDoc(BaseModel):
 
 class ConversationDoc(BaseModel):
     """A complete conversation thread"""
+    user_id: Optional[str] = Field(default=None, description="User ID for multi-user support")
     conversation_id: str = Field(description="Unique conversation ID")
     title: Optional[str] = Field(default=None, description="User-given title or auto-generated")
     messages: List[ChatMessageDoc] = Field(default_factory=list, description="All messages in order")
@@ -60,13 +61,22 @@ class ConversationManager:
     def _ensure_indexes(self):
         """Create indexes for efficient queries"""
         self.conversations.create_index("conversation_id", unique=True)
+        self.conversations.create_index("user_id", background=True)
+        self.conversations.create_index([("user_id", 1), ("created_at", -1)], background=True)
         self.conversations.create_index("created_at", background=True)
         self.conversations.create_index("updated_at", background=True)
 
-    def create_conversation(self, conversation_id: str, title: Optional[str] = None) -> dict:
-        """Create a new conversation"""
+    def create_conversation(self, conversation_id: str, title: Optional[str] = None, user_id: Optional[str] = None) -> dict:
+        """Create a new conversation
+        
+        Args:
+            conversation_id: Unique conversation ID
+            title: Optional conversation title
+            user_id: Optional user ID for multi-user support
+        """
         now = datetime.now().isoformat()
         doc = {
+            "user_id": user_id,
             "conversation_id": conversation_id,
             "title": title or f"Conversation {conversation_id[:8]}",
             "messages": [],
@@ -82,9 +92,18 @@ class ConversationManager:
         doc["_id"] = str(result.inserted_id)
         return doc
 
-    def get_conversation(self, conversation_id: str) -> Optional[dict]:
-        """Get a conversation by ID"""
-        doc = self.conversations.find_one({"conversation_id": conversation_id})
+    def get_conversation(self, conversation_id: str, user_id: Optional[str] = None) -> Optional[dict]:
+        """Get a conversation by ID
+        
+        Args:
+            conversation_id: Conversation ID to retrieve
+            user_id: Optional user ID for security validation
+        """
+        query = {"conversation_id": conversation_id}
+        if user_id:
+            query["user_id"] = user_id  # Only return if user owns it
+        
+        doc = self.conversations.find_one(query)
         if doc:
             doc["_id"] = str(doc["_id"])
         return doc
@@ -137,10 +156,19 @@ class ConversationManager:
         )
         return result.modified_count > 0
 
-    def get_recent_conversations(self, limit: int = 10) -> List[dict]:
-        """Get most recent conversations (for sidebar/list)"""
+    def get_recent_conversations(self, limit: int = 10, user_id: Optional[str] = None) -> List[dict]:
+        """Get most recent conversations (for sidebar/list)
+        
+        Args:
+            limit: Maximum number of conversations to return
+            user_id: Optional user ID to filter conversations by owner
+        """
+        query = {}
+        if user_id:
+            query["user_id"] = user_id
+        
         docs = list(
-            self.conversations.find()
+            self.conversations.find(query)
             .sort("updated_at", -1)
             .limit(limit)
         )
@@ -148,11 +176,21 @@ class ConversationManager:
             doc["_id"] = str(doc["_id"])
         return docs
 
-    def list_conversations(self, skip: int = 0, limit: int = 20) -> tuple[List[dict], int]:
-        """List conversations with pagination"""
-        total = self.conversations.count_documents({})
+    def list_conversations(self, skip: int = 0, limit: int = 20, user_id: Optional[str] = None) -> tuple[List[dict], int]:
+        """List conversations with pagination
+        
+        Args:
+            skip: Number of conversations to skip
+            limit: Maximum number of conversations to return
+            user_id: Optional user ID to filter conversations by owner
+        """
+        query = {}
+        if user_id:
+            query["user_id"] = user_id
+        
+        total = self.conversations.count_documents(query)
         docs = list(
-            self.conversations.find()
+            self.conversations.find(query)
             .sort("updated_at", -1)
             .skip(skip)
             .limit(limit)
@@ -161,15 +199,34 @@ class ConversationManager:
             doc["_id"] = str(doc["_id"])
         return docs, total
 
-    def delete_conversation(self, conversation_id: str) -> bool:
-        """Delete a conversation"""
-        result = self.conversations.delete_one({"conversation_id": conversation_id})
+    def delete_conversation(self, conversation_id: str, user_id: Optional[str] = None) -> bool:
+        """Delete a conversation
+        
+        Args:
+            conversation_id: Conversation ID to delete
+            user_id: Optional user ID to ensure only owner can delete
+        """
+        query = {"conversation_id": conversation_id}
+        if user_id:
+            query["user_id"] = user_id
+        
+        result = self.conversations.delete_one(query)
         return result.deleted_count > 0
 
-    def update_title(self, conversation_id: str, title: str) -> bool:
-        """Update conversation title"""
+    def update_title(self, conversation_id: str, title: str, user_id: Optional[str] = None) -> bool:
+        """Update conversation title
+        
+        Args:
+            conversation_id: Conversation ID to update
+            title: New title
+            user_id: Optional user ID to ensure only owner can update
+        """
+        query = {"conversation_id": conversation_id}
+        if user_id:
+            query["user_id"] = user_id
+        
         result = self.conversations.update_one(
-            {"conversation_id": conversation_id},
+            query,
             {"$set": {"title": title, "updated_at": datetime.now().isoformat()}},
         )
         return result.modified_count > 0

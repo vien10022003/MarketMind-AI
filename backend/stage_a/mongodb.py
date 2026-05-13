@@ -43,15 +43,23 @@ class MongoDBManager:
     def save_report(
         self,
         metadata: Dict[str, Any],
-        output_data: StageAOutput
+        output_data: StageAOutput,
+        user_id: Optional[str] = None
     ) -> Optional[str]:
-        """Save report to MongoDB"""
+        """Save report to MongoDB
+        
+        Args:
+            metadata: Report metadata (timestamp, input, plan, etc.)
+            output_data: Processed research output
+            user_id: Optional user ID for multi-user support
+        """
         if self.client is None or self.collection is None:
             rprint("[yellow]⚠️ MongoDB not connected. Skipping save.[/yellow]")
             return None
         
         try:
             doc = {
+                "user_id": user_id,  # Add user_id for data isolation
                 "timestamp": metadata.get("timestamp", datetime.now().isoformat()),
                 "input_config": metadata.get("input", {}),
                 "report": {
