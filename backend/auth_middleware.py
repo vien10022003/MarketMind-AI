@@ -21,6 +21,11 @@ def require_auth(f):
     """
     @wraps(f)
     def decorated_function(*args, **kwargs):
+        # Always allow OPTIONS requests (CORS preflight) to bypass authentication
+        # This ensures CORS headers are returned before the actual request is validated
+        if request.method == 'OPTIONS':
+            return '', 200
+        
         # Get token from Authorization header
         auth_header = request.headers.get('Authorization')
         
