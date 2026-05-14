@@ -106,7 +106,8 @@ export function ResearchForm({
                   defaultValue={clarification.clarified_input.ban_chat_san_pham}
                   onChange={(e) => handleOverrideChange('ban_chat_san_pham', e.target.value)}
                   className="override-input"
-                  rows={2}
+                  rows={4}
+                  placeholder={"- Tên sản phẩm, danh mục, mô tả ngắn gọn (nó là gì? dùng để làm gì?)\n- Tính năng nổi bật và lợi ích thực tế mang lại cho người dùng\n- Điểm khác biệt so với các sản phẩm cùng loại (USP)"}
                 />
                 {clarification.explanations.ban_chat_san_pham && (
                   <small className="explanation">💡 {clarification.explanations.ban_chat_san_pham}</small>
@@ -120,7 +121,8 @@ export function ResearchForm({
                   defaultValue={clarification.clarified_input.khach_hang_muc_tieu}
                   onChange={(e) => handleOverrideChange('khach_hang_muc_tieu', e.target.value)}
                   className="override-input"
-                  rows={2}
+                  rows={4}
+                  placeholder={"- Họ là ai? (độ tuổi, giới tính, nghề nghiệp, khu vực địa lý...)\n- Nhu cầu, nỗi đau (pain points) hoặc mong muốn họ đang gặp phải\n- Thói quen tiêu dùng và kênh thông tin họ thường tiếp cận"}
                 />
                 {clarification.explanations.khach_hang_muc_tieu && (
                   <small className="explanation">💡 {clarification.explanations.khach_hang_muc_tieu}</small>

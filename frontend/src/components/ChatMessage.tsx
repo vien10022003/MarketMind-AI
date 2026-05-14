@@ -236,7 +236,8 @@ function ClarificationBubble({
             <textarea
               defaultValue={data.clarified_input.ban_chat_san_pham}
               onChange={(e) => handleChange('ban_chat_san_pham', e.target.value)}
-              rows={2}
+              rows={4}
+              placeholder={"- Tên sản phẩm, danh mục, mô tả ngắn gọn (nó là gì? dùng để làm gì?)\n- Tính năng nổi bật và lợi ích thực tế mang lại cho người dùng\n- Điểm khác biệt so với các sản phẩm cùng loại (USP)"}
             />
             {data.explanations?.ban_chat_san_pham && (
               <small>💡 {data.explanations.ban_chat_san_pham}</small>
@@ -247,7 +248,8 @@ function ClarificationBubble({
             <textarea
               defaultValue={data.clarified_input.khach_hang_muc_tieu}
               onChange={(e) => handleChange('khach_hang_muc_tieu', e.target.value)}
-              rows={2}
+              rows={4}
+              placeholder={"- Họ là ai? (độ tuổi, giới tính, nghề nghiệp, khu vực địa lý...)\n- Nhu cầu, nỗi đau (pain points) hoặc mong muốn họ đang gặp phải\n- Thói quen tiêu dùng và kênh thông tin họ thường tiếp cận"}
             />
             {data.explanations?.khach_hang_muc_tieu && (
               <small>💡 {data.explanations.khach_hang_muc_tieu}</small>
@@ -563,8 +565,8 @@ function MarketingFormBubble({
             <textarea
               value={formData.ban_chat_san_pham}
               onChange={(e) => handleChange('ban_chat_san_pham', e.target.value)}
-              rows={2}
-              placeholder="Tên, danh mục, mô tả, tính năng, USP..."
+              rows={4}
+              placeholder={"- Tên sản phẩm, danh mục, mô tả ngắn gọn (nó là gì? dùng để làm gì?)\n- Tính năng nổi bật và lợi ích thực tế mang lại cho người dùng\n- Điểm khác biệt so với các sản phẩm cùng loại (USP)"}
             />
           </div>
 
@@ -573,8 +575,8 @@ function MarketingFormBubble({
             <textarea
               value={formData.khach_hang_muc_tieu}
               onChange={(e) => handleChange('khach_hang_muc_tieu', e.target.value)}
-              rows={2}
-              placeholder="Ai, nhu cầu, nỗi đau, thói quen..."
+              rows={4}
+              placeholder={"- Họ là ai? (độ tuổi, giới tính, nghề nghiệp, khu vực địa lý...)\n- Nhu cầu, nỗi đau (pain points) hoặc mong muốn họ đang gặp phải\n- Thói quen tiêu dùng và kênh thông tin họ thường tiếp cận"}
             />
           </div>
 
@@ -583,8 +585,8 @@ function MarketingFormBubble({
             <textarea
               value={formData.gia_tri_cot_loi}
               onChange={(e) => handleChange('gia_tri_cot_loi', e.target.value)}
-              rows={2}
-              placeholder="Giải quyết vấn đề gì, lợi ích, bằng chứng xã hội..."
+              rows={4}
+              placeholder={"- Sản phẩm giải quyết vấn đề gì mà đối thủ chưa làm tốt?\n- Lợi ích cảm xúc hoặc lý tính khách hàng nhận được\n- Bằng chứng xã hội (review, chứng nhận, case study...) nếu có"}
             />
           </div>
 
@@ -593,8 +595,8 @@ function MarketingFormBubble({
             <textarea
               value={formData.gia_ca_chinh_sach}
               onChange={(e) => handleChange('gia_ca_chinh_sach', e.target.value)}
-              rows={2}
-              placeholder="Mức giá, bảo hành, khuyến mãi, giá trị cảm nhận..."
+              rows={4}
+              placeholder={"- Mức giá bán, phương thức thanh toán\n- Chính sách bảo hành, đổi trả, khuyến mãi\n- Giá trị cảm nhận so với giá tiền (value for money)"}
             />
           </div>
         </div>
