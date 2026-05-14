@@ -110,7 +110,7 @@ export function ChatMessageBubble({ message, isLoading, onClarificationConfirm, 
       return message.campaignLogData ? <CampaignResultsBubble data={message.campaignLogData} /> : <StatusMessage content={message.content} />;
     // Schedule Manager
     case 'schedule_manager':
-      return <ScheduleManagerBubble campaigns={message.scheduleManagerData?.campaigns || []} status={message.scheduleManagerData?.status} />;
+      return <ScheduleManagerBubble />;
     default:
       return <StatusMessage content={message.content} />;
   }
@@ -249,7 +249,7 @@ function ClarificationBubble({
               defaultValue={data.clarified_input.khach_hang_muc_tieu}
               onChange={(e) => handleChange('khach_hang_muc_tieu', e.target.value)}
               rows={4}
-              placeholder={"- Họ là ai? (độ tuổi, giới tính, nghề nghiệp, khu vực địa lý...)\n- Nhu cầu, nỗi đau (pain points) hoặc mong muốn họ đang gặp phải\n- Thói quen tiêu dùng và kênh thông tin họ thường tiếp cận"}
+              placeholder={"- Họ là ai? (độ tuổi, giới tính, nghề nghiệp, khu vực địa lý...)\n- Nhu cầu hoặc mong muốn họ đang gặp phải\n- Thói quen tiêu dùng và kênh thông tin họ thường tiếp cận"}
             />
             {data.explanations?.khach_hang_muc_tieu && (
               <small>💡 {data.explanations.khach_hang_muc_tieu}</small>
@@ -725,18 +725,12 @@ function StageCScheduleProposalBubble({
 }
 
 /* ────── Schedule Manager Bubble ────── */
-function ScheduleManagerBubble({
-  campaigns,
-  status,
-}: {
-  campaigns: any[];
-  status?: any;
-}) {
+function ScheduleManagerBubble() {
   return (
     <div className="chat-row chat-row--assistant">
       <div className="chat-avatar chat-avatar--assistant">📊</div>
       <div className="chat-bubble chat-bubble--card">
-        <ScheduleManager autoRefresh={false} />
+        <ScheduleManager />
       </div>
     </div>
   );
