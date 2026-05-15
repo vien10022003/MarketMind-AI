@@ -1,4 +1,4 @@
-import React from 'react';
+// React is auto-imported in React 19+
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode';
 import { authService } from '../services/authService';

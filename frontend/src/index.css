@@ -1,18 +1,130 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
-* {
+*,
+*::before,
+*::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+/* ══════════════════════════════════════════
+   Theme System — Dark / Light Mode
+   ══════════════════════════════════════════ */
+
+:root {
+  /* ---------- Dark Theme (default) ---------- */
+  --primary: #6366f1;
+  --primary-light: #818cf8;
+  --primary-dark: #4f46e5;
+  --secondary: #ec4899;
+  --secondary-light: #f472b6;
+
+  --bg: #0b0f1a;
+  --bg-secondary: #111936;
+  --bg-chat: #10142a;
+  --surface: rgba(30, 41, 59, 0.65);
+  --surface-solid: #1e293b;
+  --surface-light: rgba(51, 65, 85, 0.55);
+  --surface-hover: rgba(51, 65, 85, 0.75);
+
+  --text: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --border: rgba(71, 85, 105, 0.5);
+
+  --success: #10b981;
+  --error: #ef4444;
+  --warning: #f59e0b;
+  --info: #3b82f6;
+
+  /* Accent colors for card types */
+  --accent-plan: #818cf8;
+  --accent-react: #38bdf8;
+  --accent-evidence: #34d399;
+  --accent-report: #f472b6;
+  --accent-knowledge: #8b5cf6;
+  --accent-marketing: #f59e0b;
+  --accent-strategy: #10b981;
+  --accent-campaign: #f59e0b;
+
+  /* Glass */
+  --glass-bg: rgba(30, 41, 59, 0.5);
+  --glass-border: rgba(148, 163, 184, 0.12);
+  --glass-blur: 16px;
+
+  /* Sidebar */
+  --sidebar-bg: rgba(15, 23, 42, 0.85);
+  --sidebar-item: rgba(30, 41, 59, 0.5);
+  --sidebar-item-hover: rgba(51, 65, 85, 0.6);
+  --sidebar-item-active: rgba(99, 102, 241, 0.15);
+
+  /* Sizing */
+  --header-h: 64px;
+  --input-bar-h: 100px;
+  --chat-max-w: 820px;
+  --sidebar-w: 300px;
+
+  /* Shadows */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.15);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.25);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.35);
+  --shadow-glow: 0 0 24px rgba(99, 102, 241, 0.15);
+
+  /* Transitions */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.25s ease;
+  --transition-slow: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Radius */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-full: 99px;
+
+  color-scheme: dark;
+}
+
+/* ---------- Light Theme ---------- */
+:root[data-theme="light"] {
+  --bg: #f8fafc;
+  --bg-secondary: #f1f5f9;
+  --bg-chat: #ffffff;
+  --surface: rgba(255, 255, 255, 0.85);
+  --surface-solid: #ffffff;
+  --surface-light: rgba(241, 245, 249, 0.9);
+  --surface-hover: rgba(226, 232, 240, 0.9);
+
+  --text: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+  --border: rgba(203, 213, 225, 0.8);
+
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(203, 213, 225, 0.4);
+
+  --sidebar-bg: rgba(248, 250, 252, 0.95);
+  --sidebar-item: rgba(241, 245, 249, 0.7);
+  --sidebar-item-hover: rgba(226, 232, 240, 0.8);
+  --sidebar-item-active: rgba(99, 102, 241, 0.1);
+
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.1);
+  --shadow-glow: 0 0 24px rgba(99, 102, 241, 0.1);
+
+  color-scheme: light;
+}
+
 body {
-  margin: 0;
-  padding: 0;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background var(--transition-normal), color var(--transition-normal);
 }
 
 #root {
@@ -22,9 +134,35 @@ body {
 
 code {
   font-family: 'Fira Code', source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: rgba(255, 255, 255, 0.06);
-  border-radius: 4px;
+  font-size: 0.88em;
+  line-height: 1.5;
+  padding: 0.15em 0.4em;
+  background: var(--surface-light);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--glass-border);
+}
+
+/* Selection color */
+::selection {
+  background: rgba(99, 102, 241, 0.3);
+  color: var(--text);
+}
+
+/* Global scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
 }

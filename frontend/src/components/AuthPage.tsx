@@ -65,6 +65,11 @@ export default function AuthPage({ onAuthSuccess }: AuthPageProps) {
 
   return (
     <div className="auth-page">
+      {/* Animated background orbs */}
+      <div className="auth-bg-orb auth-bg-orb--1" />
+      <div className="auth-bg-orb auth-bg-orb--2" />
+      <div className="auth-bg-orb auth-bg-orb--3" />
+
       <div className="auth-container">
         <div className="auth-header">
           <h1>🚀 MarketMind AI</h1>
@@ -72,6 +77,9 @@ export default function AuthPage({ onAuthSuccess }: AuthPageProps) {
             {mode === 'login'
               ? 'Đăng nhập để bắt đầu'
               : 'Tạo tài khoản mới'}
+          </p>
+          <p className="auth-tagline">
+            Nghiên cứu thị trường · Phân tích đối thủ · Chiến lược marketing — tất cả bằng AI
           </p>
         </div>
 

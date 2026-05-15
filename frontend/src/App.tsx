@@ -1,10 +1,10 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { ChatMessageBubble, ConversationList, ModelSelector } from './components';
 import AuthPage from './components/AuthPage';
 import type { ChatMessage, ResearchRequest, ConversationTurn, ContentBrief, StageBOutput, ResearchReport } from './types';
 import { researchService } from './services/researchService';
 import { authService } from './services/authService';
-import { initializeBackendUrl, waitForBackendInitialization } from './config';
+import { initializeBackendUrl } from './config';
 import './App.css';
 
 let msgIdCounter = 0;
@@ -16,6 +16,12 @@ function App() {
   // Authentication state
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(authService.isAuthenticated());
   
+  // UI state
+  const [theme, setTheme] = useState<'dark' | 'light'>(() => {
+    return (localStorage.getItem('theme') as 'dark' | 'light') || 'dark';
+  });
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   // Conversation state
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
   const [selectedLLMProvider, setSelectedLLMProvider] = useState<'llama' | 'gemini-2.5' | 'gemini-3.1'>('llama');
@@ -36,7 +42,7 @@ function App() {
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Stage B/C state
-  const [lastReportData, setLastReportData] = useState<ResearchReport | null>(null);
+  const [, setLastReportData] = useState<ResearchReport | null>(null);
   const lastReportDataRef = useRef<ResearchReport | null>(null);
   const [lastReportInput, setLastReportInput] = useState<Record<string, unknown> | null>(null);
   const [lastMongodbId, setLastMongodbId] = useState<string | undefined>(undefined);
@@ -45,8 +51,22 @@ function App() {
   // Initialize backend URL from Firebase on app startup
   useEffect(() => {
     initializeBackendUrl();
-    // handleCreateNewConversation(); // Removed: Don't create by default
   }, []);
+
+  // Theme management
+  const toggleTheme = useCallback(() => {
+    setTheme(prev => {
+      const next = prev === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('theme', next);
+      return next;
+    });
+  }, []);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
+
+  const userName = authService.getUser()?.name || authService.getUser()?.username || 'User';
 
   // Check authentication on mount
   useEffect(() => {
@@ -644,13 +664,27 @@ function App() {
     return <AuthPage onAuthSuccess={handleAuthSuccess} />;
   }
 
+  const showWelcomeHero = chatMessages.length <= 1 && chatMessages[0]?.id === 'welcome';
+
+  const suggestionChips = [
+    { icon: '📊', text: 'Nghiên cứu thị trường trà sữa tại Việt Nam' },
+    { icon: '🎯', text: 'Phân tích đối thủ ngành thương mại điện tử' },
+    { icon: '📈', text: 'Xu hướng marketing 2026 cho startup' },
+    { icon: '💡', text: 'Lập chiến lược quảng cáo cho sản phẩm mới' },
+  ];
+
   return (
     <div className="app-container">
+      {/* Mobile sidebar overlay */}
+      {sidebarOpen && (
+        <div className="sidebar-overlay" onClick={() => setSidebarOpen(false)} />
+      )}
+
       {/* Conversation Sidebar */}
-      <aside className="app-sidebar">
+      <aside className={`app-sidebar ${sidebarOpen ? 'is-open' : ''}`}>
         <ConversationList
-          onSelectConversation={handleLoadConversation}
-          onCreateNew={handleCreateNewConversation}
+          onSelectConversation={(id) => { handleLoadConversation(id); setSidebarOpen(false); }}
+          onCreateNew={() => { handleCreateNewConversation(); setSidebarOpen(false); }}
           currentConversationId={currentConversationId || undefined}
         />
       </aside>
@@ -659,24 +693,76 @@ function App() {
       <div className="app-main">
         {/* Header */}
         <header className="app-header">
-          <div className="header-content">
-            <h1>🎯 MarketMind AI</h1>
-            <p>Trợ lý nghiên cứu thị trường thông minh</p>
+          <div className="header-left">
+            <button className="header-menu-btn" onClick={() => setSidebarOpen(!sidebarOpen)} title="Menu">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <line x1="3" y1="12" x2="21" y2="12" />
+                <line x1="3" y1="18" x2="21" y2="18" />
+              </svg>
+            </button>
+            <div className="header-content">
+              <h1>🎯 MarketMind AI</h1>
+              <p>Trợ lý nghiên cứu thị trường thông minh</p>
+            </div>
           </div>
           <div className="header-actions">
+            <button className="header-icon-btn" onClick={toggleTheme} title={theme === 'dark' ? 'Light mode' : 'Dark mode'}>
+              {theme === 'dark' ? '☀️' : '🌙'}
+            </button>
             <button className="header-reset" onClick={handleReset} title="Cuộc hội thoại mới">
               ✨ Mới
             </button>
-            <button className="header-logout" onClick={handleLogout} title="Đăng xuất">
-              🚪 Đăng xuất
-            </button>
+            <div className="header-user">
+              <span className="header-user-name">{userName}</span>
+              <button className="header-logout" onClick={handleLogout} title="Đăng xuất">
+                🚪
+              </button>
+            </div>
           </div>
         </header>
 
         {/* Chat area */}
         <main className="chat-area">
           <div className="chat-messages">
-            {chatMessages.map((msg) => (
+            {/* Welcome Hero */}
+            {showWelcomeHero && (
+              <div className="welcome-hero">
+                <div className="welcome-hero-icon">🎯</div>
+                <h2 className="welcome-hero-title">Chào mừng đến với MarketMind AI</h2>
+                <p className="welcome-hero-desc">
+                  Trợ lý AI giúp bạn nghiên cứu thị trường, phân tích đối thủ, và xây dựng chiến lược marketing — tất cả chỉ bằng một cuộc trò chuyện.
+                </p>
+                <div className="welcome-features">
+                  <div className="welcome-feature">
+                    <span>🔍</span>
+                    <div><strong>Nghiên cứu thị trường</strong><br/>Phân tích sâu từ dữ liệu thực tế</div>
+                  </div>
+                  <div className="welcome-feature">
+                    <span>📋</span>
+                    <div><strong>Chiến lược marketing</strong><br/>Tự động lập kế hoạch chi tiết</div>
+                  </div>
+                  <div className="welcome-feature">
+                    <span>🚀</span>
+                    <div><strong>Thực thi chiến dịch</strong><br/>Đăng bài tự động lên Discord</div>
+                  </div>
+                </div>
+                <p className="welcome-hero-hint">Thử hỏi một trong các câu gợi ý bên dưới 👇</p>
+                <div className="suggestion-chips">
+                  {suggestionChips.map((chip, i) => (
+                    <button
+                      key={i}
+                      className="suggestion-chip"
+                      onClick={() => handleSend(chip.text)}
+                    >
+                      <span>{chip.icon}</span> {chip.text}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {!showWelcomeHero && chatMessages.map((msg) => (
               <ChatMessageBubble
                 key={msg.id}
                 message={msg}

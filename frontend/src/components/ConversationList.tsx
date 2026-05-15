@@ -24,6 +24,7 @@ export function ConversationList({ onSelectConversation, onCreateNew, currentCon
   const [loading, setLoading] = useState(true);
   const [expanded, setExpanded] = useState(false);
   const [activeTab, setActiveTab] = useState<'conversations' | 'campaigns'>('conversations');
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const initLoadConversations = async () => {
@@ -90,6 +91,17 @@ export function ConversationList({ onSelectConversation, onCreateNew, currentCon
 
       {activeTab === 'conversations' && (
         <>
+          <div className="conversation-search">
+            <span className="conversation-search-icon">🔍</span>
+            <input
+              className="conversation-search-input"
+              type="text"
+              placeholder="Tìm kiếm cuộc trò chuyện..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+
           <button
             className="conversation-toggle"
             onClick={() => setExpanded(!expanded)}
@@ -103,10 +115,15 @@ export function ConversationList({ onSelectConversation, onCreateNew, currentCon
               {loading ? (
                 <div className="conversation-loading">Đang tải...</div>
               ) : conversations.length === 0 ? (
-                <div className="conversation-empty">Chưa có cuộc hội thoại</div>
+                <div className="conversation-empty">
+                  <div className="conversation-empty-icon">💬</div>
+                  Chưa có cuộc hội thoại nào
+                </div>
               ) : (
                 <div className="conversation-items">
-                  {conversations.map((conv) => (
+                  {conversations
+                    .filter(conv => !searchQuery || conv.title.toLowerCase().includes(searchQuery.toLowerCase()))
+                    .map((conv) => (
                     <div
                       key={conv.conversation_id}
                       className={`conversation-item ${currentConversationId === conv.conversation_id ? 'active' : ''}`}
