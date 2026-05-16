@@ -1,5 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Neutral -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    
+    <!-- Dark Theme Background -->
+    <color name="bg_primary">#0f1117</color>
+    <color name="bg_surface">#1a1b23</color>
+    <color name="bg_surface_light">#21222c</color>
+    
+    <!-- Text Colors -->
+    <color name="text_primary">#ffffff</color>
+    <color name="text_secondary">#8b949e</color>
+    <color name="text_tertiary">#6e7681</color>
+    
+    <!-- Accent Colors -->
+    <color name="accent_primary">#6366f1</color>
+    <color name="accent_secondary">#8b5cf6</color>
+    <color name="accent_tertiary">#ec4899</color>
+    
+    <!-- Semantic Colors -->
+    <color name="success">#10b981</color>
+    <color name="error">#ef4444</color>
+    <color name="warning">#f59e0b</color>
+    <color name="info">#3b82f6</color>
+    
+    <!-- Stage Colors -->
+    <color name="accent_plan">#6366f1</color>
+    <color name="accent_react">#8b5cf6</color>
+    <color name="accent_evidence">#ec4899</color>
+    <color name="accent_report">#10b981</color>
+    <color name="accent_strategy">#f59e0b</color>
+    <color name="accent_campaign">#3b82f6</color>
+    
+    <!-- Chat Bubbles -->
+    <color name="bubble_user_bg">#6366f1</color>
+    <color name="bubble_assistant_bg">#1a1b23</color>
+    <color name="bubble_error_bg">#7f1d1d</color>
 </resources>

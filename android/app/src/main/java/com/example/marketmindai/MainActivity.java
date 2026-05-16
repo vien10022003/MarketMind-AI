@@ -1,77 +1,178 @@
 package com.example.marketmindai;
 
+import android.content.Intent;
 import android.os.Bundle;
-
-import com.google.android.material.snackbar.Snackbar;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.View;
+import com.example.marketmindai.adapter.ChatAdapter;
+import com.example.marketmindai.model.ChatMessage;
 
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
-import com.example.marketmindai.databinding.ActivityMainBinding;
-
-import android.view.Menu;
-import android.view.MenuItem;
-
+/**
+ * Main chat activity with conversation sidebar and message display.
+ * Handles message sending, receiving, and UI updates.
+ */
 public class MainActivity extends AppCompatActivity {
-
-    private AppBarConfiguration appBarConfiguration;
-    private ActivityMainBinding binding;
-
+    private static final String TAG = "MainActivity";
+    
+    private DrawerLayout drawerLayout;
+    private Toolbar toolbar;
+    private RecyclerView rvMessages;
+    private EditText etMessageInput;
+    private Button btnSend;
+    private LinearLayout layoutWelcomeHero;
+    
+    private ChatAdapter chatAdapter;
+    private List<ChatMessage> chatMessages = new ArrayList<>();
+    private boolean isLoading = false;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-
-        setSupportActionBar(binding.toolbar);
-
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-
-        binding.fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAnchorView(R.id.fab)
-                        .setAction("Action", null).show();
-            }
-        });
+        setContentView(R.layout.activity_main);
+        
+        // Initialize views
+        drawerLayout = findViewById(R.id.drawer_layout);
+        toolbar = findViewById(R.id.toolbar);
+        rvMessages = findViewById(R.id.rv_messages);
+        etMessageInput = findViewById(R.id.et_message_input);
+        btnSend = findViewById(R.id.btn_send);
+        layoutWelcomeHero = findViewById(R.id.layout_welcome_hero);
+        
+        // Setup toolbar
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(android.R.drawable.ic_menu_more);
+        
+        // Setup RecyclerView
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setStackFromEnd(true);
+        rvMessages.setLayoutManager(layoutManager);
+        
+        chatAdapter = new ChatAdapter(chatMessages);
+        rvMessages.setAdapter(chatAdapter);
+        
+        // Setup click listeners
+        btnSend.setOnClickListener(v -> handleSendMessage());
+        
+        // Setup suggestion chips
+        setupSuggestionChips();
+        
+        // Load initial welcome message
+        addWelcomeMessage();
     }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+    
+    private void setupSuggestionChips() {
+        Button chip1 = findViewById(R.id.chip_1);
+        Button chip2 = findViewById(R.id.chip_2);
+        Button chip3 = findViewById(R.id.chip_3);
+        Button chip4 = findViewById(R.id.chip_4);
+        
+        chip1.setOnClickListener(v -> handleSendMessage("📊 Nghiên cứu thị trường trà sữa tại Việt Nam"));
+        chip2.setOnClickListener(v -> handleSendMessage("🎯 Phân tích đối thủ ngành thương mại điện tử"));
+        chip3.setOnClickListener(v -> handleSendMessage("📈 Xu hướng marketing 2026 cho startup"));
+        chip4.setOnClickListener(v -> handleSendMessage("💡 Lập chiến lược quảng cáo cho sản phẩm mới"));
     }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+    
+    private void addWelcomeMessage() {
+        ChatMessage welcomeMsg = new ChatMessage(
+                "welcome-" + System.currentTimeMillis(),
+                "assistant",
+                "Xin chào! Tôi là MarketMind AI — trợ lý nghiên cứu thị trường thông minh. Hãy mô tả những gì bạn muốn tìm hiểu, tôi sẽ giúp bạn phân tích! 🚀",
+                new Date()
+        );
+        chatMessages.add(welcomeMsg);
+        chatAdapter.notifyItemInserted(chatMessages.size() - 1);
+    }
+    
+    private void handleSendMessage(String message) {
+        etMessageInput.setText(message);
+        handleSendMessage();
+    }
+    
+    private void handleSendMessage() {
+        String message = etMessageInput.getText().toString().trim();
+        if (message.isEmpty() || isLoading) return;
+        
+        // Add user message
+        ChatMessage userMsg = new ChatMessage(
+                "msg-" + System.currentTimeMillis(),
+                "user",
+                message,
+                new Date()
+        );
+        addMessage(userMsg);
+        
+        etMessageInput.setText("");
+        
+        // Hide welcome hero
+        if (layoutWelcomeHero.getVisibility() == android.view.View.VISIBLE) {
+            layoutWelcomeHero.setVisibility(android.view.View.GONE);
+            rvMessages.setVisibility(android.view.View.VISIBLE);
         }
-
-        return super.onOptionsItemSelected(item);
+        
+        // Show loading status
+        isLoading = true;
+        ChatMessage statusMsg = new ChatMessage(
+                "status-" + System.currentTimeMillis(),
+                "status",
+                "🔍 Đang phân tích...",
+                new Date()
+        );
+        addMessage(statusMsg);
+        
+        // Simulate API call (replace with real API call in Phase 4)
+        new Thread(() -> {
+            try {
+                Thread.sleep(2000);
+                runOnUiThread(() -> {
+                    // Remove status message (in real implementation, update with response)
+                    if (!chatMessages.isEmpty() && chatMessages.get(chatMessages.size() - 1).type.equals("status")) {
+                        chatMessages.remove(chatMessages.size() - 1);
+                        chatAdapter.notifyItemRemoved(chatMessages.size());
+                    }
+                    
+                    // Add response
+                    ChatMessage responseMsg = new ChatMessage(
+                            "msg-" + System.currentTimeMillis(),
+                            "assistant",
+                            "Tôi đã nhận được câu hỏi của bạn. Chức năng này sẽ được kết nối với ResearchService trong Phase 4 để gọi đến backend.",
+                            new Date()
+                    );
+                    addMessage(responseMsg);
+                    isLoading = false;
+                });
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
-
+    
+    private void addMessage(ChatMessage msg) {
+        chatMessages.add(msg);
+        chatAdapter.notifyItemInserted(chatMessages.size() - 1);
+        rvMessages.smoothScrollToPosition(chatMessages.size() - 1);
+    }
+    
     @Override
     public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        return NavigationUI.navigateUp(navController, appBarConfiguration)
-                || super.onSupportNavigateUp();
+        if (!drawerLayout.isDrawerOpen(android.view.GravityCompat.START)) {
+            drawerLayout.openDrawer(android.view.GravityCompat.START);
+        } else {
+            drawerLayout.closeDrawer(android.view.GravityCompat.START);
+        }
+        return true;
     }
 }

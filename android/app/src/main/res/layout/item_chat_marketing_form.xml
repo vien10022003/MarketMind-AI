@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_marginStart="12dp"
+    android:layout_marginEnd="12dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="8dp">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="2dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:background="@color/bg_surface">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hãy điền thông tin sản phẩm của bạn"
+                android:textColor="@color/accent_secondary"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Product name -->
+            <EditText
+                android:id="@+id/et_product_name"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:hint="Tên sản phẩm"
+                android:textColorHint="@color/text_tertiary"
+                android:textColor="@color/text_primary"
+                android:background="@drawable/bg_input_field"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:textSize="13sp"
+                android:layout_marginBottom="8dp" />
+
+            <!-- Target audience -->
+            <EditText
+                android:id="@+id/et_target_audience"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:hint="Đối tượng mục tiêu"
+                android:textColorHint="@color/text_tertiary"
+                android:textColor="@color/text_primary"
+                android:background="@drawable/bg_input_field"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:textSize="13sp"
+                android:layout_marginBottom="8dp" />
+
+            <!-- Value proposition -->
+            <EditText
+                android:id="@+id/et_value_prop"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:hint="Giá trị độc đáo"
+                android:textColorHint="@color/text_tertiary"
+                android:textColor="@color/text_primary"
+                android:background="@drawable/bg_input_field"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:textSize="13sp"
+                android:layout_marginBottom="8dp" />
+
+            <!-- Pricing -->
+            <EditText
+                android:id="@+id/et_pricing"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:hint="Giá cả"
+                android:textColorHint="@color/text_tertiary"
+                android:textColor="@color/text_primary"
+                android:background="@drawable/bg_input_field"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:textSize="13sp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Action buttons -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="end">
+
+                <Button
+                    android:id="@+id/btn_form_cancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="Hủy"
+                    android:background="@drawable/bg_button_secondary"
+                    android:textColor="@color/text_primary"
+                    android:textSize="12sp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:minWidth="0dp"
+                    android:layout_marginEnd="8dp" />
+
+                <Button
+                    android:id="@+id/btn_form_submit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="Tiếp tục"
+                    android:background="@drawable/bg_button_primary"
+                    android:textColor="@color/white"
+                    android:textSize="12sp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:minWidth="0dp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>

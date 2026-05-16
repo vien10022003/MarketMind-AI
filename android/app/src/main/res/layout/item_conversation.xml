@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="?attr/selectableItemBackground"
+    android:padding="12dp"
+    android:layout_marginBottom="1dp">
+
+    <!-- Conversation title -->
+    <TextView
+        android:id="@+id/tv_conversation_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Conversation Title"
+        android:textColor="@color/text_primary"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:ellipsize="end"
+        android:lines="1" />
+
+    <!-- Message preview -->
+    <TextView
+        android:id="@+id/tv_conversation_preview"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Last message preview..."
+        android:textColor="@color/text_secondary"
+        android:textSize="12sp"
+        android:ellipsize="end"
+        android:lines="1"
+        android:layout_marginTop="4dp" />
+
+    <!-- Footer with timestamp and delete -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="8dp">
+
+        <TextView
+            android:id="@+id/tv_conversation_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="14:30"
+            android:textColor="@color/text_tertiary"
+            android:textSize="11sp" />
+
+        <ImageButton
+            android:id="@+id/btn_delete_conversation"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@android:drawable/ic_menu_delete"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Delete conversation"
+            android:scaleType="centerInside"
+            android:tint="@color/text_tertiary" />
+
+    </LinearLayout>
+
+</LinearLayout>
