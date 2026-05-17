@@ -45,7 +45,9 @@ public class ResearchService {
             .connectTimeout(30, TimeUnit.SECONDS)
             .build();
     
-    private static final Gson gson = new Gson();
+    private static final Gson gson = new com.google.gson.GsonBuilder()
+            .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
+            .create();
     
     /**
      * Callback interface for streaming responses
@@ -202,20 +204,20 @@ public class ResearchService {
                 Log.w(TAG, "List conversations failed: " + response.code() + " - " + responseBody);
                 return new ArrayList<>();
             }
-            System.out.println("aaaaaaa jsonResponse");
+            
             // Parse wrapped response: { "data": { "conversations": [...] } }
             JsonObject jsonResponse = gson.fromJson(responseBody, JsonObject.class);
-            System.out.println(jsonResponse);
             if (jsonResponse != null && jsonResponse.has("data")) {
                 JsonObject data = jsonResponse.getAsJsonObject("data");
                 if (data != null && data.has("conversations")) {
                     JsonArray convArray = data.getAsJsonArray("conversations");
                     if (convArray != null) {
-                        return gson.fromJson(convArray, new TypeToken<List<Conversation>>(){}.getType());
+                        List<Conversation> conversations = gson.fromJson(convArray, new TypeToken<List<Conversation>>(){}.getType());
+                        Log.d(TAG, "Loaded " + conversations.size() + " conversations");
+                        return conversations;
                     }
                 }
             }
-            
             return new ArrayList<>();
         } catch (Exception e) {
             Log.e(TAG, "List conversations error: " + e.getMessage());
