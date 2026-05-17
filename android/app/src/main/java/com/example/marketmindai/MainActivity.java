@@ -234,8 +234,12 @@ public class MainActivity extends AppCompatActivity {
         MenuItem newChatItem = menu.add(Menu.NONE, 1, 1, "✨ Mới");
         newChatItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         
+        // Campaigns
+        MenuItem campaignsItem = menu.add(Menu.NONE, 3, 2, "📊 Chiến Dịch");
+        campaignsItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        
         // Logout
-        MenuItem logoutItem = menu.add(Menu.NONE, 2, 2, "Đăng xuất");
+        MenuItem logoutItem = menu.add(Menu.NONE, 2, 3, "Đăng xuất");
         logoutItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
         
         return true;
@@ -249,6 +253,9 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case 2: // Logout
                 handleLogout();
+                return true;
+            case 3: // Campaigns
+                startActivity(new Intent(this, CampaignManagementActivity.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

@@ -47,6 +47,20 @@
             android:exported="false"
             android:theme="@style/Theme.MarketMindAI"
             android:screenOrientation="portrait" />
+        
+        <!-- Campaign Management Activity -->
+        <activity
+            android:name=".CampaignManagementActivity"
+            android:exported="false"
+            android:theme="@style/Theme.MarketMindAI"
+            android:screenOrientation="portrait" />
+        
+        <!-- Campaign Detail Activity -->
+        <activity
+            android:name=".CampaignDetailActivity"
+            android:exported="false"
+            android:theme="@style/Theme.MarketMindAI"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

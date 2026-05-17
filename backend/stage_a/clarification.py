@@ -36,19 +36,80 @@ def normalize_tool_response(parsed: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def extract_first_json_block(text: str) -> Optional[str]:
-    """Extract first JSON object or array from text"""
+    """Extract first JSON object or array from text with proper bracket matching"""
     if not text:
         return None
     
-    match_obj = re.search(r"\{[\s\S]*\}", text)
-    if match_obj:
-        return match_obj.group(0)
+    # Try to find first { or [ and match it properly
+    start_idx = -1
+    is_array = False
     
-    match_arr = re.search(r"\[[\s\S]*\]", text)
-    if match_arr:
-        return match_arr.group(0)
+    # Find first { or [
+    brace_idx = text.find('{')
+    bracket_idx = text.find('[')
     
-    return None
+    if brace_idx == -1 and bracket_idx == -1:
+        return None
+    elif brace_idx == -1:
+        start_idx = bracket_idx
+        is_array = True
+    elif bracket_idx == -1:
+        start_idx = brace_idx
+        is_array = False
+    else:
+        if brace_idx < bracket_idx:
+            start_idx = brace_idx
+            is_array = False
+        else:
+            start_idx = bracket_idx
+            is_array = True
+    
+    # Match braces/brackets respecting string boundaries
+    open_char = '[' if is_array else '{'
+    close_char = ']' if is_array else '}'
+    
+    depth = 0
+    in_string = False
+    escape_next = False
+    end_idx = -1
+    
+    for i in range(start_idx, len(text)):
+        char = text[i]
+        
+        if escape_next:
+            escape_next = False
+            continue
+        
+        if char == '\\':
+            escape_next = True
+            continue
+        
+        if char == '"' and not in_string:
+            in_string = True
+            continue
+        elif char == '"' and in_string:
+            in_string = False
+            continue
+        
+        if not in_string:
+            if char == open_char:
+                depth += 1
+            elif char == close_char:
+                depth -= 1
+                if depth == 0:
+                    end_idx = i + 1
+                    break
+    
+    if end_idx == -1:
+        return None
+    
+    extracted = text[start_idx:end_idx]
+    
+    # Clean up common invalid escape sequences before parsing
+    # Replace \' with ' since JSON doesn't support escaping single quotes
+    cleaned = extracted.replace("\\'", "'")
+    
+    return cleaned
 
 
 def validate_input_completeness(

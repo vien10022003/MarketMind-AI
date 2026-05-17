@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.example.marketmindai.config.ApiConfig;
 import com.example.marketmindai.model.ChatMessage;
+import com.example.marketmindai.model.Campaign;
 import com.example.marketmindai.model.Conversation;
 import com.example.marketmindai.model.StreamMessage;
 
@@ -397,12 +398,14 @@ public class ResearchService {
     }
     
     /**
-     * Get scheduled campaigns
+     * Get scheduled campaigns as Campaign model objects
+     * Returns a list of Campaign objects with full details
      */
-    public static JsonArray getScheduledCampaigns(
+    public static List<Campaign> getScheduledCampaigns(
             android.content.Context context,
             String status
     ) {
+        List<Campaign> campaigns = new ArrayList<>();
         try {
             String url = status != null
                     ? ApiConfig.getApiUrl("/api/stage-c/scheduler/campaigns?status=" + status)
@@ -426,14 +429,18 @@ public class ResearchService {
                 if (jsonResponse != null && jsonResponse.has("data")) {
                     JsonObject data = jsonResponse.getAsJsonObject("data");
                     if (data != null && data.has("campaigns")) {
-                        return data.getAsJsonArray("campaigns");
+                        JsonArray campaignsJson = data.getAsJsonArray("campaigns");
+                        for (int i = 0; i < campaignsJson.size(); i++) {
+                            JsonObject campaignJson = campaignsJson.get(i).getAsJsonObject();
+                            campaigns.add(new Campaign(campaignJson));
+                        }
                     }
                 }
             }
-            return new JsonArray();
+            return campaigns;
         } catch (Exception e) {
             Log.e(TAG, "Get campaigns error: " + e.getMessage());
-            return new JsonArray();
+            return campaigns;
         }
     }
     
