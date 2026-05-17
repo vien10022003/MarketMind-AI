@@ -22,45 +22,158 @@
             android:layout_height="56dp"
             android:background="@color/bg_surface"
             android:elevation="4dp"
-            app:title="@string/app_name"
-            app:titleTextColor="@color/text_primary" />
+            app:title="MarketMind AI"
+            app:subtitle="🔬 Trợ lý nghiên cứu thị trường"
+            app:titleTextColor="@color/text_primary"
+            app:subtitleTextColor="@color/text_secondary" />
 
         <!-- Welcome Hero (shown when no messages) -->
-        <LinearLayout
+        <ScrollView
             android:id="@+id/layout_welcome_hero"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:padding="24dp">
+            android:fillViewport="true">
 
-            <!-- App Title -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/app_name"
-                android:textColor="@color/text_primary"
-                android:textSize="32sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="8dp" />
-
-            <!-- Tagline -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/app_tagline"
-                android:textColor="@color/text_secondary"
-                android:textSize="16sp"
-                android:layout_marginBottom="32dp" />
-
-            <!-- Suggestion Chips -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:gravity="center">
+                android:gravity="center_horizontal"
+                android:padding="24dp">
 
+                <!-- Spacer -->
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="40dp" />
+
+                <!-- Rocket Icon -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🚀"
+                    android:textSize="48sp"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- App Title -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="MarketMind AI"
+                    android:textColor="@color/accent_primary"
+                    android:textSize="28sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp" />
+
+                <!-- Tagline -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Nghiên cứu thị trường · Phân tích đối thủ\nChiến lược marketing — tất cả bằng AI"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="14sp"
+                    android:gravity="center"
+                    android:lineSpacingMultiplier="1.4"
+                    android:layout_marginBottom="32dp" />
+
+                <!-- Feature Cards -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_marginBottom="32dp">
+
+                    <!-- Feature 1 -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:background="@drawable/bg_suggestion_chip"
+                        android:padding="12dp"
+                        android:layout_marginEnd="8dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🔍"
+                            android:textSize="24sp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Nghiên cứu"
+                            android:textColor="@color/text_primary"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="4dp" />
+                    </LinearLayout>
+
+                    <!-- Feature 2 -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:background="@drawable/bg_suggestion_chip"
+                        android:padding="12dp"
+                        android:layout_marginEnd="8dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="📊"
+                            android:textSize="24sp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Chiến lược"
+                            android:textColor="@color/text_primary"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="4dp" />
+                    </LinearLayout>
+
+                    <!-- Feature 3 -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:background="@drawable/bg_suggestion_chip"
+                        android:padding="12dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🎯"
+                            android:textSize="24sp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Marketing"
+                            android:textColor="@color/text_primary"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="4dp" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- Suggestion section title -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="💡 Gợi ý câu hỏi"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="12dp" />
+
+                <!-- Suggestion Chips -->
                 <Button
                     android:id="@+id/chip_1"
                     android:layout_width="match_parent"
@@ -69,7 +182,8 @@
                     android:background="@drawable/bg_suggestion_chip"
                     android:textColor="@color/text_primary"
                     android:textSize="13sp"
-                    android:layout_marginBottom="12dp"
+                    android:textAllCaps="false"
+                    android:layout_marginBottom="8dp"
                     android:gravity="start|center_vertical"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp" />
@@ -82,7 +196,8 @@
                     android:background="@drawable/bg_suggestion_chip"
                     android:textColor="@color/text_primary"
                     android:textSize="13sp"
-                    android:layout_marginBottom="12dp"
+                    android:textAllCaps="false"
+                    android:layout_marginBottom="8dp"
                     android:gravity="start|center_vertical"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp" />
@@ -95,7 +210,8 @@
                     android:background="@drawable/bg_suggestion_chip"
                     android:textColor="@color/text_primary"
                     android:textSize="13sp"
-                    android:layout_marginBottom="12dp"
+                    android:textAllCaps="false"
+                    android:layout_marginBottom="8dp"
                     android:gravity="start|center_vertical"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp" />
@@ -108,13 +224,14 @@
                     android:background="@drawable/bg_suggestion_chip"
                     android:textColor="@color/text_primary"
                     android:textSize="13sp"
+                    android:textAllCaps="false"
                     android:gravity="start|center_vertical"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp" />
 
             </LinearLayout>
 
-        </LinearLayout>
+        </ScrollView>
 
         <!-- Chat Messages RecyclerView -->
         <androidx.recyclerview.widget.RecyclerView
@@ -127,6 +244,7 @@
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
             android:clipToPadding="false"
+            android:background="@color/bg_primary"
             android:visibility="gone" />
 
         <!-- Divider -->
@@ -141,7 +259,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:background="@color/bg_surface"
-            android:padding="12dp"
+            android:padding="10dp"
             android:gravity="center_vertical">
 
             <!-- EditText -->
@@ -150,29 +268,29 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="@string/type_message"
+                android:hint="Nhập câu hỏi của bạn..."
                 android:textColorHint="@color/text_tertiary"
                 android:textColor="@color/text_primary"
                 android:background="@drawable/bg_input_field"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
                 android:textSize="14sp"
                 android:inputType="textMultiLine"
                 android:maxLines="4"
-                android:minHeight="40dp"
+                android:minHeight="44dp"
                 android:layout_marginEnd="8dp" />
 
             <!-- Send Button -->
             <Button
                 android:id="@+id/btn_send"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
                 android:text="➤"
                 android:background="@drawable/bg_button_send"
                 android:textColor="@color/white"
-                android:textSize="18sp"
+                android:textSize="20sp"
                 android:minWidth="0dp"
                 android:minHeight="0dp"
                 android:padding="0dp" />
@@ -184,7 +302,7 @@
     <!-- Navigation Drawer -->
     <FrameLayout
         android:id="@+id/drawer_content"
-        android:layout_width="280dp"
+        android:layout_width="300dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:background="@color/bg_surface" />

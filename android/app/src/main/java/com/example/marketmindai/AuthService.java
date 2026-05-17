@@ -88,11 +88,15 @@ public class AuthService {
         
         JsonObject jsonResponse = gson.fromJson(responseBody, JsonObject.class);
         
-        // Extract token and user info
+        // Extract token and user info with null checks
+        if (jsonResponse == null || !jsonResponse.has("access_token") || !jsonResponse.has("username")) {
+            throw new Exception("Invalid login response: missing access_token or username");
+        }
+        
         String token = jsonResponse.get("access_token").getAsString();
         String userName = jsonResponse.get("username").getAsString();
-        String name = jsonResponse.has("name") ? jsonResponse.get("name").getAsString() : userName;
-        String email = jsonResponse.has("email") ? jsonResponse.get("email").getAsString() : "";
+        String name = jsonResponse.has("name") && jsonResponse.get("name") != null ? jsonResponse.get("name").getAsString() : userName;
+        String email = jsonResponse.has("email") && jsonResponse.get("email") != null ? jsonResponse.get("email").getAsString() : "";
         
         // Save token and user
         saveToken(context, token, userName, name, email);
@@ -129,7 +133,11 @@ public class AuthService {
         
         JsonObject jsonResponse = gson.fromJson(responseBody, JsonObject.class);
         
-        // Extract token
+        // Extract token with null check
+        if (jsonResponse == null || !jsonResponse.has("access_token")) {
+            throw new Exception("Invalid registration response: missing access_token");
+        }
+        
         String token = jsonResponse.get("access_token").getAsString();
         
         // Save token and user
@@ -165,10 +173,15 @@ public class AuthService {
         
         JsonObject jsonResponse = gson.fromJson(responseBody, JsonObject.class);
         
+        // Extract token and user info with null checks
+        if (jsonResponse == null || !jsonResponse.has("access_token") || !jsonResponse.has("username")) {
+            throw new Exception("Invalid Google login response: missing access_token or username");
+        }
+        
         String token = jsonResponse.get("access_token").getAsString();
         String username = jsonResponse.get("username").getAsString();
-        String name = jsonResponse.has("name") ? jsonResponse.get("name").getAsString() : username;
-        String email = jsonResponse.has("email") ? jsonResponse.get("email").getAsString() : "";
+        String name = jsonResponse.has("name") && jsonResponse.get("name") != null ? jsonResponse.get("name").getAsString() : username;
+        String email = jsonResponse.has("email") && jsonResponse.get("email") != null ? jsonResponse.get("email").getAsString() : "";
         
         saveToken(context, token, username, name, email);
         

@@ -1,8 +1,10 @@
 package com.example.marketmindai.adapter;
 
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -15,22 +17,29 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 
+import io.noties.markwon.Markwon;
+
 /**
- * Adapter for chat messages with multiple view types.
- * Supports user, assistant, status, error, and other message types.
+ * Multi-type adapter for chat messages. Handles:
+ * - User messages (right-aligned bubble)
+ * - Assistant/knowledge messages (left-aligned with markdown)
+ * - Status/progress messages (center with spinner)
+ * - Error messages (red banner)
+ * - Plan, Report, Strategy, Campaign messages (card-style)
  */
 public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     
-    private static final String TAG = "ChatAdapter";
-    
-    // View type constants
     private static final int VIEW_TYPE_USER = 0;
     private static final int VIEW_TYPE_ASSISTANT = 1;
     private static final int VIEW_TYPE_STATUS = 2;
     private static final int VIEW_TYPE_ERROR = 3;
+    private static final int VIEW_TYPE_PLAN = 4;
+    private static final int VIEW_TYPE_REPORT = 5;
+    private static final int VIEW_TYPE_STRATEGY = 6;
     
     private List<ChatMessage> messages;
     private SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+    private Markwon markwon;
     
     public ChatAdapter(List<ChatMessage> messages) {
         this.messages = messages;
@@ -39,64 +48,70 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public int getItemViewType(int position) {
         ChatMessage msg = messages.get(position);
-        
         switch (msg.type) {
             case "user":
                 return VIEW_TYPE_USER;
             case "assistant":
             case "knowledge":
             case "completed":
-                return VIEW_TYPE_ASSISTANT;
-            case "status":
             case "clarification":
+            case "marketing_form":
+            case "campaign_results":
+                return VIEW_TYPE_ASSISTANT;
             case "plan":
+                return VIEW_TYPE_PLAN;
+            case "report":
             case "react_summary":
             case "evidence":
-            case "report":
+                return VIEW_TYPE_REPORT;
             case "strategy":
-            case "campaign_results":
-            case "stage_c_schedule_proposal":
-            case "marketing_form":
-                return VIEW_TYPE_STATUS; // Placeholder for now
+                return VIEW_TYPE_STRATEGY;
             case "error":
                 return VIEW_TYPE_ERROR;
+            case "status":
             default:
-                return VIEW_TYPE_ASSISTANT;
+                return VIEW_TYPE_STATUS;
         }
+    }
+    
+    private Markwon getMarkwon(android.content.Context context) {
+        if (markwon == null) {
+            markwon = Markwon.create(context);
+        }
+        return markwon;
     }
     
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        
         switch (viewType) {
             case VIEW_TYPE_USER:
-                View userView = inflater.inflate(R.layout.item_chat_user, parent, false);
-                return new UserMessageVH(userView);
+                return new UserMessageVH(inflater.inflate(R.layout.item_chat_user, parent, false));
             case VIEW_TYPE_ASSISTANT:
-                View assistantView = inflater.inflate(R.layout.item_chat_assistant, parent, false);
-                return new AssistantMessageVH(assistantView);
-            case VIEW_TYPE_STATUS:
-                View statusView = inflater.inflate(R.layout.item_chat_status, parent, false);
-                return new StatusMessageVH(statusView);
+                return new AssistantMessageVH(inflater.inflate(R.layout.item_chat_assistant, parent, false));
+            case VIEW_TYPE_PLAN:
+                return new CardMessageVH(inflater.inflate(R.layout.item_chat_plan, parent, false));
+            case VIEW_TYPE_REPORT:
+                return new CardMessageVH(inflater.inflate(R.layout.item_chat_report, parent, false));
+            case VIEW_TYPE_STRATEGY:
+                return new CardMessageVH(inflater.inflate(R.layout.item_chat_strategy, parent, false));
             case VIEW_TYPE_ERROR:
-                View errorView = inflater.inflate(R.layout.item_chat_error, parent, false);
-                return new ErrorMessageVH(errorView);
+                return new ErrorMessageVH(inflater.inflate(R.layout.item_chat_error, parent, false));
             default:
-                View defaultView = inflater.inflate(R.layout.item_chat_assistant, parent, false);
-                return new AssistantMessageVH(defaultView);
+                return new StatusMessageVH(inflater.inflate(R.layout.item_chat_status, parent, false));
         }
     }
     
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         ChatMessage message = messages.get(position);
-        
         if (holder instanceof UserMessageVH) {
             ((UserMessageVH) holder).bind(message);
         } else if (holder instanceof AssistantMessageVH) {
             ((AssistantMessageVH) holder).bind(message);
+        } else if (holder instanceof CardMessageVH) {
+            ((CardMessageVH) holder).bind(message);
         } else if (holder instanceof StatusMessageVH) {
             ((StatusMessageVH) holder).bind(message);
         } else if (holder instanceof ErrorMessageVH) {
@@ -109,12 +124,12 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return messages.size();
     }
     
-    /**
-     * User message view holder
-     */
+    // ════════════════════════════════════════════
+    // User Message (Right-aligned)
+    // ════════════════════════════════════════════
+    
     public class UserMessageVH extends RecyclerView.ViewHolder {
-        private TextView tvContent;
-        private TextView tvTime;
+        private TextView tvContent, tvTime;
         
         public UserMessageVH(@NonNull View itemView) {
             super(itemView);
@@ -124,16 +139,18 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         
         public void bind(ChatMessage msg) {
             tvContent.setText(msg.content);
-            tvTime.setText(timeFormat.format(msg.timestamp));
+            if (msg.timestamp != null && tvTime != null) {
+                tvTime.setText(timeFormat.format(msg.timestamp));
+            }
         }
     }
     
-    /**
-     * Assistant message view holder
-     */
+    // ════════════════════════════════════════════
+    // Assistant Message (Left-aligned, Markdown)
+    // ════════════════════════════════════════════
+    
     public class AssistantMessageVH extends RecyclerView.ViewHolder {
-        private TextView tvContent;
-        private TextView tvTime;
+        private TextView tvContent, tvTime;
         
         public AssistantMessageVH(@NonNull View itemView) {
             super(itemView);
@@ -142,14 +159,189 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
         
         public void bind(ChatMessage msg) {
-            tvContent.setText(msg.content);
-            tvTime.setText(timeFormat.format(msg.timestamp));
+            Markwon mw = getMarkwon(itemView.getContext());
+            
+            String displayText = msg.content;
+            
+            // For knowledge type, append sources
+            if ("knowledge".equals(msg.type) && msg.knowledgeData != null) {
+                StringBuilder sb = new StringBuilder(msg.knowledgeData.answer != null ? msg.knowledgeData.answer : msg.content);
+                if (msg.knowledgeData.sources != null && !msg.knowledgeData.sources.isEmpty()) {
+                    sb.append("\n\n📚 **Nguồn tham khảo:**\n");
+                    for (ChatMessage.Source src : msg.knowledgeData.sources) {
+                        sb.append("• [").append(src.title).append("](").append(src.url).append(")\n");
+                    }
+                }
+                displayText = sb.toString();
+            }
+            
+            // For campaign_results, build summary text
+            if ("campaign_results".equals(msg.type) && msg.campaignLogData != null) {
+                StringBuilder sb = new StringBuilder("📊 **Kết quả chiến dịch**\n\n");
+                sb.append("✅ Thành công: **").append(msg.campaignLogData.successful_posts).append("/").append(msg.campaignLogData.total_posts).append("** bài đăng\n\n");
+                if (msg.campaignLogData.briefs_executed != null) {
+                    for (ChatMessage.BriefExecution brief : msg.campaignLogData.briefs_executed) {
+                        String icon = brief.success ? "✅" : "❌";
+                        sb.append(icon).append(" ").append(brief.title != null ? brief.title : "Bài đăng").append("\n");
+                        if (brief.message != null) sb.append("   _").append(brief.message).append("_\n");
+                    }
+                }
+                displayText = sb.toString();
+            }
+            
+            // For marketing_form, show form instruction
+            if ("marketing_form".equals(msg.type)) {
+                displayText = "🎯 **Biểu mẫu Marketing**\n\n" + msg.content +
+                        "\n\n_Vui lòng nhập thông tin chiến dịch marketing vào ô chat để tiếp tục._";
+            }
+            
+            // For completed, show completion icon
+            if ("completed".equals(msg.type)) {
+                displayText = "✅ " + msg.content;
+            }
+            
+            mw.setMarkdown(tvContent, displayText != null ? displayText : "");
+            tvContent.setMovementMethod(LinkMovementMethod.getInstance());
+            
+            if (msg.timestamp != null && tvTime != null) {
+                tvTime.setText(timeFormat.format(msg.timestamp));
+            }
         }
     }
     
-    /**
-     * Status/info message view holder
-     */
+    // ════════════════════════════════════════════
+    // Card Messages (Plan, Report, Strategy)
+    // ════════════════════════════════════════════
+    
+    public class CardMessageVH extends RecyclerView.ViewHolder {
+        private TextView tvContent, tvTitle;
+        
+        public CardMessageVH(@NonNull View itemView) {
+            super(itemView);
+            tvContent = itemView.findViewById(R.id.tv_message_content);
+            tvTitle = itemView.findViewById(R.id.tv_card_title);
+        }
+        
+        public void bind(ChatMessage msg) {
+            Markwon mw = getMarkwon(itemView.getContext());
+            
+            String title = "";
+            String body = msg.content != null ? msg.content : "";
+            
+            switch (msg.type) {
+                case "plan":
+                    title = "📋 Kế hoạch nghiên cứu";
+                    if (msg.planData != null && msg.planData.steps != null) {
+                        StringBuilder sb = new StringBuilder();
+                        if (msg.planData.summary != null) sb.append(msg.planData.summary).append("\n\n");
+                        for (ChatMessage.PlanStep step : msg.planData.steps) {
+                            sb.append("**").append(step.order).append(". ").append(step.name).append("**\n");
+                            sb.append(step.description).append("\n\n");
+                        }
+                        body = sb.toString();
+                    }
+                    break;
+                    
+                case "report":
+                    title = "📄 Báo cáo nghiên cứu";
+                    if (msg.reportData != null) {
+                        StringBuilder sb = new StringBuilder();
+                        if (msg.reportData.title != null) sb.append("# ").append(msg.reportData.title).append("\n\n");
+                        if (msg.reportData.summary != null) sb.append(msg.reportData.summary).append("\n\n");
+                        if (msg.reportData.sections != null) {
+                            for (ChatMessage.ReportSection section : msg.reportData.sections) {
+                                if (section.title != null) sb.append("## ").append(section.title).append("\n\n");
+                                if (section.content != null) sb.append(section.content).append("\n\n");
+                            }
+                        }
+                        body = sb.toString();
+                    }
+                    break;
+                    
+                case "react_summary":
+                    title = "🧠 Tóm tắt quá trình phân tích";
+                    if (msg.reactSummaryData != null) {
+                        StringBuilder sb = new StringBuilder();
+                        sb.append("🔄 **").append(msg.reactSummaryData.total_thoughts).append("** bước suy luận | ");
+                        sb.append("🔧 **").append(msg.reactSummaryData.total_tools_used).append("** công cụ\n\n");
+                        if (msg.reactSummaryData.steps != null) {
+                            for (ChatMessage.ReactStep step : msg.reactSummaryData.steps) {
+                                sb.append("**").append(step.order).append(". ").append(step.name).append("**\n");
+                                if (step.reasoning != null) sb.append("💭 ").append(step.reasoning).append("\n");
+                                if (step.action != null) sb.append("🔧 ").append(step.action).append("\n");
+                                if (step.observation != null) sb.append("👁 ").append(step.observation).append("\n");
+                                sb.append("\n");
+                            }
+                        }
+                        body = sb.toString();
+                    }
+                    break;
+                    
+                case "evidence":
+                    title = "📎 Bằng chứng thu thập";
+                    if (msg.evidenceData != null && msg.evidenceData.items != null) {
+                        StringBuilder sb = new StringBuilder();
+                        for (ChatMessage.Evidence ev : msg.evidenceData.items) {
+                            sb.append("**").append(ev.title != null ? ev.title : "Bằng chứng").append("**\n");
+                            if (ev.content != null) sb.append(ev.content).append("\n");
+                            if (ev.source != null) sb.append("_Nguồn: ").append(ev.source).append("_\n");
+                            sb.append("\n");
+                        }
+                        body = sb.toString();
+                    }
+                    break;
+                    
+                case "strategy":
+                    title = "📊 Chiến lược marketing";
+                    if (msg.strategyData != null) {
+                        StringBuilder sb = new StringBuilder();
+                        if (msg.strategyData.title != null) sb.append("**").append(msg.strategyData.title).append("**\n\n");
+                        
+                        // SWOT
+                        if (msg.strategyData.swot != null) {
+                            sb.append("### 📊 SWOT Analysis\n\n");
+                            ChatMessage.SWOT swot = msg.strategyData.swot;
+                            if (swot.strengths != null) { sb.append("**💪 Điểm mạnh:**\n"); for (String s : swot.strengths) sb.append("• ").append(s).append("\n"); sb.append("\n"); }
+                            if (swot.weaknesses != null) { sb.append("**⚠️ Điểm yếu:**\n"); for (String s : swot.weaknesses) sb.append("• ").append(s).append("\n"); sb.append("\n"); }
+                            if (swot.opportunities != null) { sb.append("**🌟 Cơ hội:**\n"); for (String s : swot.opportunities) sb.append("• ").append(s).append("\n"); sb.append("\n"); }
+                            if (swot.threats != null) { sb.append("**🔴 Thách thức:**\n"); for (String s : swot.threats) sb.append("• ").append(s).append("\n"); sb.append("\n"); }
+                        }
+                        
+                        // USP
+                        if (msg.strategyData.usp != null) {
+                            sb.append("### 🎯 USP\n\n");
+                            if (msg.strategyData.usp.core_benefit != null) sb.append("**Lợi ích cốt lõi:** ").append(msg.strategyData.usp.core_benefit).append("\n");
+                            if (msg.strategyData.usp.tagline != null) sb.append("**Tagline:** _").append(msg.strategyData.usp.tagline).append("_\n\n");
+                        }
+                        
+                        // Persona
+                        if (msg.strategyData.persona != null) {
+                            sb.append("### 👤 Persona\n\n");
+                            ChatMessage.Persona p = msg.strategyData.persona;
+                            if (p.name != null) sb.append("**").append(p.name).append("**");
+                            if (p.age != null) sb.append(" — ").append(p.age);
+                            sb.append("\n");
+                            if (p.occupation != null) sb.append("Nghề nghiệp: ").append(p.occupation).append("\n");
+                            if (p.pain_points != null) { sb.append("**Pain points:**\n"); for (String s : p.pain_points) sb.append("• ").append(s).append("\n"); }
+                            if (p.goals != null) { sb.append("**Mục tiêu:**\n"); for (String s : p.goals) sb.append("• ").append(s).append("\n"); }
+                            sb.append("\n");
+                        }
+                        
+                        body = sb.toString();
+                    }
+                    break;
+            }
+            
+            if (tvTitle != null) tvTitle.setText(title);
+            mw.setMarkdown(tvContent, body);
+            tvContent.setMovementMethod(LinkMovementMethod.getInstance());
+        }
+    }
+    
+    // ════════════════════════════════════════════
+    // Status Message (Center, with spinner)
+    // ════════════════════════════════════════════
+    
     public class StatusMessageVH extends RecyclerView.ViewHolder {
         private ProgressBar pbStatus;
         private TextView tvMessage;
@@ -162,9 +354,8 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         
         public void bind(ChatMessage msg) {
             tvMessage.setText(msg.content);
-            
-            // Hide progress bar for non-ongoing statuses
-            if (msg.type.equals("completed")) {
+            // Show spinner for active statuses
+            if ("completed".equals(msg.type)) {
                 pbStatus.setVisibility(View.GONE);
             } else {
                 pbStatus.setVisibility(View.VISIBLE);
@@ -172,9 +363,10 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
     
-    /**
-     * Error message view holder
-     */
+    // ════════════════════════════════════════════
+    // Error Message
+    // ════════════════════════════════════════════
+    
     public class ErrorMessageVH extends RecyclerView.ViewHolder {
         private TextView tvError;
         
@@ -188,17 +380,15 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
     
-    /**
-     * Update messages list and notify
-     */
+    // ════════════════════════════════════════════
+    // Public helpers
+    // ════════════════════════════════════════════
+    
     public void updateMessages(List<ChatMessage> newMessages) {
         this.messages = newMessages;
         notifyDataSetChanged();
     }
     
-    /**
-     * Add a new message to the end
-     */
     public void addMessage(ChatMessage message) {
         messages.add(message);
         notifyItemInserted(messages.size() - 1);

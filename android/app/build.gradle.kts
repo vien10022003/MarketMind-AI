@@ -1,6 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
-    id("com.google.gms.google-services") version "4.4.4" apply false
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -49,6 +49,7 @@ dependencies {
     // Firebase
     implementation(platform("com.google.firebase:firebase-bom:34.13.0"))
     implementation("com.google.firebase:firebase-config")
+    implementation("com.google.firebase:firebase-auth")
     
     // OkHttp + Gson
     implementation("com.squareup.okhttp3:okhttp:4.11.0")

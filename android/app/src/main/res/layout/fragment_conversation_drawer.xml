@@ -5,22 +5,23 @@
     android:orientation="vertical"
     android:background="@color/bg_surface">
 
-    <!-- Sidebar Header -->
+    <!-- Sidebar Header with Logo + Close -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:padding="16dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="8dp"
         android:background="@color/bg_primary">
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Cuộc hội thoại"
+            android:text="🎯 MarketMind AI"
             android:textColor="@color/text_primary"
-            android:textSize="16sp"
+            android:textSize="17sp"
             android:textStyle="bold" />
 
         <Button
@@ -28,7 +29,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:text="✕"
-            android:background="?attr/selectableItemBackground"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:textColor="@color/text_secondary"
             android:textSize="16sp"
             android:minWidth="0dp"
@@ -37,11 +38,93 @@
 
     </LinearLayout>
 
+    <!-- User Info Section -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="16dp"
+        android:background="@color/bg_surface_light">
+
+        <!-- User Avatar -->
+        <TextView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:text="👤"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:background="@drawable/bg_chat_bubble_user"
+            android:layout_marginEnd="12dp" />
+
+        <!-- User Name -->
+        <TextView
+            android:id="@+id/tv_drawer_user_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="User"
+            android:textColor="@color/text_primary"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:ellipsize="end"
+            android:maxLines="1" />
+
+        <!-- Logout Button -->
+        <Button
+            android:id="@+id/btn_drawer_logout"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:text="🚪 Thoát"
+            android:textColor="@color/error"
+            android:textSize="11sp"
+            android:background="?attr/selectableItemBackground"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp" />
+
+    </LinearLayout>
+
+    <!-- Divider -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/bg_surface_light" />
+
+    <!-- New Chat Button -->
+    <Button
+        android:id="@+id/btn_drawer_new_chat"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:text="✨ Cuộc hội thoại mới"
+        android:textColor="@color/white"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:background="@drawable/bg_button_primary"
+        android:layout_margin="12dp" />
+
+    <!-- Section Title -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="💬 Lịch sử trò chuyện"
+        android:textColor="@color/text_secondary"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp" />
+
     <!-- Conversations List -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_conversations"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/bg_surface" />
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/bg_surface"
+        android:clipToPadding="false"
+        android:paddingBottom="16dp" />
 
 </LinearLayout>

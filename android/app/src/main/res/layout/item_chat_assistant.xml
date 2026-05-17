@@ -5,18 +5,29 @@
     android:orientation="horizontal"
     android:gravity="start"
     android:paddingStart="12dp"
-    android:paddingEnd="48dp"
-    android:paddingTop="8dp"
-    android:paddingBottom="8dp">
+    android:paddingEnd="32dp"
+    android:paddingTop="4dp"
+    android:paddingBottom="4dp">
+
+    <!-- AI indicator dot -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="🤖"
+        android:textSize="14sp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp" />
 
     <!-- Assistant message bubble -->
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_chat_bubble_assistant"
-        android:padding="12dp"
-        android:orientation="vertical"
-        android:maxWidth="300dp">
+        android:paddingStart="14dp"
+        android:paddingEnd="14dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/tv_message_content"
@@ -24,14 +35,15 @@
             android:layout_height="wrap_content"
             android:textColor="@color/text_primary"
             android:textSize="14sp"
-            android:lineSpacingMultiplier="1.2" />
+            android:lineSpacingMultiplier="1.4"
+            android:textIsSelectable="true" />
 
         <TextView
             android:id="@+id/tv_message_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/text_secondary"
-            android:textSize="11sp"
+            android:textColor="@color/text_tertiary"
+            android:textSize="10sp"
             android:layout_marginTop="4dp" />
 
     </LinearLayout>

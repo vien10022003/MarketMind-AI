@@ -1,17 +1,26 @@
 package com.example.marketmindai.config;
 
 import android.content.Context;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
+import android.util.Log;
+import org.json.JSONException;
+import org.json.JSONObject;
+import java.io.IOException;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
- * Centralized API configuration. Fetches backend URL from Firebase Remote Config.
+ * Centralized API configuration. Fetches backend URL from Firebase Realtime Database.
  * Falls back to default ngrok URL if Firebase is unavailable.
  */
 public class ApiConfig {
     private static final String TAG = "ApiConfig";
-    private static final String DEFAULT_API_URL = "http://localhost:5000";
-    private static final String FIREBASE_KEY_API_URL = "api_url";
+    
+    // Ngrok URL fallback - update when you deploy
+    private static final String DEFAULT_API_URL = "https://9f34-34-125-194-159.ngrok-free.app";
+    
+    // Firebase Realtime Database endpoint (same as Frontend)
+    private static final String FIREBASE_API_URL = "https://vienvipvail-default-rtdb.firebaseio.com/api-graduation-ngrok.json";
     
     private static String apiUrl = DEFAULT_API_URL;
     private static boolean isInitialized = false;
@@ -23,8 +32,9 @@ public class ApiConfig {
     }
     
     /**
-     * Initialize backend URL from Firebase Remote Config on app startup.
-     * This method is non-blocking but sets a flag when complete.
+     * Initialize backend URL from Firebase Realtime Database on app startup.
+     * This method runs asynchronously in a background thread.
+     * Falls back to default URL if Firebase is unavailable.
      */
     public static void initializeBackendUrl(Context context, OnInitializedListener listener) {
         initializationListener = listener;
@@ -34,41 +44,70 @@ public class ApiConfig {
             return;
         }
         
-        FirebaseRemoteConfig firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
-        
-        // Set minimum fetch interval to 1 hour (3600 seconds)
-        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
-                .setMinimumFetchIntervalInSeconds(3600)
-                .build();
-        firebaseRemoteConfig.setConfigSettingsAsync(configSettings);
-        
-        // Set default values
-        firebaseRemoteConfig.setDefaultsAsync(
-                java.util.Collections.singletonMap(FIREBASE_KEY_API_URL, DEFAULT_API_URL)
-        );
-        
-        // Fetch from Firebase asynchronously
-        firebaseRemoteConfig.fetchAndActivate()
-                .addOnCompleteListener(task -> {
-                    synchronized (lock) {
-                        if (task.isSuccessful()) {
-                            String fetchedUrl = firebaseRemoteConfig.getString(FIREBASE_KEY_API_URL);
-                            if (fetchedUrl != null && !fetchedUrl.isEmpty()) {
-                                apiUrl = fetchedUrl;
-                                android.util.Log.d(TAG, "API URL fetched from Firebase: " + apiUrl);
+        // Fetch from Firebase in background thread
+        new Thread(() -> {
+            try {
+                Log.d(TAG, "📡 Fetching backend URL from Firebase...");
+                
+                OkHttpClient client = new OkHttpClient();
+                Request request = new Request.Builder()
+                        .url(FIREBASE_API_URL)
+                        .build();
+                
+                try (Response response = client.newCall(request).execute()) {
+                    if (!response.isSuccessful()) {
+                        throw new IOException("HTTP error! status: " + response.code());
+                    }
+                    
+                    String responseBody = response.body().string();
+                    
+                    // Parse Firebase response
+                    String fetchedUrl = null;
+                    if (responseBody.startsWith("\"")) {
+                        // Firebase returns string directly: "https://..."
+                        fetchedUrl = responseBody.replaceAll("^\"|\"$", "");
+                    } else {
+                        // Or wrapped in object: {"url": "https://...", "backend_url": "https://..."}
+                        try {
+                            JSONObject json = new JSONObject(responseBody);
+                            if (json.has("url")) {
+                                fetchedUrl = json.getString("url");
+                            } else if (json.has("backend_url")) {
+                                fetchedUrl = json.getString("backend_url");
                             }
-                        } else {
-                            // Use default on failure
-                            android.util.Log.w(TAG, "Failed to fetch from Firebase, using default URL");
-                        }
-                        isInitialized = true;
-                        lock.notifyAll();
-                        
-                        if (initializationListener != null) {
-                            initializationListener.onInitialized();
+                        } catch (JSONException e) {
+                            Log.w(TAG, "Failed to parse JSON: " + e.getMessage());
                         }
                     }
-                });
+                    
+                    // Validate and use fetched URL
+                    if (fetchedUrl != null && !fetchedUrl.isEmpty() &&
+                            (fetchedUrl.startsWith("https://") || fetchedUrl.startsWith("http://"))) {
+                        synchronized (lock) {
+                            apiUrl = fetchedUrl;
+                            isInitialized = true;
+                            lock.notifyAll();
+                            Log.d(TAG, "✅ Backend URL loaded from Firebase: " + apiUrl);
+                        }
+                    } else {
+                        throw new IOException("Invalid URL from Firebase");
+                    }
+                }
+            } catch (Exception e) {
+                // Fallback to default URL
+                synchronized (lock) {
+                    apiUrl = DEFAULT_API_URL;
+                    isInitialized = true;
+                    lock.notifyAll();
+                    Log.w(TAG, "⚠️ Failed to fetch backend URL from Firebase, using default: " + DEFAULT_API_URL, e);
+                }
+            }
+            
+            // Notify listener
+            if (initializationListener != null) {
+                initializationListener.onInitialized();
+            }
+        }).start();
     }
     
     /**

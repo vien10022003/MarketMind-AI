@@ -17,19 +17,15 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * Adapter for conversation list in sidebar.
- * Shows conversation titles, previews, and timestamps.
+ * Adapter for conversation list in the sidebar drawer.
+ * Shows conversation titles, message count, and timestamps.
  */
-public class ConversationListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    
-    private static final String TAG = "ConversationListAdapter";
-    private static final int VIEW_TYPE_CONVERSATION = 0;
-    private static final int VIEW_TYPE_NEW_CHAT = 1;
+public class ConversationListAdapter extends RecyclerView.Adapter<ConversationListAdapter.ConversationVH> {
     
     private List<Conversation> conversations;
     private OnConversationClickListener clickListener;
     private OnDeleteClickListener deleteListener;
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM HH:mm", Locale.getDefault());
     
     public interface OnConversationClickListener {
         void onConversationClick(String conversationId);
@@ -51,45 +47,25 @@ public class ConversationListAdapter extends RecyclerView.Adapter<RecyclerView.V
         this.deleteListener = listener;
     }
     
-    @Override
-    public int getItemViewType(int position) {
-        // First item is "New Chat" button
-        return position == 0 ? VIEW_TYPE_NEW_CHAT : VIEW_TYPE_CONVERSATION;
-    }
-    
     @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        
-        if (viewType == VIEW_TYPE_NEW_CHAT) {
-            View view = inflater.inflate(R.layout.item_conversation_new, parent, false);
-            return new NewChatVH(view);
-        } else {
-            View view = inflater.inflate(R.layout.item_conversation, parent, false);
-            return new ConversationVH(view);
-        }
+    public ConversationVH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_conversation, parent, false);
+        return new ConversationVH(view);
     }
     
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        if (holder instanceof ConversationVH && position > 0) {
-            ((ConversationVH) holder).bind(conversations.get(position - 1));
-        } else if (holder instanceof NewChatVH) {
-            ((NewChatVH) holder).bind();
-        }
+    public void onBindViewHolder(@NonNull ConversationVH holder, int position) {
+        holder.bind(conversations.get(position));
     }
     
     @Override
     public int getItemCount() {
-        // +1 for "New Chat" button
-        return conversations.size() + 1;
+        return conversations.size();
     }
     
-    /**
-     * Conversation item view holder
-     */
-    private class ConversationVH extends RecyclerView.ViewHolder {
+    class ConversationVH extends RecyclerView.ViewHolder {
         private TextView tvTitle;
         private TextView tvPreview;
         private TextView tvTime;
@@ -105,46 +81,23 @@ public class ConversationListAdapter extends RecyclerView.Adapter<RecyclerView.V
         
         public void bind(Conversation conversation) {
             tvTitle.setText(conversation.getTitle());
-            
-            String preview = conversation.getLastMessagePreview();
-            if (preview != null && !preview.isEmpty()) {
-                tvPreview.setText(preview);
-            } else {
-                tvPreview.setText("Chưa có tin nhắn");
-            }
+            tvPreview.setText(conversation.getLastMessagePreview());
             
             if (conversation.getUpdatedAt() != null) {
                 tvTime.setText(dateFormat.format(conversation.getUpdatedAt()));
+            } else if (conversation.getCreatedAt() != null) {
+                tvTime.setText(dateFormat.format(conversation.getCreatedAt()));
             }
             
-            // Click to select conversation
             itemView.setOnClickListener(v -> {
-                if (clickListener != null) {
+                if (clickListener != null && conversation.getConversationId() != null) {
                     clickListener.onConversationClick(conversation.getConversationId());
                 }
             });
             
-            // Delete button
             btnDelete.setOnClickListener(v -> {
-                if (deleteListener != null) {
+                if (deleteListener != null && conversation.getConversationId() != null) {
                     deleteListener.onDeleteClick(conversation.getConversationId());
-                }
-            });
-        }
-    }
-    
-    /**
-     * New chat button view holder
-     */
-    private class NewChatVH extends RecyclerView.ViewHolder {
-        public NewChatVH(@NonNull View itemView) {
-            super(itemView);
-        }
-        
-        public void bind() {
-            itemView.setOnClickListener(v -> {
-                if (clickListener != null) {
-                    clickListener.onConversationClick(null); // null means create new
                 }
             });
         }
@@ -155,16 +108,12 @@ public class ConversationListAdapter extends RecyclerView.Adapter<RecyclerView.V
         notifyDataSetChanged();
     }
     
-    public void addConversation(Conversation conversation) {
-        conversations.add(0, conversation);
-        notifyItemInserted(1); // +1 for new chat button
-    }
-    
     public void removeConversation(String conversationId) {
         for (int i = 0; i < conversations.size(); i++) {
-            if (conversations.get(i).getConversationId().equals(conversationId)) {
+            if (conversations.get(i).getConversationId() != null &&
+                conversations.get(i).getConversationId().equals(conversationId)) {
                 conversations.remove(i);
-                notifyItemRemoved(i + 1);
+                notifyItemRemoved(i);
                 break;
             }
         }
