@@ -211,13 +211,25 @@ def init_auth_routes(mongo):
             # Verify Google token
             # Note: Replace with your actual Google Client ID
             GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID', 'your-client-id')
+            GOOGLE_CLIENT_ID_ANDROID = os.getenv('GOOGLE_CLIENT_ID_ANDROID')
             
             try:
-                payload = id_token.verify_oauth2_token(
-                    google_token,
-                    google_requests.Request(),
-                    GOOGLE_CLIENT_ID
-                )
+                try:
+                    payload = id_token.verify_oauth2_token(
+                        google_token,
+                        google_requests.Request(),
+                        GOOGLE_CLIENT_ID
+                    )
+                except ValueError as e:
+                    if GOOGLE_CLIENT_ID_ANDROID:
+                        payload = id_token.verify_oauth2_token(
+                            google_token,
+                            google_requests.Request(),
+                            GOOGLE_CLIENT_ID_ANDROID
+                        )
+                    else:
+                        raise e
+                        
                 google_email = payload['email']
                 google_id = payload['sub']  # Google's unique user ID
                 

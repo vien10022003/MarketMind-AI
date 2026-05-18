@@ -177,7 +177,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             
             // For campaign_results, build summary text
             if ("campaign_results".equals(msg.type) && msg.campaignLogData != null) {
-                StringBuilder sb = new StringBuilder("📊 **Kết quả chiến dịch**\n\n");
+                StringBuilder sb = new StringBuilder("**Kết quả chiến dịch**\n\n");
                 sb.append("✅ Thành công: **").append(msg.campaignLogData.successful_posts).append("/").append(msg.campaignLogData.total_posts).append("** bài đăng\n\n");
                 if (msg.campaignLogData.briefs_executed != null) {
                     for (ChatMessage.BriefExecution brief : msg.campaignLogData.briefs_executed) {
@@ -191,7 +191,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             
             // For marketing_form, show form instruction
             if ("marketing_form".equals(msg.type)) {
-                displayText = "🎯 **Biểu mẫu Marketing**\n\n" + msg.content +
+                displayText = "**Biểu mẫu Marketing**\n\n" + msg.content +
                         "\n\n_Vui lòng nhập thông tin chiến dịch marketing vào ô chat để tiếp tục._";
             }
             
@@ -243,7 +243,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     break;
                     
                 case "report":
-                    title = "📄 Báo cáo nghiên cứu";
+                    title = "Báo cáo nghiên cứu";
                     if (msg.reportData != null) {
                         StringBuilder sb = new StringBuilder();
                         if (msg.reportData.title != null) sb.append("# ").append(msg.reportData.title).append("\n\n");
@@ -292,14 +292,14 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     break;
                     
                 case "strategy":
-                    title = "📊 Chiến lược marketing";
+                    title = "Chiến lược marketing";
                     if (msg.strategyData != null) {
                         StringBuilder sb = new StringBuilder();
                         if (msg.strategyData.title != null) sb.append("**").append(msg.strategyData.title).append("**\n\n");
                         
                         // SWOT
                         if (msg.strategyData.swot != null) {
-                            sb.append("### 📊 SWOT Analysis\n\n");
+                            sb.append("### SWOT Analysis\n\n");
                             ChatMessage.SWOT swot = msg.strategyData.swot;
                             if (swot.strengths != null) { sb.append("**💪 Điểm mạnh:**\n"); for (String s : swot.strengths) sb.append("• ").append(s).append("\n"); sb.append("\n"); }
                             if (swot.weaknesses != null) { sb.append("**⚠️ Điểm yếu:**\n"); for (String s : swot.weaknesses) sb.append("• ").append(s).append("\n"); sb.append("\n"); }
@@ -309,14 +309,14 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         
                         // USP
                         if (msg.strategyData.usp != null) {
-                            sb.append("### 🎯 USP\n\n");
+                            sb.append("### USP\n\n");
                             if (msg.strategyData.usp.core_benefit != null) sb.append("**Lợi ích cốt lõi:** ").append(msg.strategyData.usp.core_benefit).append("\n");
                             if (msg.strategyData.usp.tagline != null) sb.append("**Tagline:** _").append(msg.strategyData.usp.tagline).append("_\n\n");
                         }
                         
                         // Persona
                         if (msg.strategyData.persona != null) {
-                            sb.append("### 👤 Persona\n\n");
+                            sb.append("### Persona\n\n");
                             ChatMessage.Persona p = msg.strategyData.persona;
                             if (p.name != null) sb.append("**").append(p.name).append("**");
                             if (p.age != null) sb.append(" — ").append(p.age);

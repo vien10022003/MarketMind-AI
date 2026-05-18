@@ -88,6 +88,14 @@ public class CampaignListAdapter extends RecyclerView.Adapter<CampaignListAdapte
             int statusColor = getStatusColor(campaign.status);
             tvStatus.setTextColor(statusColor);
             
+            // Set background tint with alpha (approx 15% opacity)
+            tvStatus.setBackgroundTintList(android.content.res.ColorStateList.valueOf(
+                android.graphics.Color.argb(38, 
+                    android.graphics.Color.red(statusColor),
+                    android.graphics.Color.green(statusColor),
+                    android.graphics.Color.blue(statusColor))
+            ));
+            
             // Date
             String dateStr = formatDate(campaign.started_at);
             tvStartDate.setText(dateStr);

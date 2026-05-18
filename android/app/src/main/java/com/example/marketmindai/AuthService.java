@@ -89,14 +89,15 @@ public class AuthService {
         JsonObject jsonResponse = gson.fromJson(responseBody, JsonObject.class);
         
         // Extract token and user info with null checks
-        if (jsonResponse == null || !jsonResponse.has("access_token") || !jsonResponse.has("username")) {
-            throw new Exception("Invalid login response: missing access_token or username");
+        if (jsonResponse == null || !jsonResponse.has("access_token") || !jsonResponse.has("user")) {
+            throw new Exception("Invalid login response: missing access_token or user object");
         }
         
         String token = jsonResponse.get("access_token").getAsString();
-        String userName = jsonResponse.get("username").getAsString();
-        String name = jsonResponse.has("name") && jsonResponse.get("name") != null ? jsonResponse.get("name").getAsString() : userName;
-        String email = jsonResponse.has("email") && jsonResponse.get("email") != null ? jsonResponse.get("email").getAsString() : "";
+        JsonObject userObj = jsonResponse.getAsJsonObject("user");
+        String userName = userObj.has("username") ? userObj.get("username").getAsString() : username;
+        String name = userObj.has("name") && !userObj.get("name").isJsonNull() ? userObj.get("name").getAsString() : userName;
+        String email = userObj.has("email") && !userObj.get("email").isJsonNull() ? userObj.get("email").getAsString() : "";
         
         // Save token and user
         saveToken(context, token, userName, name, email);
@@ -151,7 +152,7 @@ public class AuthService {
      */
     public static AuthResponse loginWithGoogle(Context context, String googleToken) throws Exception {
         JsonObject requestBody = new JsonObject();
-        requestBody.addProperty("google_token", googleToken);
+        requestBody.addProperty("token", googleToken);
         
         String url = ApiConfig.getApiUrl("/api/auth/google-login");
         Log.d(TAG, "Logging in with Google to: " + url);
@@ -174,14 +175,15 @@ public class AuthService {
         JsonObject jsonResponse = gson.fromJson(responseBody, JsonObject.class);
         
         // Extract token and user info with null checks
-        if (jsonResponse == null || !jsonResponse.has("access_token") || !jsonResponse.has("username")) {
-            throw new Exception("Invalid Google login response: missing access_token or username");
+        if (jsonResponse == null || !jsonResponse.has("access_token") || !jsonResponse.has("user")) {
+            throw new Exception("Invalid Google login response: missing access_token or user object");
         }
         
         String token = jsonResponse.get("access_token").getAsString();
-        String username = jsonResponse.get("username").getAsString();
-        String name = jsonResponse.has("name") && jsonResponse.get("name") != null ? jsonResponse.get("name").getAsString() : username;
-        String email = jsonResponse.has("email") && jsonResponse.get("email") != null ? jsonResponse.get("email").getAsString() : "";
+        JsonObject userObj = jsonResponse.getAsJsonObject("user");
+        String username = userObj.has("email") ? userObj.get("email").getAsString() : "";
+        String name = userObj.has("name") && !userObj.get("name").isJsonNull() ? userObj.get("name").getAsString() : username;
+        String email = userObj.has("email") && !userObj.get("email").isJsonNull() ? userObj.get("email").getAsString() : "";
         
         saveToken(context, token, username, name, email);
         

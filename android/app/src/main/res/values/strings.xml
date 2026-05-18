@@ -16,13 +16,13 @@
     <string name="already_have_account">Đã có tài khoản? </string>
     
     <!-- Chat Screen -->
-    <string name="welcome_message">Xin chào! Tôi là MarketMind AI — trợ lý nghiên cứu thị trường thông minh. Hãy mô tả những gì bạn muốn tìm hiểu, tôi sẽ giúp bạn phân tích! 🚀</string>
+    <string name="welcome_message">Xin chào! Tôi là MarketMind AI — trợ lý nghiên cứu thị trường thông minh. Hãy mô tả những gì bạn muốn tìm hiểu, tôi sẽ giúp bạn phân tích!</string>
     <string name="type_message">Nhập câu hỏi của bạn…</string>
     <string name="send">Gửi</string>
-    <string name="new_chat">✨ Cuộc hội thoại mới</string>
+    <string name="new_chat">Cuộc hội thoại mới</string>
     <string name="logout">Đăng xuất</string>
     <string name="theme_toggle">Chuyển chủ đề</string>
-    <string name="conversations">💬 Lịch sử trò chuyện</string>
+    <string name="conversations">Lịch sử trò chuyện</string>
     <string name="no_conversations">Chưa có cuộc trò chuyện nào</string>
     
     <!-- Common -->

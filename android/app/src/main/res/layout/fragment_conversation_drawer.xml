@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -19,22 +20,19 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="🎯 MarketMind AI"
+            android:text="MarketMind AI"
             android:textColor="@color/text_primary"
             android:textSize="17sp"
             android:textStyle="bold" />
 
-        <Button
+        <ImageButton
             android:id="@+id/btn_sidebar_close"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:text="✕"
+            android:src="@drawable/ic_close"
+            app:tint="@color/text_secondary"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:textColor="@color/text_secondary"
-            android:textSize="16sp"
-            android:minWidth="0dp"
-            android:minHeight="0dp"
-            android:padding="0dp" />
+            android:padding="8dp" />
 
     </LinearLayout>
 
@@ -48,12 +46,12 @@
         android:background="@color/bg_surface_light">
 
         <!-- User Avatar -->
-        <TextView
+        <ImageView
             android:layout_width="36dp"
             android:layout_height="36dp"
-            android:text="👤"
-            android:textSize="20sp"
-            android:gravity="center"
+            android:src="@drawable/ic_person"
+            app:tint="@color/white"
+            android:padding="6dp"
             android:background="@drawable/bg_chat_bubble_user"
             android:layout_marginEnd="12dp" />
 
@@ -74,11 +72,14 @@
         <Button
             android:id="@+id/btn_drawer_logout"
             android:layout_width="wrap_content"
-            android:layout_height="32dp"
-            android:text="🚪 Thoát"
+            android:layout_height="36dp"
+            android:text="Thoát"
             android:textColor="@color/error"
             android:textSize="11sp"
             android:background="?attr/selectableItemBackground"
+            android:drawableStart="@drawable/ic_logout"
+            android:drawablePadding="4dp"
+            app:drawableTint="@color/error"
             android:minWidth="0dp"
             android:minHeight="0dp"
             android:paddingStart="8dp"
@@ -97,21 +98,50 @@
         android:id="@+id/btn_drawer_new_chat"
         android:layout_width="match_parent"
         android:layout_height="44dp"
-        android:text="✨ Cuộc hội thoại mới"
+        android:text="Cuộc hội thoại mới"
         android:textColor="@color/white"
         android:textSize="13sp"
         android:textStyle="bold"
         android:background="@drawable/bg_button_primary"
+        android:drawableStart="@drawable/ic_add_chat"
+        app:drawableTint="@color/white"
+        android:drawablePadding="8dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:gravity="start|center_vertical"
         android:layout_margin="12dp" />
+
+    <!-- Campaigns Button -->
+    <Button
+        android:id="@+id/btn_drawer_campaigns"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:text="Quản lý Chiến dịch"
+        android:textColor="@color/text_primary"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:background="@drawable/bg_button_secondary"
+        android:drawableStart="@drawable/ic_campaign"
+        app:drawableTint="@color/accent_campaign"
+        android:drawablePadding="8dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:gravity="start|center_vertical"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="12dp" />
 
     <!-- Section Title -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="💬 Lịch sử trò chuyện"
+        android:text="Lịch sử trò chuyện"
         android:textColor="@color/text_secondary"
         android:textSize="12sp"
         android:textStyle="bold"
+        android:drawableStart="@drawable/ic_history"
+        android:drawablePadding="8dp"
+        app:drawableTint="@color/text_secondary"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:paddingTop="8dp"

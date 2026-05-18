@@ -84,7 +84,7 @@ public class CampaignDetailActivity extends AppCompatActivity {
         container.removeAllViews();
         
         // ─── Campaign Header ───
-        addSectionHeader(container, "📊 Thông Tin Chiến Dịch");
+        addSectionHeader(container, "Thông Tin Chiến Dịch");
         addDetail(container, "ID:", campaign.campaign_id);
         addDetail(container, "Trạng Thái:", campaign.getStatusLabel());
         addDetail(container, "Chế Độ:", campaign.execution_mode);
@@ -94,7 +94,7 @@ public class CampaignDetailActivity extends AppCompatActivity {
         }
         
         // ─── Statistics ───
-        addSectionHeader(container, "📈 Thống Kê");
+        addSectionHeader(container, "Thống Kê");
         addStatRow(container, "✅ Thành công", campaign.total_posted, 0xFF27AE60);
         addStatRow(container, "❌ Thất bại", campaign.total_failed, 0xFFE74C3C);
         addStatRow(container, "⏳ Đang chờ", campaign.total_scheduled, 0xFFF39C12);
@@ -106,7 +106,7 @@ public class CampaignDetailActivity extends AppCompatActivity {
         statsRow.setPadding(16, 12, 16, 12);
         
         TextView tvRate = new TextView(this);
-        tvRate.setText("📊 Tỷ lệ thành công:");
+        tvRate.setText("Tỷ lệ thành công:");
         tvRate.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
         
         TextView tvRateValue = new TextView(this);

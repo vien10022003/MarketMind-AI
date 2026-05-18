@@ -140,7 +140,10 @@ public class AuthActivity extends AppCompatActivity {
         
         executor.execute(() -> {
             try {
+                System.out.println(" aaaa response");
                 AuthService.AuthResponse response = AuthService.login(this, username, password);
+                System.out.println(" aaaa response");
+                System.out.println(response);
                 runOnUiThread(() -> {
                     setSubmitLoading(false, isLoginMode ? "Đăng nhập" : "Đăng ký");
                     if (response.success) {

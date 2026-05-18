@@ -112,8 +112,6 @@ public class MainActivity extends AppCompatActivity {
     private void setupToolbar() {
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setHomeAsUpIndicator(android.R.drawable.ic_menu_more);
             getSupportActionBar().setTitle("MarketMind AI");
         }
     }
@@ -143,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
         btnLogout = drawerView.findViewById(R.id.btn_drawer_logout);
         btnNewChat = drawerView.findViewById(R.id.btn_drawer_new_chat);
         rvConversations = drawerView.findViewById(R.id.rv_conversations);
-        Button btnClose = drawerView.findViewById(R.id.btn_sidebar_close);
+        View btnClose = drawerView.findViewById(R.id.btn_sidebar_close);
         
         // Display user name
         AuthService.User user = AuthService.getUser(this);
@@ -165,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 handleLoadConversation(conversationId);
             }
-            drawerLayout.closeDrawer(GravityCompat.START);
+            drawerLayout.closeDrawer(GravityCompat.END);
         });
         
         // Delete handler
@@ -182,7 +180,16 @@ public class MainActivity extends AppCompatActivity {
         if (btnNewChat != null) {
             btnNewChat.setOnClickListener(v -> {
                 handleCreateNewConversation();
-                drawerLayout.closeDrawer(GravityCompat.START);
+                drawerLayout.closeDrawer(GravityCompat.END);
+            });
+        }
+        
+        // Campaigns button
+        Button btnCampaigns = drawerView.findViewById(R.id.btn_drawer_campaigns);
+        if (btnCampaigns != null) {
+            btnCampaigns.setOnClickListener(v -> {
+                startActivity(new Intent(this, CampaignManagementActivity.class));
+                drawerLayout.closeDrawer(GravityCompat.END);
             });
         }
         
@@ -193,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
         
         // Close button
         if (btnClose != null) {
-            btnClose.setOnClickListener(v -> drawerLayout.closeDrawer(GravityCompat.START));
+            btnClose.setOnClickListener(v -> drawerLayout.closeDrawer(GravityCompat.END));
         }
     }
     
@@ -230,46 +237,28 @@ public class MainActivity extends AppCompatActivity {
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // New Chat
-        MenuItem newChatItem = menu.add(Menu.NONE, 1, 1, "✨ Mới");
-        newChatItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-        
-        // Campaigns
-        MenuItem campaignsItem = menu.add(Menu.NONE, 3, 2, "📊 Chiến Dịch");
-        campaignsItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-        
-        // Logout
-        MenuItem logoutItem = menu.add(Menu.NONE, 2, 3, "Đăng xuất");
-        logoutItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-        
+        MenuItem menuDrawer = menu.add(Menu.NONE, 4, 1, "Menu");
+        menuDrawer.setIcon(R.drawable.ic_menu);
+        menuDrawer.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         return true;
     }
     
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case 1: // New Chat
-                handleCreateNewConversation();
-                return true;
-            case 2: // Logout
-                handleLogout();
-                return true;
-            case 3: // Campaigns
-                startActivity(new Intent(this, CampaignManagementActivity.class));
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == 4) {
+            if (!drawerLayout.isDrawerOpen(GravityCompat.END)) {
+                drawerLayout.openDrawer(GravityCompat.END);
+            } else {
+                drawerLayout.closeDrawer(GravityCompat.END);
+            }
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
     
     @Override
     public boolean onSupportNavigateUp() {
-        if (!drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.openDrawer(GravityCompat.START);
-        } else {
-            drawerLayout.closeDrawer(GravityCompat.START);
-        }
-        return true;
+        return false;
     }
     
     // ════════════════════════════════════════════
@@ -284,7 +273,7 @@ public class MainActivity extends AppCompatActivity {
         ChatMessage welcomeMsg = new ChatMessage(
                 "welcome",
                 "assistant",
-                "Xin chào! Tôi là MarketMind AI — trợ lý nghiên cứu thị trường thông minh. Hãy mô tả những gì bạn muốn tìm hiểu, tôi sẽ giúp bạn phân tích! 🚀",
+                "Xin chào! Tôi là MarketMind AI — trợ lý nghiên cứu thị trường thông minh. Hãy mô tả những gì bạn muốn tìm hiểu, tôi sẽ giúp bạn phân tích!",
                 new Date()
         );
         chatMessages.add(welcomeMsg);

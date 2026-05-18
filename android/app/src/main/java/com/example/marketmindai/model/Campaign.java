@@ -51,11 +51,11 @@ public class Campaign {
     public String getStatusLabel() {
         switch (status) {
             case "scheduled":
-                return "⏳ Đang Chờ";
+                return "Đang Chờ";
             case "completed":
-                return "✅ Hoàn Tất";
+                return "Hoàn Tất";
             case "failed":
-                return "❌ Lỗi";
+                return "Lỗi";
             default:
                 return status;
         }
