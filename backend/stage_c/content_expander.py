@@ -13,8 +13,8 @@ def expand_content_brief(llm, brief: dict, conversation_history: Optional[List[D
         return brief
     
     try:
-        # Import tool definitions
-        from stage_a.tool_definitions import CONTENT_EXPANSION_TOOLS, SYSTEM_MESSAGE_CONTENT_EXPANDER, build_messages_from_history
+        # Import helper function
+        from stage_a.tool_definitions import build_messages_from_history
         
         title = brief.get("title", "")
         caption = brief.get("caption", "")
@@ -23,7 +23,15 @@ def expand_content_brief(llm, brief: dict, conversation_history: Optional[List[D
         pillar = brief.get("pillar", "")
         product_context = brief.get("product_context", "")
         
-        prompt = f"""Dựa vào bản tóm tắt bài đăng (Content Brief) dưới đây, hãy hoàn thiện bài đăng quảng bá sản phẩm:
+        prompt = f"""Dựa vào bản tóm tắt bài đăng (Content Brief) dưới đây, hãy hoàn thiện bài đăng quảng bá sản phẩm.
+Trả về với format sau:
+
+** Nội Dung Bài Đăng **
+[Nội dung bài đăng chi tiết, hấp dẫn, có emoji, quảng bá sản phẩm]
+
+** Prompt Ảnh **
+[Prompt ảnh chi tiết bằng tiếng Anh với các từ khóa cụ thể, phong cách, ánh sáng]
+
 Sản phẩm/Yêu cầu quảng cáo: {product_context}
 
 --- Bản tóm tắt ---
@@ -39,23 +47,26 @@ Tóm tắt nội dung: {caption}
         
         output = llm.generate(
             messages=messages,
-            system_message=SYSTEM_MESSAGE_CONTENT_EXPANDER,
-            tools=CONTENT_EXPANSION_TOOLS,  # Pass tool definition to ensure correct format
+            system_message="Bạn là một chuyên gia tạo nội dung Discord và prompt ảnh chuyên nghiệp. Hãy hoàn thiện nội dung theo format chỉ định.",
             max_new_tokens=800,
             temperature=0.7
         )
         
-        # Xử lý parse JSON an toàn
+        # Parse output dựa trên pattern ** .... **
         output_clean = output.strip()
-        if "```json" in output_clean:
-            output_clean = output_clean.split("```json")[1].split("```")[0].strip()
-        elif "```" in output_clean:
-            output_clean = output_clean.split("```")[1].split("```")[0].strip()
         
-        data = json.loads(output_clean)
+        new_caption = ""
+        new_image_prompt = ""
         
-        new_caption = data.get("expanded_caption", "")
-        new_image_prompt = data.get("expanded_image_prompt", "")
+        # Split bằng ** để lấy các phần
+        parts = output_clean.split("**")
+        # Format: ['...', 'tiêu đề 1', 'content 1', 'tiêu đề 2', 'content 2', ...]
+        
+        if len(parts) >= 5:
+            # parts[2] = nội dung sau tiêu đề thứ nhất
+            # parts[4] = nội dung sau tiêu đề thứ hai
+            new_caption = parts[2].strip()
+            new_image_prompt = parts[4].strip()
         
         # Cập nhật brief
         expanded_brief = brief.copy()
@@ -67,10 +78,7 @@ Tóm tắt nội dung: {caption}
         rprint(f"[green]✅ Hoàn thiện nội dung thành công cho: {title}[/green]")
         return expanded_brief
         
-    except json.JSONDecodeError:
-        rprint(f"[red]❌ Lỗi parse JSON từ LLM khi mở rộng nội dung. Dùng bản gốc.[/red]")
-        rprint(f"[yellow]LLM Output: {output}[/yellow]")
-        return brief
     except Exception as e:
-        rprint(f"[red]❌ Lỗi không xác định khi mở rộng nội dung: {e}[/red]")
+        rprint(f"[red]❌ Lỗi khi mở rộng nội dung: {e}[/red]")
+        rprint(f"[yellow]LLM Output: {output}[/yellow]")
         return brief
