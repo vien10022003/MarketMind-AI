@@ -33,7 +33,7 @@ def generate_search_queries(
     
     messages = build_messages_from_history(prompt, conversation_history, max_history=2)
     
-    system_msg = """Bạn là chuyên gia tạo câu tìm kiếm. Hãy tạo 2-3 câu tìm kiếm tối ưu (ngắn gọn, cụ thể, hiệu quả) để trả lời câu hỏi này."""
+    system_msg = """Bạn là chuyên gia tạo câu tìm kiếm. Hãy tạo 2-3 câu tìm kiếm để trả lời câu hỏi này."""
     
     raw = llm.generate(
         messages=messages,

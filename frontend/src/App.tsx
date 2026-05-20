@@ -660,11 +660,6 @@ function App() {
     }
   };
 
-  // Show auth page if not authenticated
-  if (!isAuthenticated) {
-    return <AuthPage onAuthSuccess={handleAuthSuccess} />;
-  }
-
   const showWelcomeHero = chatMessages.length <= 1 && chatMessages[0]?.id === 'welcome';
 
   const suggestionChips = [
@@ -715,6 +710,11 @@ function App() {
 
     return segments;
   }, [chatMessages]);
+
+  // Show auth page if not authenticated (moved after all hooks)
+  if (!isAuthenticated) {
+    return <AuthPage onAuthSuccess={handleAuthSuccess} />;
+  }
 
   return (
     <div className="app-container">

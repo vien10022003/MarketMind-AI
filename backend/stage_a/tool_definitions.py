@@ -167,7 +167,7 @@ REACT_TOOLS = [
 GENERATE_SEARCH_QUERIES_TOOLS = [
     create_tool(
         name="generate_search_queries",
-        description="Generate 3-4 optimized search queries to comprehensively answer the user's question",
+        description="Generate 3-4 search queries to comprehensively answer the user's question",
         properties={
             "search_queries": {
                 "type": "array",
