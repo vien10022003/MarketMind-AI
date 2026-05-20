@@ -929,6 +929,26 @@
   cursor: not-allowed;
 }
 
+/* Send button loading spinner */
+.send-btn.is-loading {
+  opacity: 1;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  cursor: wait;
+}
+
+.send-btn-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2.5px solid rgba(255, 255, 255, 0.25);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spinnerRotate 0.7s linear infinite;
+}
+
+@keyframes spinnerRotate {
+  to { transform: rotate(360deg); }
+}
+
 .input-hint {
   display: block;
   text-align: center;
@@ -944,6 +964,85 @@
   border-radius: 3px;
   font-size: 0.68rem;
   border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Input bar loading glow */
+.input-bar-inner.is-loading {
+  border-color: rgba(99, 102, 241, 0.4);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.08);
+  animation: inputLoadingGlow 2s ease-in-out infinite;
+}
+
+@keyframes inputLoadingGlow {
+  0%, 100% {
+    border-color: rgba(99, 102, 241, 0.3);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.06);
+  }
+  50% {
+    border-color: rgba(139, 92, 246, 0.5);
+    box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1);
+  }
+}
+
+/* Loading hint in footer */
+.input-loading-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--primary-light);
+  opacity: 1;
+  animation: loadingHintPulse 2s ease-in-out infinite;
+}
+
+@keyframes loadingHintPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.input-loading-spinner {
+  width: 10px;
+  height: 10px;
+  border: 1.5px solid rgba(129, 140, 248, 0.3);
+  border-top-color: var(--primary-light);
+  border-radius: 50%;
+  animation: spinnerRotate 0.8s linear infinite;
+}
+
+/* ── Top Loading Progress Bar ── */
+.loading-progress-bar {
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: rgba(99, 102, 241, 0.1);
+  z-index: 20;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.loading-progress-bar-fill {
+  height: 100%;
+  width: 40%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--primary-light),
+    var(--secondary),
+    var(--primary-light),
+    transparent
+  );
+  border-radius: 2px;
+  animation: progressBarSlide 1.5s ease-in-out infinite;
+}
+
+@keyframes progressBarSlide {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(350%);
+  }
 }
 
 .input-footer {

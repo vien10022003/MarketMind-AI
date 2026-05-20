@@ -767,6 +767,12 @@ function App() {
 
         {/* Chat area */}
         <main className="chat-area">
+          {/* Top loading progress bar */}
+          {isLoading && (
+            <div className="loading-progress-bar">
+              <div className="loading-progress-bar-fill" />
+            </div>
+          )}
           <div className="chat-messages">
             {/* Welcome Hero */}
             {showWelcomeHero && (
@@ -853,31 +859,42 @@ function App() {
 
       {/* Input bar */}
       <footer className="chat-input-bar">
-        <div className="input-bar-inner">
+        <div className={`input-bar-inner ${isLoading ? 'is-loading' : ''}`}>
           <textarea
             className="chat-input"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Nhập yêu cầu nghiên cứu của bạn..."
+            placeholder={isLoading ? 'Đang xử lý yêu cầu...' : 'Nhập yêu cầu nghiên cứu của bạn...'}
             disabled={isLoading}
             rows={1}
           />
           <button
-            className="send-btn"
+            className={`send-btn ${isLoading ? 'is-loading' : ''}`}
             onClick={() => handleSend()}
             disabled={isLoading || !inputValue.trim()}
-            title="Gửi"
+            title={isLoading ? 'Đang xử lý...' : 'Gửi'}
           >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="20" height="20">
-              <line x1="22" y1="2" x2="11" y2="13" />
-              <polygon points="22 2 15 22 11 13 2 9 22 2" />
-            </svg>
+            {isLoading ? (
+              <span className="send-btn-spinner" />
+            ) : (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="20" height="20">
+                <line x1="22" y1="2" x2="11" y2="13" />
+                <polygon points="22 2 15 22 11 13 2 9 22 2" />
+              </svg>
+            )}
           </button>
         </div>
         <div className="input-footer">
           <small className="input-hint">
-            Nhấn <kbd>Enter</kbd> để gửi · <kbd>Shift+Enter</kbd> xuống dòng
+            {isLoading ? (
+              <span className="input-loading-hint">
+                <span className="input-loading-spinner" />
+                Hệ thống đang xử lý yêu cầu của bạn...
+              </span>
+            ) : (
+              <>Nhấn <kbd>Enter</kbd> để gửi · <kbd>Shift+Enter</kbd> xuống dòng</>
+            )}
           </small>
           <ModelSelector
             currentProvider={selectedLLMProvider}
