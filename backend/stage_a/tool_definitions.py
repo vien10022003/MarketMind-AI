@@ -279,7 +279,7 @@ Your role is to expand content briefs into:
 1. Engaging Discord posts with natural tone, relevant emojis, and persuasive product promotion
 2. Detailed English image generation prompts with specific keywords, style, and lighting
 
-IMPORTANT: Always respond with valid JSON containing exactly: "expanded_caption" and "expanded_image_prompt""""
+IMPORTANT: Always respond with valid JSON containing exactly: "expanded_caption" and "expanded_image_prompt"""
 
 
 # ─────────────────────────────────────────────────────────────────────────

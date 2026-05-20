@@ -39,9 +39,10 @@ import java.util.concurrent.Executors;
 
 /**
  * Main chat activity with conversation sidebar, real backend connection,
- * streaming message handling, and user management.
+ * streaming message handling, ProcessLog grouping, and full pipeline
+ * support (Stage A → Stage B → Stage C) — matching frontend App.tsx.
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ChatAdapter.ChatActionListener {
     private static final String TAG = "MainActivity";
     
     // UI elements
@@ -69,6 +70,12 @@ public class MainActivity extends AppCompatActivity {
     private String currentConversationId = null;
     private String selectedLLMProvider = "llama";
     private List<ChatMessage> messagesSaveBuffer = new ArrayList<>();
+    
+    // Stage B/C state (mirrors frontend)
+    private ChatMessage.ReportData lastReportData = null;
+    private Map<String, Object> lastReportInput = null;
+    private String lastMongodbId = null;
+    private ChatMessage.StrategyData lastStrategy = null;
     
     // Threading
     private final ExecutorService executor = Executors.newCachedThreadPool();
@@ -122,6 +129,7 @@ public class MainActivity extends AppCompatActivity {
         rvMessages.setLayoutManager(layoutManager);
         
         chatAdapter = new ChatAdapter(chatMessages);
+        chatAdapter.setActionListener(this);
         rvMessages.setAdapter(chatAdapter);
     }
     
@@ -277,17 +285,30 @@ public class MainActivity extends AppCompatActivity {
                 new Date()
         );
         chatMessages.add(welcomeMsg);
-        chatAdapter.notifyItemInserted(chatMessages.size() - 1);
+        refreshAdapter();
     }
     
     private void addMessage(ChatMessage msg) {
         chatMessages.add(msg);
-        chatAdapter.notifyItemInserted(chatMessages.size() - 1);
-        rvMessages.smoothScrollToPosition(chatMessages.size() - 1);
+        refreshAdapter();
+        
+        // Scroll to bottom
+        if (chatAdapter.getItemCount() > 0) {
+            rvMessages.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
+        }
         
         // Buffer for auto-save
         messagesSaveBuffer.add(msg);
         scheduleAutoSave();
+    }
+    
+    /**
+     * Rebuild segments and notify adapter.
+     * This is the core method that enables ProcessLog grouping.
+     */
+    private void refreshAdapter() {
+        chatAdapter.rebuildSegments(chatMessages);
+        chatAdapter.notifyDataSetChanged();
     }
     
     private void scheduleAutoSave() {
@@ -333,9 +354,7 @@ public class MainActivity extends AppCompatActivity {
         }
         
         // Set loading
-        isLoading = true;
-        btnSend.setEnabled(false);
-        etMessageInput.setEnabled(false);
+        setLoadingState(true);
         
         // Create conversation if needed, then send
         executor.execute(() -> {
@@ -358,6 +377,9 @@ public class MainActivity extends AppCompatActivity {
                 // Build conversation history
                 List<Map<String, String>> history = buildConversationHistory();
                 request.put("conversation_history", history);
+                
+                // Save input for Stage B
+                mainHandler.post(() -> lastReportInput = request);
                 
                 // Call backend with streaming
                 ResearchService.callStageAResearch(
@@ -487,12 +509,32 @@ public class MainActivity extends AppCompatActivity {
                 ChatMessage reportMsg = new ChatMessage(nextId(), "report", msg.message, new Date());
                 reportMsg.reportData = msg.report;
                 addMessage(reportMsg);
+                // Save report data for Stage B
+                if (msg.report != null) {
+                    lastReportData = msg.report;
+                }
                 break;
             case "completed":
                 ChatMessage completedMsg = new ChatMessage(nextId(), "completed", msg.message, new Date());
                 completedMsg.mongodbId = msg.mongodb_id;
                 addMessage(completedMsg);
+                lastMongodbId = msg.mongodb_id;
                 setLoadingState(false);
+                
+                // Show Stage B proposal (mirrors frontend)
+                ChatMessage.ReportData reportData = msg.report != null ? msg.report : lastReportData;
+                if (reportData != null) {
+                    ChatMessage proposalMsg = new ChatMessage(
+                            nextId(),
+                            "stage_b_proposal",
+                            "Báo cáo nghiên cứu đã hoàn tất! Bạn có muốn lập chiến lược marketing dựa trên kết quả này không?",
+                            new Date()
+                    );
+                    proposalMsg.stageBProposalData = new ChatMessage.StageBProposalData();
+                    proposalMsg.stageBProposalData.report = reportData;
+                    proposalMsg.stageBProposalData.mongodbId = msg.mongodb_id;
+                    addMessage(proposalMsg);
+                }
                 break;
             
             // ─── Stage B ───
@@ -501,6 +543,32 @@ public class MainActivity extends AppCompatActivity {
                     ChatMessage strategyMsg = new ChatMessage(nextId(), "strategy", msg.message, new Date());
                     strategyMsg.strategyData = msg.strategy;
                     addMessage(strategyMsg);
+                    lastStrategy = msg.strategy;
+                    
+                    // Show content briefs
+                    if (msg.strategy.content_briefs != null && !msg.strategy.content_briefs.isEmpty()) {
+                        ChatMessage briefsMsg = new ChatMessage(
+                                nextId(),
+                                "content_briefs",
+                                msg.strategy.content_briefs.size() + " content briefs đã sẵn sàng để review",
+                                new Date()
+                        );
+                        briefsMsg.contentBriefsData = msg.strategy.content_briefs;
+                        addMessage(briefsMsg);
+                    }
+                    
+                    // Show Stage C proposal
+                    ChatMessage stageCProposal = new ChatMessage(
+                            nextId(),
+                            "stage_c_schedule_proposal",
+                            "Chiến lược marketing đã hoàn tất! Bạn có muốn thực thi chiến dịch marketing này không?",
+                            new Date()
+                    );
+                    stageCProposal.stageCScheduleProposalData = new ChatMessage.StageCScheduleProposalData();
+                    stageCProposal.stageCScheduleProposalData.briefs = msg.strategy.content_briefs != null
+                            ? msg.strategy.content_briefs : new ArrayList<>();
+                    stageCProposal.stageCScheduleProposalData.mongodbId = msg.mongodb_id;
+                    addMessage(stageCProposal);
                 }
                 setLoadingState(false);
                 break;
@@ -560,6 +628,177 @@ public class MainActivity extends AppCompatActivity {
     }
     
     // ════════════════════════════════════════════
+    // ChatAdapter.ChatActionListener implementation
+    // (Marketing form, Stage B/C proposals)
+    // ════════════════════════════════════════════
+    
+    @Override
+    public void onMarketingFormSubmit(Map<String, Object> formData) {
+        setLoadingState(true);
+        addMessage(new ChatMessage(nextId(), "status", "Bắt đầu nghiên cứu thị trường...", new Date()));
+        
+        // Save form data for Stage B
+        lastReportInput = formData;
+        
+        // Ensure llm_provider is set
+        formData.put("llm_provider", selectedLLMProvider);
+        
+        executor.execute(() -> {
+            try {
+                ResearchService.callMarketingResearch(
+                        this,
+                        formData,
+                        new ResearchService.StreamCallback() {
+                            @Override
+                            public void onMessage(StreamMessage msg) {
+                                mainHandler.post(() -> handleStreamMessage(msg));
+                            }
+                            
+                            @Override
+                            public void onError(String error) {
+                                mainHandler.post(() -> {
+                                    addMessage(new ChatMessage(nextId(), "error", "Lỗi: " + error, new Date()));
+                                    setLoadingState(false);
+                                });
+                            }
+                            
+                            @Override
+                            public void onComplete() {
+                                Log.d(TAG, "Marketing research stream completed");
+                            }
+                        },
+                        error -> mainHandler.post(() -> {
+                            addMessage(new ChatMessage(nextId(), "error", error, new Date()));
+                            setLoadingState(false);
+                        })
+                );
+            } catch (Exception e) {
+                mainHandler.post(() -> {
+                    addMessage(new ChatMessage(nextId(), "error", "Lỗi: " + e.getMessage(), new Date()));
+                    setLoadingState(false);
+                });
+            }
+        });
+    }
+    
+    @Override
+    public void onAcceptStageBProposal(ChatMessage.ReportData reportData, String mongodbId) {
+        addMessage(new ChatMessage(nextId(), "status", "Bắt đầu lập chiến lược marketing...", new Date()));
+        setLoadingState(true);
+        
+        executor.execute(() -> {
+            try {
+                Map<String, Object> request = new HashMap<>();
+                request.put("stage_a_report", reportData);
+                request.put("stage_a_input", lastReportInput != null ? lastReportInput : new HashMap<>());
+                request.put("mongodb_id", mongodbId != null ? mongodbId : lastMongodbId);
+                request.put("llm_provider", selectedLLMProvider);
+                
+                ResearchService.callStageBStrategy(
+                        this,
+                        request,
+                        new ResearchService.StreamCallback() {
+                            @Override
+                            public void onMessage(StreamMessage msg) {
+                                mainHandler.post(() -> handleStreamMessage(msg));
+                            }
+                            
+                            @Override
+                            public void onError(String error) {
+                                mainHandler.post(() -> {
+                                    addMessage(new ChatMessage(nextId(), "error", "Lỗi Stage B: " + error, new Date()));
+                                    setLoadingState(false);
+                                });
+                            }
+                            
+                            @Override
+                            public void onComplete() {
+                                Log.d(TAG, "Stage B stream completed");
+                            }
+                        },
+                        error -> mainHandler.post(() -> {
+                            addMessage(new ChatMessage(nextId(), "error", error, new Date()));
+                            setLoadingState(false);
+                        })
+                );
+            } catch (Exception e) {
+                mainHandler.post(() -> {
+                    addMessage(new ChatMessage(nextId(), "error", "Lỗi Stage B: " + e.getMessage(), new Date()));
+                    setLoadingState(false);
+                });
+            }
+        });
+    }
+    
+    @Override
+    public void onAcceptStageCProposal(List<ChatMessage.ContentBrief> briefs, String mongodbId) {
+        if (briefs == null || briefs.isEmpty()) {
+            addMessage(new ChatMessage(nextId(), "error", "Không có brief nào để thực thi!", new Date()));
+            return;
+        }
+        
+        addMessage(new ChatMessage(
+                nextId(), "status",
+                "Bắt đầu thực thi chiến dịch: " + briefs.size() + " bài đăng...",
+                new Date()
+        ));
+        setLoadingState(true);
+        
+        // Approve briefs first
+        executor.execute(() -> {
+            try {
+                // Save approval to backend
+                if (lastStrategy != null) {
+                    Map<String, Object> approveRequest = new HashMap<>();
+                    approveRequest.put("mongodb_id", mongodbId != null ? mongodbId : lastMongodbId);
+                    approveRequest.put("strategy", lastStrategy);
+                    approveRequest.put("approved_briefs", briefs);
+                    ResearchService.approveStageBBriefs(this, approveRequest);
+                }
+                
+                // Run Stage C
+                Map<String, Object> request = new HashMap<>();
+                request.put("approved_briefs", briefs);
+                request.put("mongodb_stage_a_id", mongodbId != null ? mongodbId : lastMongodbId);
+                request.put("llm_provider", selectedLLMProvider);
+                
+                ResearchService.callStageCCampaign(
+                        this,
+                        request,
+                        new ResearchService.StreamCallback() {
+                            @Override
+                            public void onMessage(StreamMessage msg) {
+                                mainHandler.post(() -> handleStreamMessage(msg));
+                            }
+                            
+                            @Override
+                            public void onError(String error) {
+                                mainHandler.post(() -> {
+                                    addMessage(new ChatMessage(nextId(), "error", "Lỗi Stage C: " + error, new Date()));
+                                    setLoadingState(false);
+                                });
+                            }
+                            
+                            @Override
+                            public void onComplete() {
+                                Log.d(TAG, "Stage C stream completed");
+                            }
+                        },
+                        error -> mainHandler.post(() -> {
+                            addMessage(new ChatMessage(nextId(), "error", error, new Date()));
+                            setLoadingState(false);
+                        })
+                );
+            } catch (Exception e) {
+                mainHandler.post(() -> {
+                    addMessage(new ChatMessage(nextId(), "error", "Lỗi Stage C: " + e.getMessage(), new Date()));
+                    setLoadingState(false);
+                });
+            }
+        });
+    }
+    
+    // ════════════════════════════════════════════
     // Conversation Management
     // ════════════════════════════════════════════
     
@@ -582,15 +821,15 @@ public class MainActivity extends AppCompatActivity {
                     currentConversationId = conversationId;
                     chatMessages.clear();
                     chatMessages.addAll(conv.getMessages());
-                    chatAdapter.notifyDataSetChanged();
+                    refreshAdapter();
                     messagesSaveBuffer.clear();
                     
                     // Show chat, hide welcome
                     layoutWelcomeHero.setVisibility(View.GONE);
                     rvMessages.setVisibility(View.VISIBLE);
                     
-                    if (!chatMessages.isEmpty()) {
-                        rvMessages.scrollToPosition(chatMessages.size() - 1);
+                    if (chatAdapter.getItemCount() > 0) {
+                        rvMessages.scrollToPosition(chatAdapter.getItemCount() - 1);
                     }
                 } else {
                     Toast.makeText(this, "Không thể tải cuộc hội thoại", Toast.LENGTH_SHORT).show();
@@ -601,10 +840,16 @@ public class MainActivity extends AppCompatActivity {
     
     private void handleCreateNewConversation() {
         chatMessages.clear();
-        chatAdapter.notifyDataSetChanged();
+        refreshAdapter();
         msgIdCounter = 0;
         currentConversationId = null;
         messagesSaveBuffer.clear();
+        
+        // Reset Stage B/C state
+        lastReportData = null;
+        lastReportInput = null;
+        lastMongodbId = null;
+        lastStrategy = null;
         
         addWelcomeMessage();
         layoutWelcomeHero.setVisibility(View.VISIBLE);

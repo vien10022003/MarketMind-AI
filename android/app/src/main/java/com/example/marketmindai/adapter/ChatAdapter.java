@@ -1,9 +1,12 @@
 package com.example.marketmindai.adapter;
 
+import android.animation.ValueAnimator;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -12,20 +15,31 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.marketmindai.R;
 import com.example.marketmindai.model.ChatMessage;
+import com.example.marketmindai.model.MessageSegment;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import io.noties.markwon.Markwon;
 
 /**
- * Multi-type adapter for chat messages. Handles:
+ * Multi-type adapter for chat messages with ProcessLog grouping.
+ * Operates on MessageSegment list (grouped messages).
+ * 
+ * Handles:
  * - User messages (right-aligned bubble)
  * - Assistant/knowledge messages (left-aligned with markdown)
  * - Status/progress messages (center with spinner)
  * - Error messages (red banner)
  * - Plan, Report, Strategy, Campaign messages (card-style)
+ * - ProcessLog groups (collapsible, showing latest status)
+ * - Marketing form (input card)
+ * - Stage B proposal (accept/decline)
+ * - Stage C schedule proposal (accept/decline)
  */
 public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     
@@ -36,27 +50,68 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int VIEW_TYPE_PLAN = 4;
     private static final int VIEW_TYPE_REPORT = 5;
     private static final int VIEW_TYPE_STRATEGY = 6;
+    private static final int VIEW_TYPE_PROCESS_LOG = 7;
+    private static final int VIEW_TYPE_MARKETING_FORM = 8;
+    private static final int VIEW_TYPE_PROPOSAL = 9;
+    private static final int VIEW_TYPE_SCHEDULE_PROPOSAL = 10;
     
-    private List<ChatMessage> messages;
+    private List<MessageSegment> segments = new ArrayList<>();
     private SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
     private Markwon markwon;
+    private ChatActionListener actionListener;
+    
+    /**
+     * Callback interface for chat actions (forms, proposals).
+     * Implemented by MainActivity.
+     */
+    public interface ChatActionListener {
+        void onMarketingFormSubmit(Map<String, Object> formData);
+        void onAcceptStageBProposal(ChatMessage.ReportData reportData, String mongodbId);
+        void onAcceptStageCProposal(List<ChatMessage.ContentBrief> briefs, String mongodbId);
+    }
     
     public ChatAdapter(List<ChatMessage> messages) {
-        this.messages = messages;
+        rebuildSegments(messages);
+    }
+    
+    public void setActionListener(ChatActionListener listener) {
+        this.actionListener = listener;
+    }
+    
+    /**
+     * Rebuild segments from flat message list.
+     * Call this whenever the message list changes.
+     */
+    public void rebuildSegments(List<ChatMessage> messages) {
+        this.segments = MessageSegment.buildSegments(messages);
     }
     
     @Override
     public int getItemViewType(int position) {
-        ChatMessage msg = messages.get(position);
+        MessageSegment segment = segments.get(position);
+        
+        // Process log group
+        if (segment.type == MessageSegment.Type.PROCESS_LOG) {
+            return VIEW_TYPE_PROCESS_LOG;
+        }
+        
+        // Single message — determine by type
+        ChatMessage msg = segment.messages.get(0);
         switch (msg.type) {
             case "user":
                 return VIEW_TYPE_USER;
+            case "marketing_form":
+                return VIEW_TYPE_MARKETING_FORM;
+            case "stage_b_proposal":
+                return VIEW_TYPE_PROPOSAL;
+            case "stage_c_schedule_proposal":
+                return VIEW_TYPE_SCHEDULE_PROPOSAL;
             case "assistant":
             case "knowledge":
             case "completed":
             case "clarification":
-            case "marketing_form":
             case "campaign_results":
+            case "content_briefs":
                 return VIEW_TYPE_ASSISTANT;
             case "plan":
                 return VIEW_TYPE_PLAN;
@@ -98,6 +153,14 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 return new CardMessageVH(inflater.inflate(R.layout.item_chat_strategy, parent, false));
             case VIEW_TYPE_ERROR:
                 return new ErrorMessageVH(inflater.inflate(R.layout.item_chat_error, parent, false));
+            case VIEW_TYPE_PROCESS_LOG:
+                return new ProcessLogVH(inflater.inflate(R.layout.item_chat_process_log, parent, false));
+            case VIEW_TYPE_MARKETING_FORM:
+                return new MarketingFormVH(inflater.inflate(R.layout.item_chat_marketing_form, parent, false));
+            case VIEW_TYPE_PROPOSAL:
+                return new ProposalVH(inflater.inflate(R.layout.item_chat_proposal, parent, false));
+            case VIEW_TYPE_SCHEDULE_PROPOSAL:
+                return new ScheduleProposalVH(inflater.inflate(R.layout.item_chat_schedule_proposal, parent, false));
             default:
                 return new StatusMessageVH(inflater.inflate(R.layout.item_chat_status, parent, false));
         }
@@ -105,23 +168,36 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        ChatMessage message = messages.get(position);
-        if (holder instanceof UserMessageVH) {
-            ((UserMessageVH) holder).bind(message);
-        } else if (holder instanceof AssistantMessageVH) {
-            ((AssistantMessageVH) holder).bind(message);
-        } else if (holder instanceof CardMessageVH) {
-            ((CardMessageVH) holder).bind(message);
-        } else if (holder instanceof StatusMessageVH) {
-            ((StatusMessageVH) holder).bind(message);
-        } else if (holder instanceof ErrorMessageVH) {
-            ((ErrorMessageVH) holder).bind(message);
+        MessageSegment segment = segments.get(position);
+        
+        if (holder instanceof ProcessLogVH) {
+            ((ProcessLogVH) holder).bind(segment);
+        } else if (holder instanceof MarketingFormVH) {
+            ((MarketingFormVH) holder).bind(segment.messages.get(0));
+        } else if (holder instanceof ProposalVH) {
+            ((ProposalVH) holder).bind(segment.messages.get(0));
+        } else if (holder instanceof ScheduleProposalVH) {
+            ((ScheduleProposalVH) holder).bind(segment.messages.get(0));
+        } else {
+            // Single message types
+            ChatMessage message = segment.messages.get(0);
+            if (holder instanceof UserMessageVH) {
+                ((UserMessageVH) holder).bind(message);
+            } else if (holder instanceof AssistantMessageVH) {
+                ((AssistantMessageVH) holder).bind(message);
+            } else if (holder instanceof CardMessageVH) {
+                ((CardMessageVH) holder).bind(message);
+            } else if (holder instanceof StatusMessageVH) {
+                ((StatusMessageVH) holder).bind(message);
+            } else if (holder instanceof ErrorMessageVH) {
+                ((ErrorMessageVH) holder).bind(message);
+            }
         }
     }
     
     @Override
     public int getItemCount() {
-        return messages.size();
+        return segments.size();
     }
     
     // ════════════════════════════════════════════
@@ -198,6 +274,21 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             // For completed, show completion icon
             if ("completed".equals(msg.type)) {
                 displayText = "✅ " + msg.content;
+            }
+            
+            // For content_briefs, show brief summary
+            if ("content_briefs".equals(msg.type) && msg.contentBriefsData != null) {
+                StringBuilder sb = new StringBuilder("**📝 Content Briefs**\n\n");
+                for (int i = 0; i < msg.contentBriefsData.size(); i++) {
+                    ChatMessage.ContentBrief brief = msg.contentBriefsData.get(i);
+                    sb.append("**").append(i + 1).append(". ").append(brief.title != null ? brief.title : "Brief").append("**\n");
+                    if (brief.platform != null) sb.append("📱 ").append(brief.platform);
+                    if (brief.tone != null) sb.append(" · 🎨 ").append(brief.tone);
+                    sb.append("\n");
+                    if (brief.content != null) sb.append(brief.content).append("\n");
+                    sb.append("\n");
+                }
+                displayText = sb.toString();
             }
             
             mw.setMarkdown(tvContent, displayText != null ? displayText : "");
@@ -381,16 +472,353 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
     
     // ════════════════════════════════════════════
+    // Process Log (Collapsible group)
+    // Mirrors frontend ProcessLog.tsx
+    // ════════════════════════════════════════════
+    
+    public class ProcessLogVH extends RecyclerView.ViewHolder {
+        private View layoutHeader;
+        private TextView tvCurrent, tvCount, tvChevron;
+        private LinearLayout layoutBody, layoutTimeline;
+        private boolean isExpanded = false;
+        
+        public ProcessLogVH(@NonNull View itemView) {
+            super(itemView);
+            layoutHeader = itemView.findViewById(R.id.layout_process_log_header);
+            tvCurrent = itemView.findViewById(R.id.tv_process_log_current);
+            tvCount = itemView.findViewById(R.id.tv_process_log_count);
+            tvChevron = itemView.findViewById(R.id.tv_process_log_chevron);
+            layoutBody = itemView.findViewById(R.id.layout_process_log_body);
+            layoutTimeline = itemView.findViewById(R.id.layout_timeline_entries);
+        }
+        
+        public void bind(MessageSegment segment) {
+            List<ChatMessage> messages = segment.messages;
+            
+            // Find latest status message to display
+            ChatMessage latestStatus = null;
+            int statusCount = 0;
+            boolean hasDetailMessages = false;
+            
+            for (int i = messages.size() - 1; i >= 0; i--) {
+                ChatMessage m = messages.get(i);
+                if ("status".equals(m.type)) {
+                    if (latestStatus == null) latestStatus = m;
+                    statusCount++;
+                } else {
+                    hasDetailMessages = true;
+                }
+            }
+            
+            // Set header text
+            String headerText = latestStatus != null ? latestStatus.content : messages.get(messages.size() - 1).content;
+            tvCurrent.setText(headerText);
+            
+            // Step count
+            String countText = statusCount + " bước" + (hasDetailMessages ? " · có chi tiết" : "");
+            tvCount.setText(countText);
+            
+            // Reset expand state
+            isExpanded = false;
+            layoutBody.setVisibility(View.GONE);
+            tvChevron.setRotation(0);
+            
+            // Click to expand/collapse
+            layoutHeader.setOnClickListener(v -> {
+                isExpanded = !isExpanded;
+                
+                if (isExpanded) {
+                    // Build timeline entries
+                    buildTimelineEntries(messages);
+                    layoutBody.setVisibility(View.VISIBLE);
+                    tvChevron.animate().rotation(180).setDuration(200).start();
+                } else {
+                    layoutBody.setVisibility(View.GONE);
+                    tvChevron.animate().rotation(0).setDuration(200).start();
+                }
+            });
+        }
+        
+        private void buildTimelineEntries(List<ChatMessage> messages) {
+            layoutTimeline.removeAllViews();
+            android.content.Context ctx = itemView.getContext();
+            Markwon mw = getMarkwon(ctx);
+            
+            for (ChatMessage msg : messages) {
+                // Create entry row
+                LinearLayout entryRow = new LinearLayout(ctx);
+                entryRow.setOrientation(LinearLayout.HORIZONTAL);
+                entryRow.setGravity(android.view.Gravity.TOP);
+                LinearLayout.LayoutParams rowParams = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                );
+                rowParams.bottomMargin = dpToPx(ctx, 6);
+                entryRow.setLayoutParams(rowParams);
+                
+                // Timeline dot
+                View dot = new View(ctx);
+                int dotSize = dpToPx(ctx, 8);
+                LinearLayout.LayoutParams dotParams = new LinearLayout.LayoutParams(dotSize, dotSize);
+                dotParams.topMargin = dpToPx(ctx, 5);
+                dotParams.setMarginEnd(dpToPx(ctx, 10));
+                dot.setLayoutParams(dotParams);
+                
+                // Color dot by message type
+                int dotColor;
+                switch (msg.type) {
+                    case "plan": dotColor = ctx.getResources().getColor(R.color.accent_plan, null); break;
+                    case "react_summary": dotColor = ctx.getResources().getColor(R.color.accent_react, null); break;
+                    case "evidence": dotColor = ctx.getResources().getColor(R.color.accent_evidence, null); break;
+                    default: dotColor = ctx.getResources().getColor(R.color.accent_primary, null); break;
+                }
+                
+                android.graphics.drawable.GradientDrawable dotBg = new android.graphics.drawable.GradientDrawable();
+                dotBg.setShape(android.graphics.drawable.GradientDrawable.OVAL);
+                dotBg.setColor(dotColor);
+                dot.setBackground(dotBg);
+                
+                entryRow.addView(dot);
+                
+                // Message text
+                TextView tvText = new TextView(ctx);
+                tvText.setLayoutParams(new LinearLayout.LayoutParams(
+                        0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f
+                ));
+                tvText.setTextSize(12);
+                tvText.setTextColor(ctx.getResources().getColor(R.color.text_secondary, null));
+                
+                // For card-type messages inside process log, render with markdown
+                if ("plan".equals(msg.type) || "react_summary".equals(msg.type) || "evidence".equals(msg.type)) {
+                    String cardBody = buildCardBody(msg);
+                    mw.setMarkdown(tvText, cardBody);
+                    tvText.setMovementMethod(LinkMovementMethod.getInstance());
+                } else {
+                    tvText.setText(msg.content);
+                }
+                
+                entryRow.addView(tvText);
+                layoutTimeline.addView(entryRow);
+            }
+        }
+        
+        /** Build card-type message body text for inside process log */
+        private String buildCardBody(ChatMessage msg) {
+            switch (msg.type) {
+                case "plan":
+                    if (msg.planData != null && msg.planData.steps != null) {
+                        StringBuilder sb = new StringBuilder("**📋 Kế hoạch nghiên cứu**\n");
+                        if (msg.planData.summary != null) sb.append(msg.planData.summary).append("\n");
+                        for (ChatMessage.PlanStep step : msg.planData.steps) {
+                            sb.append("**").append(step.order).append(".** ").append(step.name).append("\n");
+                        }
+                        return sb.toString();
+                    }
+                    break;
+                case "react_summary":
+                    if (msg.reactSummaryData != null) {
+                        StringBuilder sb = new StringBuilder("**🧠 Phân tích:** ");
+                        sb.append(msg.reactSummaryData.total_thoughts).append(" bước · ");
+                        sb.append(msg.reactSummaryData.total_tools_used).append(" công cụ\n");
+                        return sb.toString();
+                    }
+                    break;
+                case "evidence":
+                    if (msg.evidenceData != null && msg.evidenceData.items != null) {
+                        StringBuilder sb = new StringBuilder("**📎 Bằng chứng:** ");
+                        sb.append(msg.evidenceData.items.size()).append(" nguồn\n");
+                        return sb.toString();
+                    }
+                    break;
+            }
+            return msg.content != null ? msg.content : "";
+        }
+        
+        private int dpToPx(android.content.Context ctx, int dp) {
+            return (int) (dp * ctx.getResources().getDisplayMetrics().density + 0.5f);
+        }
+    }
+    
+    // ════════════════════════════════════════════
+    // Marketing Form (Input card with submit)
+    // ════════════════════════════════════════════
+    
+    public class MarketingFormVH extends RecyclerView.ViewHolder {
+        private EditText etProductName, etTargetAudience, etValueProp, etPricing;
+        private Button btnSubmit, btnCancel;
+        private boolean isSubmitted = false;
+        
+        public MarketingFormVH(@NonNull View itemView) {
+            super(itemView);
+            etProductName = itemView.findViewById(R.id.et_product_name);
+            etTargetAudience = itemView.findViewById(R.id.et_target_audience);
+            etValueProp = itemView.findViewById(R.id.et_value_prop);
+            etPricing = itemView.findViewById(R.id.et_pricing);
+            btnSubmit = itemView.findViewById(R.id.btn_form_submit);
+            btnCancel = itemView.findViewById(R.id.btn_form_cancel);
+        }
+        
+        public void bind(ChatMessage msg) {
+            // Pre-fill from detected prompt if available
+            if (msg.marketingFormData != null && msg.marketingFormData.detected_prompt != null
+                    && !msg.marketingFormData.detected_prompt.isEmpty()) {
+                etProductName.setText(msg.marketingFormData.detected_prompt);
+            }
+            
+            // Reset state on rebind
+            setFormEnabled(!isSubmitted);
+            
+            btnSubmit.setOnClickListener(v -> {
+                if (isSubmitted || actionListener == null) return;
+                
+                String productName = etProductName.getText().toString().trim();
+                if (productName.isEmpty()) {
+                    etProductName.setError("Vui lòng nhập tên sản phẩm");
+                    return;
+                }
+                
+                isSubmitted = true;
+                setFormEnabled(false);
+                
+                // Build form data matching frontend ResearchRequest
+                Map<String, Object> formData = new HashMap<>();
+                formData.put("user_prompt", productName);
+                
+                String audience = etTargetAudience.getText().toString().trim();
+                if (!audience.isEmpty()) formData.put("target_audience", audience);
+                
+                String valueProp = etValueProp.getText().toString().trim();
+                if (!valueProp.isEmpty()) formData.put("value_proposition", valueProp);
+                
+                String pricing = etPricing.getText().toString().trim();
+                if (!pricing.isEmpty()) formData.put("pricing", pricing);
+                
+                actionListener.onMarketingFormSubmit(formData);
+            });
+            
+            btnCancel.setOnClickListener(v -> {
+                // Clear fields
+                etProductName.setText("");
+                etTargetAudience.setText("");
+                etValueProp.setText("");
+                etPricing.setText("");
+            });
+        }
+        
+        private void setFormEnabled(boolean enabled) {
+            etProductName.setEnabled(enabled);
+            etTargetAudience.setEnabled(enabled);
+            etValueProp.setEnabled(enabled);
+            etPricing.setEnabled(enabled);
+            btnSubmit.setEnabled(enabled);
+            btnSubmit.setAlpha(enabled ? 1.0f : 0.5f);
+        }
+    }
+    
+    // ════════════════════════════════════════════
+    // Stage B Proposal (Accept/Decline)
+    // ════════════════════════════════════════════
+    
+    public class ProposalVH extends RecyclerView.ViewHolder {
+        private Button btnAccept, btnDecline;
+        private boolean isActioned = false;
+        
+        public ProposalVH(@NonNull View itemView) {
+            super(itemView);
+            btnAccept = itemView.findViewById(R.id.btn_proposal_accept);
+            btnDecline = itemView.findViewById(R.id.btn_proposal_decline);
+        }
+        
+        public void bind(ChatMessage msg) {
+            // Reset
+            btnAccept.setEnabled(!isActioned);
+            btnDecline.setEnabled(!isActioned);
+            btnAccept.setAlpha(!isActioned ? 1.0f : 0.5f);
+            
+            // Update button text to match frontend
+            btnAccept.setText("Lập Chiến Lược");
+            
+            btnAccept.setOnClickListener(v -> {
+                if (isActioned || actionListener == null) return;
+                isActioned = true;
+                btnAccept.setEnabled(false);
+                btnDecline.setEnabled(false);
+                btnAccept.setAlpha(0.5f);
+                
+                if (msg.stageBProposalData != null) {
+                    actionListener.onAcceptStageBProposal(
+                            msg.stageBProposalData.report,
+                            msg.stageBProposalData.mongodbId
+                    );
+                }
+            });
+            
+            btnDecline.setOnClickListener(v -> {
+                isActioned = true;
+                btnAccept.setEnabled(false);
+                btnDecline.setEnabled(false);
+                btnAccept.setAlpha(0.5f);
+            });
+        }
+    }
+    
+    // ════════════════════════════════════════════
+    // Stage C Schedule Proposal (Accept/Decline)
+    // ════════════════════════════════════════════
+    
+    public class ScheduleProposalVH extends RecyclerView.ViewHolder {
+        private Button btnConfirm, btnCancel;
+        private boolean isActioned = false;
+        
+        public ScheduleProposalVH(@NonNull View itemView) {
+            super(itemView);
+            btnConfirm = itemView.findViewById(R.id.btn_schedule_confirm);
+            btnCancel = itemView.findViewById(R.id.btn_schedule_cancel);
+        }
+        
+        public void bind(ChatMessage msg) {
+            // Reset
+            btnConfirm.setEnabled(!isActioned);
+            btnCancel.setEnabled(!isActioned);
+            btnConfirm.setAlpha(!isActioned ? 1.0f : 0.5f);
+            
+            // Update button text
+            btnConfirm.setText("Thực Thi Chiến Dịch");
+            
+            btnConfirm.setOnClickListener(v -> {
+                if (isActioned || actionListener == null) return;
+                isActioned = true;
+                btnConfirm.setEnabled(false);
+                btnCancel.setEnabled(false);
+                btnConfirm.setAlpha(0.5f);
+                
+                if (msg.stageCScheduleProposalData != null) {
+                    actionListener.onAcceptStageCProposal(
+                            msg.stageCScheduleProposalData.briefs,
+                            msg.stageCScheduleProposalData.mongodbId
+                    );
+                }
+            });
+            
+            btnCancel.setOnClickListener(v -> {
+                isActioned = true;
+                btnConfirm.setEnabled(false);
+                btnCancel.setEnabled(false);
+                btnConfirm.setAlpha(0.5f);
+            });
+        }
+    }
+    
+    // ════════════════════════════════════════════
     // Public helpers
     // ════════════════════════════════════════════
     
     public void updateMessages(List<ChatMessage> newMessages) {
-        this.messages = newMessages;
+        rebuildSegments(newMessages);
         notifyDataSetChanged();
     }
     
     public void addMessage(ChatMessage message) {
-        messages.add(message);
-        notifyItemInserted(messages.size() - 1);
+        // Not used directly anymore — use updateMessages or rebuild after adding
     }
 }

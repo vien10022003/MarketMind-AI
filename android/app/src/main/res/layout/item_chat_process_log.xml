@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_marginStart="12dp"
+    android:layout_marginEnd="12dp"
+    android:layout_marginTop="4dp"
+    android:layout_marginBottom="4dp">
+
+    <!-- Clickable header — always visible, shows latest status -->
+    <LinearLayout
+        android:id="@+id/layout_process_log_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@drawable/bg_process_log_header"
+        android:paddingStart="14dp"
+        android:paddingEnd="14dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:clickable="true"
+        android:focusable="true">
+
+        <!-- Pulse indicator dot -->
+        <View
+            android:id="@+id/view_pulse_dot"
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:background="@drawable/bg_timeline_dot"
+            android:layout_marginEnd="10dp" />
+
+        <!-- Latest status text -->
+        <TextView
+            android:id="@+id/tv_process_log_current"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="@color/text_secondary"
+            android:textSize="13sp"
+            android:maxLines="2"
+            android:ellipsize="end" />
+
+        <!-- Step count badge -->
+        <TextView
+            android:id="@+id/tv_process_log_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_tertiary"
+            android:textSize="11sp"
+            android:layout_marginStart="8dp" />
+
+        <!-- Chevron -->
+        <TextView
+            android:id="@+id/tv_process_log_chevron"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="▾"
+            android:textColor="@color/text_tertiary"
+            android:textSize="14sp"
+            android:layout_marginStart="6dp" />
+
+    </LinearLayout>
+
+    <!-- Expandable body — hidden by default -->
+    <LinearLayout
+        android:id="@+id/layout_process_log_body"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/bg_process_log_body"
+        android:paddingStart="14dp"
+        android:paddingEnd="14dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="12dp"
+        android:visibility="gone">
+
+        <!-- Timeline entries will be added dynamically -->
+        <LinearLayout
+            android:id="@+id/layout_timeline_entries"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+    </LinearLayout>
+
+</LinearLayout>

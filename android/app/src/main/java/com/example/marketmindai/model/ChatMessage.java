@@ -26,6 +26,7 @@ public class ChatMessage implements Serializable {
     public CampaignLogData campaignLogData;
     public StageBProposalData stageBProposalData;
     public StageCScheduleProposalData stageCScheduleProposalData;
+    public java.util.List<ContentBrief> contentBriefsData;
     public String mongodbId; // For completed messages
     
     public ChatMessage(String id, String type, String content, Date timestamp) {
