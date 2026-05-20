@@ -1,5 +1,6 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { ChatMessageBubble, ConversationList, ModelSelector } from './components';
+import { ProcessLog, isProcessLogMessage } from './components/ProcessLog';
 import AuthPage from './components/AuthPage';
 import type { ChatMessage, ResearchRequest, ConversationTurn, ContentBrief, StageBOutput, ResearchReport } from './types';
 import { researchService } from './services/researchService';
@@ -673,6 +674,48 @@ function App() {
     { icon: '💡', text: 'Lập chiến lược quảng cáo cho sản phẩm mới' },
   ];
 
+  /**
+   * Group consecutive process-log messages (status, plan, react_summary, evidence)
+   * into a single ProcessLog segment. Non-process messages stay as individual segments.
+   */
+  type MessageSegment = {
+    type: 'single' | 'process-log';
+    key: string;
+    messages: ChatMessage[];
+  };
+
+  const groupedMessages = useMemo<MessageSegment[]>(() => {
+    const segments: MessageSegment[] = [];
+    let currentGroup: ChatMessage[] = [];
+
+    const flushGroup = () => {
+      if (currentGroup.length > 0) {
+        segments.push({
+          type: 'process-log',
+          key: `plog-${currentGroup[0].id}`,
+          messages: [...currentGroup],
+        });
+        currentGroup = [];
+      }
+    };
+
+    for (const msg of chatMessages) {
+      if (isProcessLogMessage(msg.type)) {
+        currentGroup.push(msg);
+      } else {
+        flushGroup();
+        segments.push({
+          type: 'single',
+          key: msg.id,
+          messages: [msg],
+        });
+      }
+    }
+    flushGroup();
+
+    return segments;
+  }, [chatMessages]);
+
   return (
     <div className="app-container">
       {/* Mobile sidebar overlay */}
@@ -762,19 +805,36 @@ function App() {
               </div>
             )}
 
-            {!showWelcomeHero && chatMessages.map((msg) => (
-              <ChatMessageBubble
-                key={msg.id}
-                message={msg}
-                isLoading={isLoading}
-                onClarificationConfirm={() => {}}
-                onMarketingFormSubmit={handleMarketingFormSubmit}
-                onStartCampaign={handleStartCampaign}
-                onAcceptStageBProposal={handleAcceptStageBProposal}
-                onAcceptStageCProposal={handleAcceptStageCProposal}
-                onAcceptStageCScheduleProposal={handleAcceptStageCScheduleProposal}
-              />
-            ))}
+            {!showWelcomeHero && groupedMessages.map((segment) => {
+              if (segment.type === 'process-log') {
+                return (
+                  <ProcessLog
+                    key={segment.key}
+                    messages={segment.messages}
+                    isLoading={isLoading}
+                    onClarificationConfirm={() => {}}
+                    onMarketingFormSubmit={handleMarketingFormSubmit}
+                    onStartCampaign={handleStartCampaign}
+                    onAcceptStageBProposal={handleAcceptStageBProposal}
+                    onAcceptStageCProposal={handleAcceptStageCProposal}
+                    onAcceptStageCScheduleProposal={handleAcceptStageCScheduleProposal}
+                  />
+                );
+              }
+              return (
+                <ChatMessageBubble
+                  key={segment.messages[0].id}
+                  message={segment.messages[0]}
+                  isLoading={isLoading}
+                  onClarificationConfirm={() => {}}
+                  onMarketingFormSubmit={handleMarketingFormSubmit}
+                  onStartCampaign={handleStartCampaign}
+                  onAcceptStageBProposal={handleAcceptStageBProposal}
+                  onAcceptStageCProposal={handleAcceptStageCProposal}
+                  onAcceptStageCScheduleProposal={handleAcceptStageCScheduleProposal}
+                />
+              );
+            })}
 
             {isLoading && !waitingMarketingForm && (
               <div className="chat-row chat-row--assistant">

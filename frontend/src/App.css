@@ -2134,3 +2134,262 @@
   .welcome-hero-title { font-size: 1.25rem; }
   .suggestion-chip { font-size: 0.78rem; padding: 0.4rem 0.8rem; }
 }
+
+/* ══════════════════════════════════════════
+   Process Log — Collapsible Status Group
+   ══════════════════════════════════════════ */
+.process-log {
+  max-width: min(90%, 680px);
+  margin: 0.25rem auto;
+  border-radius: 14px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  overflow: hidden;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+  animation: msgAppear 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.process-log:hover {
+  border-color: rgba(99, 102, 241, 0.3);
+}
+
+.process-log.is-expanded {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  border-color: rgba(99, 102, 241, 0.35);
+}
+
+/* ── Header (always visible) ── */
+.process-log-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.65rem 1rem;
+  background: none;
+  border: none;
+  color: var(--text);
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.2s;
+}
+
+.process-log-header:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.process-log-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-width: 0;
+  flex: 1;
+}
+
+.process-log-pulse {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--primary-light);
+  flex-shrink: 0;
+  animation: processLogPulse 2s ease-in-out infinite;
+}
+
+.is-expanded .process-log-pulse {
+  animation: none;
+  background: var(--success);
+}
+
+@keyframes processLogPulse {
+  0%, 100% {
+    opacity: 1;
+    box-shadow: 0 0 0 0 rgba(129, 140, 248, 0.5);
+  }
+  50% {
+    opacity: 0.6;
+    box-shadow: 0 0 0 5px rgba(129, 140, 248, 0);
+  }
+}
+
+.process-log-current {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color 0.2s;
+}
+
+.process-log-header:hover .process-log-current {
+  color: var(--text);
+}
+
+.process-log-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.process-log-count {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  opacity: 0.7;
+  white-space: nowrap;
+  padding: 0.15rem 0.5rem;
+  background: rgba(99, 102, 241, 0.1);
+  border-radius: 99px;
+  font-weight: 600;
+}
+
+.process-log-chevron {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+}
+
+.process-log-chevron.rotated {
+  transform: rotate(180deg);
+}
+
+/* ── Expandable Body ── */
+.process-log-body {
+  overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.process-log-inner {
+  padding: 0.5rem 0.75rem 0.75rem;
+  border-top: 1px solid var(--glass-border);
+}
+
+/* ── Timeline ── */
+.process-log-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: relative;
+  padding-left: 1.25rem;
+}
+
+/* Vertical timeline line */
+.process-log-timeline::before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 0.5rem;
+  bottom: 0.5rem;
+  width: 2px;
+  background: linear-gradient(
+    to bottom,
+    rgba(99, 102, 241, 0.3),
+    rgba(139, 92, 246, 0.15)
+  );
+  border-radius: 1px;
+}
+
+.process-log-entry {
+  position: relative;
+  padding: 0.35rem 0;
+  animation: processEntryAppear 0.3s ease both;
+}
+
+@keyframes processEntryAppear {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.process-log-timeline-dot {
+  position: absolute;
+  left: -1.25rem;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--primary);
+  border: 2px solid var(--bg);
+  z-index: 1;
+  left: -21px;
+}
+
+.process-log-timeline-dot[data-type="status"] {
+  background: var(--primary-light);
+  width: 8px;
+  height: 8px;
+}
+
+.process-log-timeline-dot[data-type="plan"] {
+  background: var(--accent-plan, #818cf8);
+  width: 12px;
+  height: 12px;
+}
+
+.process-log-timeline-dot[data-type="react_summary"] {
+  background: var(--accent-react, #38bdf8);
+  width: 12px;
+  height: 12px;
+}
+
+.process-log-timeline-dot[data-type="evidence"] {
+  background: var(--accent-evidence, #34d399);
+  width: 12px;
+  height: 12px;
+}
+
+.process-log-entry-content {
+  overflow: hidden;
+}
+
+/* Override inner chat-row styles to be more compact within process log */
+.process-log-entry-content .chat-row {
+  animation: none;
+}
+
+.process-log-entry-content .chat-row--status {
+  justify-content: flex-start;
+}
+
+.process-log-entry-content .chat-status {
+  font-size: 0.75rem;
+  padding: 0.2rem 0.65rem;
+  background: rgba(99, 102, 241, 0.06);
+  border-color: rgba(99, 102, 241, 0.12);
+}
+
+.process-log-entry-content .chat-bubble--card {
+  max-width: 100%;
+}
+
+.process-log-entry-content .chat-avatar {
+  width: 28px;
+  height: 28px;
+  font-size: 0.85rem;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .process-log {
+    max-width: 95%;
+  }
+
+  .process-log-header {
+    padding: 0.5rem 0.75rem;
+  }
+
+  .process-log-current {
+    font-size: 0.78rem;
+  }
+
+  .process-log-count {
+    display: none;
+  }
+}
