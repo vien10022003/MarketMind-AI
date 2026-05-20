@@ -116,17 +116,12 @@ CLARIFICATION_TOOLS = [
 PLANNING_TOOLS = [
     create_tool(
         name="create_research_plan",
-        description="Create research questions, hypotheses, and search steps for market analysis",
+        description="Create research questions and search steps for market analysis",
         properties={
             "research_questions": {
                 "type": "array",
                 "items": {"type": "string"},
                 "description": "Key research questions"
-            },
-            "hypotheses": {
-                "type": "array",
-                "items": {"type": "string"},
-                "description": "Initial hypotheses to test"
             },
             "search_steps": {
                 "type": "array",
@@ -134,14 +129,13 @@ PLANNING_TOOLS = [
                     "type": "object",
                     "properties": {
                         "query": {"type": "string"},
-                        "focus": {"type": "string"}
                     },
-                    "required": ["query", "focus"]
+                    "required": ["query"]
                 },
-                "description": "Ordered list of search queries with focus area"
+                "description": "Ordered list of search queries"
             }
         },
-        required=["research_questions", "hypotheses", "search_steps"]
+        required=["research_questions", "search_steps"]
     )
 ]
 
@@ -169,22 +163,19 @@ REACT_TOOLS = [
     )
 ]
 
-# Knowledge Handler - Used in knowledge_handler.py
-KNOWLEDGE_SEARCH_DECISION_TOOLS = [
+# Generate Search Queries - Used in knowledge_handler.py
+GENERATE_SEARCH_QUERIES_TOOLS = [
     create_tool(
-        name="decide_search",
-        description="Decide if web search is needed to answer knowledge question with accuracy",
+        name="generate_search_queries",
+        description="Generate 3-4 optimized search queries to comprehensively answer the user's question",
         properties={
-            "need_search": {
-                "type": "boolean",
-                "description": "Whether web search is needed"
+            "search_queries": {
+                "type": "array",
+                "items": {"type": "string"},
+                "description": "List of 3-4 optimized search queries"
             },
-            "reasoning": {
-                "type": "string",
-                "description": "Reasoning for the decision"
-            }
         },
-        required=["need_search", "reasoning"]
+        required=["search_queries", "reasoning"]
     )
 ]
 

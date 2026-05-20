@@ -10,72 +10,57 @@ from rich import print as rprint
 
 from .llm_provider import LLMProvider
 from .tool_definitions import (
-    KNOWLEDGE_SEARCH_DECISION_TOOLS,
+    GENERATE_SEARCH_QUERIES_TOOLS,
     build_messages_from_history
 )
 from .clarification import extract_first_json_block, normalize_tool_response
 from .tavily_search import tavily_search_with_retry
 
 
-def assess_need_for_search(
+def generate_search_queries(
     llm: LLMProvider,
     user_prompt: str,
     conversation_history: Optional[List[Dict[str, str]]] = None,
-) -> Dict[str, Any]:
+    num_queries: int = 4,
+) -> List[str]:
     """
-    LLM evaluates whether the question requires a web search for an accurate answer.
+    Generate 3-4 optimized search queries to comprehensively answer the user's question.
     
     Returns:
-        {
-            "needs_search": True/False,
-            "search_query": "optimized search query" (if needs_search),
-            "reasoning": "why search is needed or not"
-        }
+        List of search query strings
     """
-    prompt = f"""Cau hoi nguoi dung: "{user_prompt}" """
+    prompt = f"""Câu hỏi của người dùng: "{user_prompt}" """
     
     messages = build_messages_from_history(prompt, conversation_history, max_history=2)
     
-    system_msg = """Ban la he thong danh gia cau hoi. Nhiem vu: xac dinh xem cau hoi co CAN TIM KIEM TREN INTERNET de tra loi chinh xac hay khong.
-
-CAN tim kiem khi:
-- Hoi ve du kien cu the, con so, thong ke
-- Hoi ve su kien, tin tuc moi nhat
-- Hoi ve san pham, cong ty, thuong hieu cu the
-- Hoi ve thong tin co the thay doi theo thoi gian
-
-KHONG can tim kiem khi:
-- Giai thich khai niem chung
-- Cau hoi ve ly thuyet, nguyen ly co ban
-- So sanh tong quat giua cac khai niem"""
+    system_msg = """Bạn là chuyên gia tạo câu tìm kiếm. Hãy tạo 3-4 câu tìm kiếm tối ưu (ngắn gọn, cụ thể, hiệu quả) để trả lời câu hỏi này."""
     
     raw = llm.generate(
         messages=messages,
         system_message=system_msg,
-        tools=KNOWLEDGE_SEARCH_DECISION_TOOLS,
-        max_new_tokens=250
+        tools=GENERATE_SEARCH_QUERIES_TOOLS,
+        max_new_tokens=300
     )
-    block = extract_first_json_block(raw)
-
-    result = {
-        "needs_search": False,
-        "search_query": "",
-        "reasoning": "default - no search"
-    }
-
-    if block:
-        try:
+    
+    queries = []
+    try:
+        block = extract_first_json_block(raw)
+        if block:
             parsed = json.loads(block)
-            # Normalize tool calling response format
             parsed = normalize_tool_response(parsed)
-            result.update(parsed)
-            # Ensure boolean type
-            result["needs_search"] = bool(result.get("needs_search", False))
-            rprint(f"[cyan]🔎 Search assessment: needs_search={result['needs_search']} — {result['reasoning']}[/cyan]")
-        except json.JSONDecodeError:
-            rprint("[yellow]⚠️ Search assessment parse failed, defaulting to no search[/yellow]")
-
-    return result
+            queries = parsed.get("search_queries", [])
+            # Fallback: nếu không đủ queries, thêm câu hỏi gốc
+            if len(queries) < num_queries:
+                queries.append(user_prompt)
+    except (json.JSONDecodeError, KeyError):
+        rprint("[yellow]⚠️ Query generation parse failed, using original prompt[/yellow]")
+        queries = [user_prompt]
+    
+    # Giới hạn số lượng queries
+    queries = queries[:num_queries]
+    rprint(f"[cyan]🔎 Generated {len(queries)} search queries[/cyan]")
+    
+    return queries
 
 
 def answer_with_search(
@@ -157,78 +142,71 @@ def handle_knowledge_query(
     Yields streaming events for the frontend.
     
     Flow:
-    1. Assess if search is needed
-    2. If yes → Tavily search → answer with context
-    3. If no → answer directly with LLM knowledge
+    1. Generate 3-4 optimized search queries
+    2. Execute searches for each query
+    3. Aggregate results and answer with comprehensive context
     """
     rprint(f"[yellow][KNOWLEDGE] Processing: {user_prompt[:80]}...[/yellow]")
 
-    # Step 1: Assess need for search
+    # Step 1: Generate search queries
     yield {
         "status": "progress",
-        "message": "Đang đánh giá câu hỏi..."
+        "message": "Đang chuẩn bị các câu tìm kiếm..."
     }
 
-    assessment = assess_need_for_search(llm, user_prompt, conversation_history)
+    search_queries = generate_search_queries(llm, user_prompt, conversation_history, num_queries=4)
+    
+    if not search_queries:
+        search_queries = [user_prompt]
 
-    if assessment["needs_search"]:
-        # Step 2a: Search with Tavily
-        search_query = assessment.get("search_query", user_prompt)
-        rprint(f"[yellow][KNOWLEDGE] Searching: {search_query}[/yellow]")
+    # Step 2: Execute searches for all queries
+    all_search_results = []
+    unique_urls = set()  # Track unique URLs to avoid duplicates
 
+    for i, query in enumerate(search_queries, 1):
         yield {
             "status": "knowledge_searching",
-            "message": f"🔍 Đang tìm kiếm thông tin: {search_query[:80]}..."
+            "message": f"🔍 Tìm kiếm ({i}/{len(search_queries)}): {query[:60]}..."
         }
 
-        search_results = tavily_search_with_retry(
-            query=search_query,
+        results = tavily_search_with_retry(
+            query=query,
             max_results=5,
             freshness="year",
         )
 
-        # Step 3a: Answer with search results
-        yield {
-            "status": "progress",
-            "message": f"Tìm được {len(search_results)} nguồn. Đang phân tích..."
+        # Add only unique results
+        for result in results:
+            url = result.get("url", "")
+            if url and url not in unique_urls:
+                unique_urls.add(url)
+                all_search_results.append(result)
+
+        rprint(f"[cyan]Found {len(results)} results for query: {query}[/cyan]")
+
+    # Step 3: Answer with aggregated search results
+    yield {
+        "status": "progress",
+        "message": f"Tìm được {len(all_search_results)} nguồn. Đang phân tích..."
+    }
+
+    answer = answer_with_search(llm, user_prompt, all_search_results, conversation_history)
+
+    # Format sources for frontend
+    sources = [
+        {
+            "title": r.get("title", ""),
+            "url": r.get("url", ""),
+            "snippet": r.get("snippet", ""),
         }
+        for r in all_search_results
+        if r.get("url")
+    ]
 
-        answer = answer_with_search(llm, user_prompt, search_results, conversation_history)
+    yield {
+        "status": "knowledge_response",
+        "message": answer,
+        "sources": sources,
+    }
 
-        # Format sources for frontend
-        sources = [
-            {
-                "title": r.get("title", ""),
-                "url": r.get("url", ""),
-                "snippet": r.get("snippet", ""),
-            }
-            for r in search_results
-            if r.get("url")
-        ]
-
-        yield {
-            "status": "knowledge_response",
-            "message": answer,
-            "sources": sources,
-        }
-
-        rprint(f"[green]✅ Knowledge answer generated with {len(sources)} sources[/green]")
-
-    else:
-        # Step 2b: Answer directly
-        rprint(f"[yellow][KNOWLEDGE] Answering directly (no search needed)[/yellow]")
-
-        yield {
-            "status": "progress",
-            "message": "Đang suy nghĩ câu trả lời..."
-        }
-
-        answer = answer_directly(llm, user_prompt, conversation_history)
-
-        yield {
-            "status": "knowledge_response",
-            "message": answer,
-            "sources": [],
-        }
-
-        rprint(f"[green]✅ Knowledge answer generated (direct, no search)[/green]")
+    rprint(f"[green]✅ Knowledge answer generated with {len(sources)} sources from {len(search_queries)} queries[/green]")

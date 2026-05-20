@@ -39,7 +39,7 @@ Trả về kết quả ở định dạng JSON chuẩn. Không có markdown text
     
     try:
         rprint(f"[cyan]🧠 Đang dùng LLM hoàn thiện nội dung cho: {title}[/cyan]")
-        from .tool_definitions import build_messages_from_history
+        from stage_a.tool_definitions import build_messages_from_history
         rprint(f"[cyan]🧠 Đang dùng LLM hoàn thiện nội dung cho1: {title}[/cyan]")
         messages = build_messages_from_history(prompt, conversation_history, max_history=2)
         rprint(f"[cyan]🧠 Đang dùng LLM hoàn thiện nội dung cho2: {title}[/cyan]")
