@@ -21,10 +21,10 @@ def generate_search_queries(
     llm: LLMProvider,
     user_prompt: str,
     conversation_history: Optional[List[Dict[str, str]]] = None,
-    num_queries: int = 4,
+    num_queries: int = 3,
 ) -> List[str]:
     """
-    Generate 3-4 optimized search queries to comprehensively answer the user's question.
+    Generate 2-3 optimized search queries to comprehensively answer the user's question.
     
     Returns:
         List of search query strings
@@ -33,7 +33,7 @@ def generate_search_queries(
     
     messages = build_messages_from_history(prompt, conversation_history, max_history=2)
     
-    system_msg = """Bạn là chuyên gia tạo câu tìm kiếm. Hãy tạo 3-4 câu tìm kiếm tối ưu (ngắn gọn, cụ thể, hiệu quả) để trả lời câu hỏi này."""
+    system_msg = """Bạn là chuyên gia tạo câu tìm kiếm. Hãy tạo 2-3 câu tìm kiếm tối ưu (ngắn gọn, cụ thể, hiệu quả) để trả lời câu hỏi này."""
     
     raw = llm.generate(
         messages=messages,
@@ -68,17 +68,38 @@ def answer_with_search(
     user_prompt: str,
     search_results: list,
     conversation_history: Optional[List[Dict[str, str]]] = None,
+    max_results: int = 6,
+    max_snippet_length: int = 400,
 ) -> str:
     """
     Generate a high-quality answer using search results as context.
+    Includes safeguards to prevent context overflow.
     """
+    # Limit results to avoid context overflow
+    limited_results = search_results[:max_results]
+    
     # Format search results for the prompt
     sources_text = ""
-    for i, result in enumerate(search_results, 1):
+    current_length = 0
+    
+    for i, result in enumerate(limited_results, 1):
         title = result.get("title", "")
         snippet = result.get("snippet", "")
         url = result.get("url", "")
-        sources_text += f"\n[{i}] {title}\n    URL: {url}\n    Noi dung: {snippet}\n"
+        
+        # Truncate snippet to avoid excessive length
+        if len(snippet) > max_snippet_length:
+            snippet = snippet[:max_snippet_length] + "..."
+        
+        result_text = f"\n[{i}] {title}\n    URL: {url}\n    Noi dung: {snippet}\n"
+        current_length += len(result_text)
+        
+        # Hard stop if getting too long (rough estimate for context)
+        if current_length > 15000:
+            rprint(f"[yellow]⚠️ Context length approaching limit, using {i} of {len(limited_results)} results[/yellow]")
+            break
+        
+        sources_text += result_text
 
     prompt = f"""Cau hoi: "{user_prompt}"
 
@@ -87,13 +108,12 @@ Thong tin tim kiem duoc:
     
     messages = build_messages_from_history(prompt, conversation_history, max_history=2)
     
-    system_msg = """Ban la tro ly AI thong minh. Hay tra loi cau hoi mot cach CHINH XAC va CHI TIET dua tren thong tin tim kiem.
+    system_msg = """Ban la tro ly AI thong minh. Hay tra loi cau hoi dua tren thong tin tim kiem.
 
-Yeu cau:
-Su dung thong tin tu nguon tim kiem de dam bao chinh xac
-Neu co so lieu cu the, hay trich dan
-Tra loi truc tiep
-Chi tra ve noi dung tra loi, KHONG JSON"""
+        Yeu cau:
+        Su dung thong tin tu nguon tim kiem de dam bao chinh xac
+        Neu co so lieu cu the, hay trich dan
+        Tra loi truc tiep"""
     
     answer = llm.generate(
         messages=messages,
@@ -154,7 +174,7 @@ def handle_knowledge_query(
         "message": "Đang chuẩn bị các câu tìm kiếm..."
     }
 
-    search_queries = generate_search_queries(llm, user_prompt, conversation_history, num_queries=4)
+    search_queries = generate_search_queries(llm, user_prompt, conversation_history, num_queries=3)
     
     if not search_queries:
         search_queries = [user_prompt]

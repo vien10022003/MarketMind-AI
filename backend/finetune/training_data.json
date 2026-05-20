@@ -10,21 +10,8 @@
         "content": "Xin chào! Hôm nay bạn khỏe không?"
       },
       {
-        "role": "assistant",
-        "tool_calls": [
-          {
-            "function": {
-              "name": "classify_intent",
-              "arguments": {
-                "intent": "chat"
-              }
-            }
-          }
-        ]
-      },
-      {
         "role": "tool",
-        "content": "{\"status\": \"success\"}"
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
       },
       {
         "role": "assistant",
@@ -43,6 +30,10 @@
         "content": "Giáo dục online ở Việt Nam hiệu quả như thế nào so với các nước khác? Dữ liệu mới nhất là gì?"
       },
       {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
         "role": "assistant",
         "tool_calls": [
           {
@@ -54,14 +45,6 @@
             }
           }
         ]
-      },
-      {
-        "role": "tool",
-        "content": "{\"status\": \"success\"}"
-      },
-      {
-        "role": "assistant",
-        "content": "Đây là câu hỏi yêu cầu kiến thức cụ thể và dữ liệu mới. Tôi sẽ tìm kiếm thông tin so sánh giáo dục online Việt Nam với các nước và dữ liệu cập nhật nhất."
       }
     ]
   },
