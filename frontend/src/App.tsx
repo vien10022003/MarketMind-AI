@@ -31,7 +31,7 @@ function App() {
     {
       id: 'welcome',
       type: 'assistant',
-      content: 'Xin chào! Tôi là MarketMind AI — trợ lý nghiên cứu thị trường thông minh. Hãy mô tả những gì bạn muốn tìm hiểu, tôi sẽ giúp bạn phân tích! 🚀',
+      content: 'Xin chào! Tôi là MarketMind AI — trợ lý nghiên cứu thị trường thông minh. Hãy mô tả những gì bạn muốn tìm hiểu, tôi sẽ giúp bạn phân tích!',
       timestamp: new Date(),
     },
   ]);
@@ -124,7 +124,7 @@ function App() {
       {
         id: 'welcome',
         type: 'assistant',
-        content: 'Xin chào! Tôi là MarketMind AI — trợ lý nghiên cứu thị trường thông minh. Hãy mô tả những gì bạn muốn tìm hiểu, tôi sẽ giúp bạn phân tích! 🚀',
+        content: 'Xin chào! Tôi là MarketMind AI — trợ lý nghiên cứu thị trường thông minh. Hãy mô tả những gì bạn muốn tìm hiểu, tôi sẽ giúp bạn phân tích!',
         timestamp: new Date(),
       },
     ]);
@@ -312,7 +312,7 @@ function App() {
       if (reportData) {
         addMessage({
           type: 'stage_b_proposal',
-          content: '📊 Báo cáo nghiên cứu đã hoàn tất! Bạn có muốn lập chiến lược marketing dựa trên kết quả này không?',
+          content: 'Báo cáo nghiên cứu đã hoàn tất! Bạn có muốn lập chiến lược marketing dựa trên kết quả này không?',
           stageBProposalData: {
             reportData: reportData,
             mongodbId: streamMessage.mongodb_id,
@@ -344,7 +344,7 @@ function App() {
       if (streamMessage.strategy.content_briefs?.length) {
         addMessage({
           type: 'content_briefs',
-          content: `📝 ${streamMessage.strategy.content_briefs.length} content briefs đã sẵn sàng để review`,
+          content: `${streamMessage.strategy.content_briefs.length} content briefs đã sẵn sàng để review`,
           contentBriefsData: streamMessage.strategy.content_briefs,
         });
       }
@@ -352,7 +352,7 @@ function App() {
       // Show Stage C proposal instead of auto-trigger
       addMessage({
         type: 'stage_c_schedule_proposal',
-        content: '✅ Chiến lược marketing đã hoàn tất! Bạn có muốn thực thi chiến dịch marketing này không?',
+        content: 'Chiến lược marketing đã hoàn tất! Bạn có muốn thực thi chiến dịch marketing này không?',
         stageCScheduleProposalData: {
           briefs: streamMessage.strategy.content_briefs || [],
           mongodbId: streamMessage.mongodb_id,
@@ -454,7 +454,7 @@ function App() {
   const handleAcceptStageBProposal = async (reportData: ResearchReport, mongodbId?: string) => {
     addMessage({
       type: 'status',
-      content: '🚀 Bắt đầu lập chiến lược marketing...',
+      content: 'Bắt đầu lập chiến lược marketing...',
     });
     setIsLoading(true);
     await handleStartStageB(reportData, mongodbId);
@@ -471,7 +471,7 @@ function App() {
 
     addMessage({
       type: 'status',
-      content: `🎯 Bắt đầu thực thi chiến dịch: ${briefs.length} bài đăng...`,
+      content: `Bắt đầu thực thi chiến dịch: ${briefs.length} bài đăng...`,
     });
     setIsLoading(true);
 
@@ -520,7 +520,7 @@ function App() {
 
     addMessage({
       type: 'status',
-      content: `📅 Đang lên lịch chiến dịch: ${briefs.length} bài đăng...`,
+      content: `Đang lên lịch chiến dịch: ${briefs.length} bài đăng...`,
     });
     setIsLoading(true);
 
@@ -565,7 +565,7 @@ function App() {
 
     addMessage({
       type: 'status',
-      content: `🚀 Bắt đầu thực thi chiến dịch: ${approvedBriefs.length} bài đăng...`,
+      content: `Bắt đầu thực thi chiến dịch: ${approvedBriefs.length} bài đăng...`,
     });
     setIsLoading(true);
 
@@ -605,7 +605,7 @@ function App() {
   const handleMarketingFormSubmit = async (formData: ResearchRequest) => {
     setWaitingMarketingForm(false);
     setIsLoading(true);
-    addMessage({ type: 'status', content: '🚀 Bắt đầu nghiên cứu thị trường...' });
+    addMessage({ type: 'status', content: 'Bắt đầu nghiên cứu thị trường...' });
 
     // Save form data for Stage B
     setLastReportInput(formData as unknown as Record<string, unknown>);
@@ -643,7 +643,7 @@ function App() {
       {
         id: 'welcome',
         type: 'assistant',
-        content: 'Xin chào! Tôi là MarketMind AI — trợ lý nghiên cứu thị trường thông minh. Hãy mô tả những gì bạn muốn tìm hiểu, tôi sẽ giúp bạn phân tích! 🚀',
+        content: 'Xin chào! Tôi là MarketMind AI — trợ lý nghiên cứu thị trường thông minh. Hãy mô tả những gì bạn muốn tìm hiểu, tôi sẽ giúp bạn phân tích!',
         timestamp: new Date(),
       },
     ]);
@@ -668,10 +668,10 @@ function App() {
   const showWelcomeHero = chatMessages.length <= 1 && chatMessages[0]?.id === 'welcome';
 
   const suggestionChips = [
-    { icon: '📊', text: 'Nghiên cứu thị trường trà sữa tại Việt Nam' },
-    { icon: '🎯', text: 'Phân tích đối thủ ngành thương mại điện tử' },
-    { icon: '📈', text: 'Xu hướng marketing 2026 cho startup' },
-    { icon: '💡', text: 'Lập chiến lược quảng cáo cho sản phẩm mới' },
+    { icon: '', text: 'Nghiên cứu thị trường trà sữa tại Việt Nam' },
+    { icon: '', text: 'Phân tích đối thủ ngành thương mại điện tử' },
+    { icon: '', text: 'Xu hướng marketing 2026 cho startup' },
+    { icon: '', text: 'Lập chiến lược quảng cáo cho sản phẩm mới' },
   ];
 
   /**
@@ -745,7 +745,7 @@ function App() {
               </svg>
             </button>
             <div className="header-content">
-              <h1>🎯 MarketMind AI</h1>
+              <h1>MarketMind AI</h1>
               <p>Trợ lý nghiên cứu thị trường thông minh</p>
             </div>
           </div>
@@ -754,12 +754,12 @@ function App() {
               {theme === 'dark' ? '☀️' : '🌙'}
             </button>
             <button className="header-reset" onClick={handleReset} title="Cuộc hội thoại mới">
-              ✨ Mới
+              Mới
             </button>
             <div className="header-user">
               <span className="header-user-name">{userName}</span>
               <button className="header-logout" onClick={handleLogout} title="Đăng xuất">
-                🚪
+                Đăng xuất
               </button>
             </div>
           </div>
@@ -777,26 +777,22 @@ function App() {
             {/* Welcome Hero */}
             {showWelcomeHero && (
               <div className="welcome-hero">
-                <div className="welcome-hero-icon">🎯</div>
                 <h2 className="welcome-hero-title">Chào mừng đến với MarketMind AI</h2>
                 <p className="welcome-hero-desc">
                   Trợ lý AI giúp bạn nghiên cứu thị trường, phân tích đối thủ, và xây dựng chiến lược marketing — tất cả chỉ bằng một cuộc trò chuyện.
                 </p>
                 <div className="welcome-features">
                   <div className="welcome-feature">
-                    <span>🔍</span>
                     <div><strong>Nghiên cứu thị trường</strong><br/>Phân tích sâu từ dữ liệu thực tế</div>
                   </div>
                   <div className="welcome-feature">
-                    <span>📋</span>
                     <div><strong>Chiến lược marketing</strong><br/>Tự động lập kế hoạch chi tiết</div>
                   </div>
                   <div className="welcome-feature">
-                    <span>🚀</span>
                     <div><strong>Thực thi chiến dịch</strong><br/>Đăng bài tự động lên Discord</div>
                   </div>
                 </div>
-                <p className="welcome-hero-hint">Thử hỏi một trong các câu gợi ý bên dưới 👇</p>
+                <p className="welcome-hero-hint">Thử hỏi một trong các câu gợi ý bên dưới</p>
                 <div className="suggestion-chips">
                   {suggestionChips.map((chip, i) => (
                     <button
@@ -804,7 +800,7 @@ function App() {
                       className="suggestion-chip"
                       onClick={() => handleSend(chip.text)}
                     >
-                      <span>{chip.icon}</span> {chip.text}
+                      {chip.text}
                     </button>
                   ))}
                 </div>
@@ -844,7 +840,7 @@ function App() {
 
             {isLoading && !waitingMarketingForm && (
               <div className="chat-row chat-row--assistant">
-                <div className="chat-avatar chat-avatar--assistant">🤖</div>
+                <div className="chat-avatar chat-avatar--assistant">AI</div>
                 <div className="chat-bubble chat-bubble--typing">
                   <span className="typing-dot" />
                   <span className="typing-dot" />
@@ -873,7 +869,7 @@ function App() {
             className={`send-btn ${isLoading ? 'is-loading' : ''}`}
             onClick={() => handleSend()}
             disabled={isLoading || !inputValue.trim()}
-            title={isLoading ? 'Đang xử lý...' : 'Gửi'}
+            title={isLoading ? 'Processing...' : 'Send'}
           >
             {isLoading ? (
               <span className="send-btn-spinner" />
@@ -890,10 +886,10 @@ function App() {
             {isLoading ? (
               <span className="input-loading-hint">
                 <span className="input-loading-spinner" />
-                Hệ thống đang xử lý yêu cầu của bạn...
+                Processing your request...
               </span>
             ) : (
-              <>Nhấn <kbd>Enter</kbd> để gửi · <kbd>Shift+Enter</kbd> xuống dòng</>
+              <>Press <kbd>Enter</kbd> to send · <kbd>Shift+Enter</kbd> for new line</>
             )}
           </small>
           <ModelSelector

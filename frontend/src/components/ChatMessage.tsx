@@ -237,7 +237,7 @@ function ClarificationBubble({
 
         <div className="clarify-fields">
           <div className="clarify-field">
-            <label>Bản chất sản phẩm</label>
+            <label>Thông tin sản phẩm</label>
             <textarea
               defaultValue={data.clarified_input.ban_chat_san_pham}
               onChange={(e) => handleChange('ban_chat_san_pham', e.target.value)}
@@ -426,7 +426,7 @@ function ReportBubble({
   const xu_huong = data?.xu_huong_nganh || '';
   const phan_khuc = data?.phan_khuc_va_insight_khach_hang || '';
   const citations = data?.citations || [];
-  
+
   // Truncate to ~120 chars for preview
   const preview = tong_quan.slice(0, 120) + (tong_quan.length > 120 ? '…' : '');
 
@@ -588,7 +588,7 @@ function MarketingFormBubble({
           </div>
 
           <div className="mkt-form-field">
-            <label>Bản chất sản phẩm</label>
+            <label>Thông tin sản phẩm</label>
             <textarea
               value={formData.ban_chat_san_pham}
               onChange={(e) => handleChange('ban_chat_san_pham', e.target.value)}
@@ -608,7 +608,7 @@ function MarketingFormBubble({
           </div>
 
           <div className="mkt-form-field">
-            <label>Giá trị cốt lõi & Lý do mua hàng</label>
+            <label>Giá trị & Lý do mua hàng</label>
             <textarea
               value={formData.gia_tri_cot_loi}
               onChange={(e) => handleChange('gia_tri_cot_loi', e.target.value)}

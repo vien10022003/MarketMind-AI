@@ -8,11 +8,11 @@ interface ResearchFormProps {
   onClarificationConfirm?: (overrides: Partial<ResearchRequest>) => void;
 }
 
-export function ResearchForm({ 
-  onSubmit, 
-  isLoading, 
+export function ResearchForm({
+  onSubmit,
+  isLoading,
   clarification,
-  onClarificationConfirm 
+  onClarificationConfirm
 }: ResearchFormProps) {
   const [userPrompt, setUserPrompt] = useState<string>('');
   const [clarificationOverrides, setClarificationOverrides] = useState<Partial<ResearchRequest>>({});
@@ -26,7 +26,7 @@ export function ResearchForm({
 
   useEffect(() => {
     if (autoConfirmCountdown <= 0) return;
-    
+
     const timeout = setTimeout(() => {
       setAutoConfirmCountdown((prev) => prev - 1);
     }, 1000);
@@ -79,7 +79,7 @@ export function ResearchForm({
     return (
       <div className="research-form clarification-mode">
         <h2>📋 LLM Đã Phân Tích Yêu Cầu</h2>
-        
+
         <div className="detected-info-box">
           <h3>✅ Thông Tin Phát Hiện</h3>
           <p>{clarification.detected_info}</p>
@@ -98,7 +98,7 @@ export function ResearchForm({
 
             <div className="override-section">
               <h3>🎯 Thông Tin Được Đề Xuất (Có Thể Sửa)</h3>
-              
+
               <div className="override-group">
                 <label htmlFor="override-ban-chat">Bản Chất Sản Phẩm:</label>
                 <textarea
@@ -135,10 +135,10 @@ export function ResearchForm({
         <div className="suggested-info-box">
           <h3>💡 Thông Tin Đã Chuẩn Bị</h3>
           <ul>
-            <li><strong>Bản chất sản phẩm:</strong> {clarificationOverrides.ban_chat_san_pham || clarification.clarified_input.ban_chat_san_pham}</li>
+            <li><strong>Thông tin sản phẩm:</strong> {clarificationOverrides.ban_chat_san_pham || clarification.clarified_input.ban_chat_san_pham}</li>
             <li><strong>Khách hàng mục tiêu:</strong> {clarificationOverrides.khach_hang_muc_tieu || clarification.clarified_input.khach_hang_muc_tieu}</li>
             {(clarificationOverrides.gia_tri_cot_loi || clarification.clarified_input.gia_tri_cot_loi) && (
-              <li><strong>Giá trị cốt lõi:</strong> {clarificationOverrides.gia_tri_cot_loi || clarification.clarified_input.gia_tri_cot_loi}</li>
+              <li><strong>Giá trị sản phẩm:</strong> {clarificationOverrides.gia_tri_cot_loi || clarification.clarified_input.gia_tri_cot_loi}</li>
             )}
             {(clarificationOverrides.gia_ca_chinh_sach || clarification.clarified_input.gia_ca_chinh_sach) && (
               <li><strong>Giá cả & Chính sách:</strong> {clarificationOverrides.gia_ca_chinh_sach || clarification.clarified_input.gia_ca_chinh_sach}</li>
@@ -147,13 +147,13 @@ export function ResearchForm({
         </div>
 
         <div className="clarification-actions">
-          <button 
+          <button
             onClick={() => handleConfirmClarification()}
             className="confirm-btn"
             disabled={isLoading || autoConfirmCountdown > 0}
           >
-            {autoConfirmCountdown > 0 
-              ? `⏱️ Bắt Đầu Trong ${autoConfirmCountdown}s...` 
+            {autoConfirmCountdown > 0
+              ? `⏱️ Bắt Đầu Trong ${autoConfirmCountdown}s...`
               : '✅ Xác Nhận & Bắt Đầu Nghiên Cứu'}
           </button>
           {clarification.auto_proceeding && (
@@ -191,9 +191,9 @@ export function ResearchForm({
           </small>
         </div>
 
-        <button 
-          type="submit" 
-          disabled={isLoading} 
+        <button
+          type="submit"
+          disabled={isLoading}
           className="submit-btn"
         >
           {isLoading ? '⏳ Đang phân tích...' : '🚀 Phân Tích & Bắt Đầu'}
