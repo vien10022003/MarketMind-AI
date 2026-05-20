@@ -258,21 +258,28 @@ SWOT_TOOLS = [
 CONTENT_EXPANSION_TOOLS = [
     create_tool(
         name="expand_content",
-        description="Expand content brief into full Discord post content",
+        description="Expand a content brief into a detailed Discord post with professional image prompt. Generate engaging caption with emojis and a detailed English image generation prompt.",
         properties={
-            "content": {
+            "expanded_caption": {
                 "type": "string",
-                "description": "Full expanded content"
+                "description": "Detailed, engaging Discord post caption with emojis and natural tone for product/advertising promotion"
             },
-            "engagement_hooks": {
-                "type": "array",
-                "items": {"type": "string"},
-                "description": "Suggested engagement tactics"
+            "expanded_image_prompt": {
+                "type": "string",
+                "description": "Professional English image generation prompt with detailed keywords, style, lighting separated by commas"
             }
         },
-        required=["content", "engagement_hooks"]
+        required=["expanded_caption", "expanded_image_prompt"]
     )
 ]
+
+# System message for content expansion
+SYSTEM_MESSAGE_CONTENT_EXPANDER = """You are an expert Discord content creator and professional image prompt writer.
+Your role is to expand content briefs into:
+1. Engaging Discord posts with natural tone, relevant emojis, and persuasive product promotion
+2. Detailed English image generation prompts with specific keywords, style, and lighting
+
+IMPORTANT: Always respond with valid JSON containing exactly: "expanded_caption" and "expanded_image_prompt""""
 
 
 # ─────────────────────────────────────────────────────────────────────────

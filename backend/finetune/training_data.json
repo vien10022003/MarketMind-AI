@@ -35,16 +35,14 @@
       },
       {
         "role": "assistant",
-        "tool_calls": [
-          {
-            "function": {
-              "name": "classify_intent",
-              "arguments": {
-                "intent": "knowledge"
-              }
-            }
+        "content": {
+          "name": "classify_intent",
+          "arguments": {
+            "intent": "research",
+            "response": "",
+            "reasoning": "User asks for comparative analysis of online education effectiveness in Vietnam versus other countries and requests the latest data, which requires market research and external information gathering."
           }
-        ]
+        }
       }
     ]
   },
@@ -56,28 +54,15 @@
       },
       {
         "role": "user",
-        "content": "Tôi muốn phân tích thị trường ngành công nghiệp ô tô điện tại Việt Nam, tập trung vào khách hàng trẻ tuổi từ 25-40 tuổi ở thành phố."
-      },
-      {
-        "role": "assistant",
-        "tool_calls": [
-          {
-            "function": {
-              "name": "classify_intent",
-              "arguments": {
-                "intent": "research"
-              }
-            }
-          }
-        ]
+        "content": "Bạn có thể kể cho tôi một câu chuyện vui ngắn không?"
       },
       {
         "role": "tool",
-        "content": "{\"status\": \"success\"}"
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
       },
       {
         "role": "assistant",
-        "content": "Tôi sẽ giúp bạn phân tích thị trường ô tô điện với các thông số cụ thể về nhân khẩu học và địa lý."
+        "content": "Ngày xưa có một lập trình viên đi khám bệnh. Bác sĩ hỏi: 'Anh ngủ được bao nhiêu tiếng mỗi ngày?' Anh ấy đáp: 'Tùy bug, bác sĩ ạ.' 😄"
       }
     ]
   },
@@ -85,60 +70,26 @@
     "messages": [
       {
         "role": "system",
-        "content": "You are a market research analyst. Create comprehensive research plans with questions, hypotheses, and search strategies."
+        "content": "You are a market research analyst. Classify user intent and respond appropriately."
       },
       {
         "role": "user",
-        "content": "Phân tích thị trường dịch vụ giao hàng nhanh. Khách hàng chính: dân văn phòng 25-45 tuổi. Giá trị: nhanh chóng, đáng tin cây. So sánh với Grab/GoFood."
-      },
-      {
-        "role": "assistant",
-        "tool_calls": [
-          {
-            "function": {
-              "name": "create_research_plan",
-              "arguments": {
-                "research_questions": [
-                  "Quy mô thị trường dịch vụ giao hàng nhanh tại Việt Nam hiện nay là bao nhiêu?",
-                  "Ai là những người sử dụng chính và tần suất sử dụng là bao lâu?",
-                  "Những điểm cạnh tranh chính giữa các đối thủ (Grab, GoFood, Now) là gì?",
-                  "Yếu tố nào ảnh hưởng nhất đến quyết định chọn dịch vụ giao hàng?"
-                ],
-                "hypotheses": [
-                  "Khách hàng trẻ tuổi giá trị thời gian cao hơn giá tiền",
-                  "Độ tin cậy và tốc độ là yếu tố quyết định chính, không phải giá cả",
-                  "Người dân thành phố sẵn sàng trả thêm cho giao hàng cùng ngày"
-                ],
-                "search_steps": [
-                  {
-                    "query": "thị trường giao hàng nhanh Việt Nam 2024 2025 quy mô",
-                    "focus": "Kích thước thị trường, tăng trưởng, dự báo"
-                  },
-                  {
-                    "query": "consumer behavior delivery service Vietnam urban professionals",
-                    "focus": "Hành vi người dùng, tần suất, sở thích"
-                  },
-                  {
-                    "query": "Grab GoFood Now competition analysis Vietnam pricing",
-                    "focus": "Phân tích cạnh tranh, giá cả, dịch vụ"
-                  },
-                  {
-                    "query": "express delivery willingness to pay Vietnam customer segment",
-                    "focus": "Chiến lược giá, sẵn sàng chi trả"
-                  }
-                ]
-              }
-            }
-          }
-        ]
+        "content": "Thị trường xe điện ở Đông Nam Á đang tăng trưởng ra sao trong năm nay?"
       },
       {
         "role": "tool",
-        "content": "{\"status\": \"success\"}"
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
       },
       {
         "role": "assistant",
-        "content": "Kế hoạch nghiên cứu đã được tạo với 4 câu hỏi chính, 3 giả thuyết cần kiểm chứng, và 4 bước tìm kiếm cụ thể để phân tích thị trường giao hàng nhanh."
+        "content": {
+          "name": "classify_intent",
+          "arguments": {
+            "intent": "research",
+            "response": "",
+            "reasoning": "User asks about current market growth trends in Southeast Asia's electric vehicle industry, which requires recent market data and analysis."
+          }
+        }
       }
     ]
   },
@@ -146,60 +97,26 @@
     "messages": [
       {
         "role": "system",
-        "content": "You are a market research analyst. Create comprehensive research plans with questions, hypotheses, and search strategies."
+        "content": "You are a market research analyst. Classify user intent and respond appropriately."
       },
       {
         "role": "user",
-        "content": "Phân tích thị trường cà phê specialty ở Việt Nam. Tập trung vào phân khúc cao cấp, khách hàng có thu nhập cao, sẵn sàng trả giá cao."
-      },
-      {
-        "role": "assistant",
-        "tool_calls": [
-          {
-            "function": {
-              "name": "create_research_plan",
-              "arguments": {
-                "research_questions": [
-                  "Quy mô và tốc độ tăng trưởng của thị trường cà phê specialty Việt Nam?",
-                  "Đâu là các phân khúc chính và hành vi tiêu dùng của họ?",
-                  "Chiến lược giá của các đối thủ chính là gì?",
-                  "Tiềm năng xuất khẩu cà phê specialty Việt Nam sang các nước khác?"
-                ],
-                "hypotheses": [
-                  "Thị trường cà phê specialty đang tăng trưởng nhanh với tỷ lệ 15%+ năm",
-                  "Khách hàng cao cấp không nhạy cảm với giá mà chú trọng vào chất lượng",
-                  "Xu hướng tiêu dùng bền vững ảnh hưởng mạnh đến lựa chọn sản phẩm"
-                ],
-                "search_steps": [
-                  {
-                    "query": "specialty coffee market Vietnam 2024 2025 growth rate",
-                    "focus": "Quy mô thị trường, tốc độ tăng trưởng, dự báo"
-                  },
-                  {
-                    "query": "premium coffee consumer behavior Vietnam high-income segment",
-                    "focus": "Hành vi tiêu dùng, sở thích, độ trung thành"
-                  },
-                  {
-                    "query": "specialty coffee pricing strategy Vietnam competitive analysis",
-                    "focus": "Chiến lược giá, phân khúc, lợi thế cạnh tranh"
-                  },
-                  {
-                    "query": "Vietnamese specialty coffee export potential Asia market",
-                    "focus": "Tiềm năng xuất khẩu, thị trường đích, rào cản"
-                  }
-                ]
-              }
-            }
-          }
-        ]
+        "content": "Blockchain là gì và hoạt động như thế nào?"
       },
       {
         "role": "tool",
-        "content": "{\"status\": \"success\"}"
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
       },
       {
         "role": "assistant",
-        "content": "Kế hoạch phân tích cà phê specialty đã sẵn sàng với focus vào phân khúc cao cấp, bao gồm 4 câu hỏi chiến lược, 3 giả thuyết, và 4 hướng tìm kiếm cụ thể."
+        "content": {
+          "name": "classify_intent",
+          "arguments": {
+            "intent": "knowledge",
+            "response": "",
+            "reasoning": "User asks for a general explanation of blockchain technology, which can be answered using existing knowledge without external research."
+          }
+        }
       }
     ]
   },
@@ -207,33 +124,19 @@
     "messages": [
       {
         "role": "system",
-        "content": "You are a market research analyst using ReAct methodology. Decide the next research action based on current progress."
+        "content": "You are a market research analyst. Classify user intent and respond appropriately."
       },
       {
         "role": "user",
-        "content": "Nhiệm vụ: Phân tích thị trường cà phê specialty Việt Nam. Tiến độ: 2 trong 4 câu hỏi đã được trả lời. Dữ liệu: Quy mô thị trường và phân khúc khách hàng. Cần tìm: Xu hướng giá, tiềm năng xuất khẩu."
-      },
-      {
-        "role": "assistant",
-        "tool_calls": [
-          {
-            "function": {
-              "name": "decide_action",
-              "arguments": {
-                "action": "search",
-                "query": "specialty coffee Vietnam pricing trend 2024 premium segment price points"
-              }
-            }
-          }
-        ]
+        "content": "Theo bạn nên uống cà phê hay trà vào buổi sáng?"
       },
       {
         "role": "tool",
-        "content": "{\"status\": \"continue_searching\"}"
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
       },
       {
         "role": "assistant",
-        "content": "Tiếp tục tìm kiếm thông tin về xu hướng giá trong phân khúc cà phê cao cấp để hoàn thành phân tích."
+        "content": "Điều đó còn tùy vào sở thích và nhu cầu của bạn nữa 😄 Nếu cần tỉnh táo nhanh thì cà phê thường hiệu quả hơn, còn trà mang lại cảm giác nhẹ nhàng và ít caffeine hơn."
       }
     ]
   },
@@ -241,33 +144,26 @@
     "messages": [
       {
         "role": "system",
-        "content": "You are a market research analyst using ReAct methodology. Decide the next research action based on current progress."
+        "content": "You are a market research analyst. Classify user intent and respond appropriately."
       },
       {
         "role": "user",
-        "content": "Nhiệm vụ: Tìm hiểu nhu cầu tiêu dùng ô tô điện trẻ tuổi. Tìm kiếm trước: Quy mô thị trường chung. Kết quả: Quá rộng, không cụ thể về đối tượng 25-40 tuổi. Cần: Thông tin chi tiết hơn về nhân khẩu học."
-      },
-      {
-        "role": "assistant",
-        "tool_calls": [
-          {
-            "function": {
-              "name": "decide_action",
-              "arguments": {
-                "action": "refine_query",
-                "query": "electric vehicle consumer Vietnam 25-40 years old urban professionals income level purchasing behavior"
-              }
-            }
-          }
-        ]
+        "content": "Xu hướng người dùng TikTok tại Việt Nam năm 2026 có gì thay đổi so với năm trước?"
       },
       {
         "role": "tool",
-        "content": "{\"status\": \"query_refined\"}"
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
       },
       {
         "role": "assistant",
-        "content": "Đã tinh chỉnh tìm kiếm để tập trung vào nhân khẩu học cụ thể và hành vi tiêu dùng của nhóm tuổi 25-40."
+        "content": {
+          "name": "classify_intent",
+          "arguments": {
+            "intent": "research",
+            "response": "",
+            "reasoning": "User requests trend analysis comparing TikTok user behavior in Vietnam across years, which requires up-to-date market and social media research."
+          }
+        }
       }
     ]
   },
@@ -275,33 +171,36 @@
     "messages": [
       {
         "role": "system",
-        "content": "You are a market research analyst using ReAct methodology. Decide the next research action based on current progress."
+        "content": "You are a market research analyst. Validate whether the user's request contains enough information for research."
       },
       {
         "role": "user",
-        "content": "Nhiệm vụ: Phân tích thị trường ứng dụng giao dạy kèm online. Tìm kiếm hoàn tất: 4 lần. Dữ liệu: Quy mô, cạnh tranh, hành vi người dùng, mô hình doanh thu. Đủ thông tin: Có. Tình trạng: Sẵn sàng tổng hợp."
-      },
-      {
-        "role": "assistant",
-        "tool_calls": [
-          {
-            "function": {
-              "name": "decide_action",
-              "arguments": {
-                "action": "summarize",
-                "query": "online tutoring application market Vietnam comprehensive analysis synthesis"
-              }
-            }
-          }
-        ]
+        "content": "Tôi muốn nghiên cứu thị trường mỹ phẩm."
       },
       {
         "role": "tool",
-        "content": "{\"status\": \"ready_to_synthesize\"}"
+        "tool_calls": "INPUT_VALIDATION_TOOLS"
       },
       {
         "role": "assistant",
-        "content": "Đủ thông tin để tổng hợp báo cáo toàn diện về thị trường ứng dụng dạy kèm online ở Việt Nam."
+        "content": {
+          "name": "validate_input",
+          "arguments": {
+            "is_complete": false,
+            "missing_fields": [
+              "target_market",
+              "customer_segment",
+              "research_goal",
+              "time_period"
+            ],
+            "suggestions": [
+              "Specify which country or region you want to research",
+              "Describe the target customer segment",
+              "Explain the purpose of the research",
+              "Provide a timeframe for the analysis"
+            ]
+          }
+        }
       }
     ]
   },
@@ -309,55 +208,29 @@
     "messages": [
       {
         "role": "system",
-        "content": "You are a strategic analyst. Generate SWOT analysis from market research findings."
+        "content": "You are a market research analyst. Validate whether the user's request contains enough information for research."
       },
       {
         "role": "user",
-        "content": "Startup cà phê specialty Hà Nội. Bối cảnh: Thị trường tăng 15% năm, cạnh tranh chuỗi lớn, khách hàng giáo dục cao, chi phí nhân công cao."
-      },
-      {
-        "role": "assistant",
-        "tool_calls": [
-          {
-            "function": {
-              "name": "generate_swot",
-              "arguments": {
-                "strengths": [
-                  "Thị trường cà phê specialty đang tăng trưởng 15% năm, nhu cầu ngày càng cao",
-                  "Khách hàng là những người giáo dục cao, sẵn sàng trả giá cao cho chất lượng",
-                  "Định vị cao cấp tạo lợi thế so với cà phê bình dân",
-                  "Khả năng xây dựng cộng đồng và brand loyalty mạnh"
-                ],
-                "weaknesses": [
-                  "Chi phí nhân công cao làm giảm margin lợi nhuận",
-                  "Quy mô nhỏ không cạnh tranh được về chi phí với chuỗi lớn",
-                  "Yêu cầu kỹ năng barista cao, khó tuyển dụng nhân sự",
-                  "Vốn khởi động lớn cho setup quán và đào tạo"
-                ],
-                "opportunities": [
-                  "Mở rộng sang các thành phố khác (TP.HCM, Đà Nẵng)",
-                  "Phát triển dịch vụ giao hàng online cho khách hàng",
-                  "Hợp tác với các khách sạn, shared office space",
-                  "Xuất khẩu cà phê specialty sang các nước Đông Nam Á"
-                ],
-                "threats": [
-                  "Các chuỗi quốc tế vào thị trường (Starbucks, Blue Bottle)",
-                  "Cuộc chiến giá từ các startup khác",
-                  "Thay đổi xu hướng người tiêu dùng",
-                  "Chi phí thuê mặt bằng tăng cao ở vị trí đắc địa"
-                ]
-              }
-            }
-          }
-        ]
+        "content": "Phân tích thị trường giao đồ ăn tại Hà Nội cho nhóm sinh viên từ 18-22 tuổi trong năm 2025."
       },
       {
         "role": "tool",
-        "content": "{\"status\": \"swot_generated\"}"
+        "tool_calls": "INPUT_VALIDATION_TOOLS"
       },
       {
         "role": "assistant",
-        "content": "Phân tích SWOT hoàn tất cho startup cà phê specialty với 4 điểm mạnh, 4 điểm yếu, 4 cơ hội và 4 mối đe dọa cụ thể."
+        "content": {
+          "name": "validate_input",
+          "arguments": {
+            "is_complete": true,
+            "missing_fields": [],
+            "suggestions": [
+              "You may also specify competitors you want to compare",
+              "Adding budget or pricing focus could improve the analysis depth"
+            ]
+          }
+        }
       }
     ]
   },
@@ -365,55 +238,36 @@
     "messages": [
       {
         "role": "system",
-        "content": "You are a strategic analyst. Generate SWOT analysis from market research findings."
+        "content": "You are a market research analyst. Validate whether the user's request contains enough information for research."
       },
       {
         "role": "user",
-        "content": "Công ty logistics Việt Nam muốn mở rộng sang dịch vụ giao hàng nhanh. Điều kiện: Có hệ thống xe, nhân lực sẵn sàng, chi phí cạnh tranh, cạnh tranh từ Grab/GoFood."
-      },
-      {
-        "role": "assistant",
-        "tool_calls": [
-          {
-            "function": {
-              "name": "generate_swot",
-              "arguments": {
-                "strengths": [
-                  "Có hệ thống xe và tài xế sẵn sàng, không cần đầu tư mới lớn",
-                  "Chi phí hoạt động thấp từ quy mô hiện có",
-                  "Kinh nghiệm logistics lâu năm, quy trình quản lý chuyên nghiệp",
-                  "Mối quan hệ khách hàng B2B có thể chuyển sang B2C"
-                ],
-                "weaknesses": [
-                  "Không có ứng dụng mobile hoàn chỉnh, cần phát triển",
-                  "Chưa quen với thị trường B2C, khác xa logistics B2B",
-                  "Nhân lực chủ yếu quen logistics, không quen khách hàng cá nhân",
-                  "Marketing budget hạn chế so với các đối thủ"
-                ],
-                "opportunities": [
-                  "Thị trường giao hàng nhanh đang tăng trưởng nhanh",
-                  "Có thể tích hợp với logistics hiện có để tạo giải pháp toàn diện",
-                  "Hợp tác với các e-commerce, nền tảng khác",
-                  "Mở rộng dịch vụ như giao hàng lạnh, hàng cồng kềnh"
-                ],
-                "threats": [
-                  "Grab, GoFood đã có thị phần lớn và brand nổi tiếng",
-                  "Các startup khác tham gia với công nghệ tốt hơn",
-                  "Áp lực giá cạnh tranh từ các đối thủ",
-                  "Quy định về hoạt động giao hàng nhanh có thể thay đổi"
-                ]
-              }
-            }
-          }
-        ]
+        "content": "Tôi cần báo cáo về ngành fintech."
       },
       {
         "role": "tool",
-        "content": "{\"status\": \"swot_generated\"}"
+        "tool_calls": "INPUT_VALIDATION_TOOLS"
       },
       {
         "role": "assistant",
-        "content": "Phân tích SWOT cho kế hoạch mở rộng sang giao hàng nhanh của công ty logistics đã hoàn tất."
+        "content": {
+          "name": "validate_input",
+          "arguments": {
+            "is_complete": false,
+            "missing_fields": [
+              "geographic_scope",
+              "research_objective",
+              "target_audience",
+              "timeframe"
+            ],
+            "suggestions": [
+              "Specify the country or region for the fintech market",
+              "Clarify whether you want investment, consumer, or competitor analysis",
+              "Describe the target audience or customer group",
+              "Provide the desired analysis period"
+            ]
+          }
+        }
       }
     ]
   },
@@ -421,33 +275,29 @@
     "messages": [
       {
         "role": "system",
-        "content": "You are a research analyst. Validate if user input contains sufficient information for market research."
+        "content": "You are a market research analyst. Validate whether the user's request contains enough information for research."
       },
       {
         "role": "user",
-        "content": "Khách hàng: Dân sinh viên 18-25 tuổi. Sản phẩm: Ứng dụng học ngoại ngữ. Giá trị: Học nhanh, hiệu quả, giá rẻ. Cạnh tranh: So sánh với Duolingo, Babbel."
-      },
-      {
-        "role": "assistant",
-        "tool_calls": [
-          {
-            "function": {
-              "name": "validate_input",
-              "arguments": {
-                "is_complete": true,
-                "missing_fields": []
-              }
-            }
-          }
-        ]
+        "content": "So sánh thị phần của Shopee và TikTok Shop tại Việt Nam trong quý 1 năm 2026."
       },
       {
         "role": "tool",
-        "content": "{\"validation\": \"complete\"}"
+        "tool_calls": "INPUT_VALIDATION_TOOLS"
       },
       {
         "role": "assistant",
-        "content": "Thông tin đầu vào đã đủ để bắt đầu phân tích thị trường. Có tất cả thành phần: khách hàng mục tiêu, sản phẩm, giá trị cốt lõi, và cạnh tranh."
+        "content": {
+          "name": "validate_input",
+          "arguments": {
+            "is_complete": true,
+            "missing_fields": [],
+            "suggestions": [
+              "You may include additional competitors for broader benchmarking",
+              "Specify whether you want GMV, active users, or revenue comparison"
+            ]
+          }
+        }
       }
     ]
   },
@@ -455,38 +305,211 @@
     "messages": [
       {
         "role": "system",
-        "content": "You are a research analyst. Validate if user input contains sufficient information for market research."
+        "content": "You are a market research analyst. Validate whether the user's request contains enough information for research."
       },
       {
         "role": "user",
-        "content": "Tôi muốn phân tích thị trường công nghệ. Sản phẩm của tôi rất tốt. Giá cả hợp lý."
-      },
-      {
-        "role": "assistant",
-        "tool_calls": [
-          {
-            "function": {
-              "name": "validate_input",
-              "arguments": {
-                "is_complete": false,
-                "missing_fields": [
-                  "Khách hàng mục tiêu cụ thể",
-                  "Loại sản phẩm/dịch vụ cụ thể",
-                  "Giá trị cốt lõi/lợi thế cạnh tranh",
-                  "Thông tin đối thủ cạnh tranh"
-                ]
-              }
-            }
-          }
-        ]
+        "content": "Tôi muốn tìm hiểu hành vi người tiêu dùng."
       },
       {
         "role": "tool",
-        "content": "{\"validation\": \"incomplete\"}"
+        "tool_calls": "INPUT_VALIDATION_TOOLS"
       },
       {
         "role": "assistant",
-        "content": "Thông tin còn quá mơ hồ. Cần cung cấp: khách hàng mục tiêu cụ thể (tuổi, thu nhập, địa vị), loại sản phẩm chi tiết, giá trị cạnh tranh cụ thể, và tên các đối thủ cạnh tranh."
+        "content": {
+          "name": "validate_input",
+          "arguments": {
+            "is_complete": false,
+            "missing_fields": [
+              "industry",
+              "target_market",
+              "customer_segment",
+              "research_goal"
+            ],
+            "suggestions": [
+              "Specify the industry or product category",
+              "Mention the country or market you want to analyze",
+              "Describe the target customer segment",
+              "Clarify the objective of the consumer behavior research"
+            ]
+          }
+        }
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a market research analyst. Generate clarification questions before conducting research."
+      },
+      {
+        "role": "user",
+        "content": "Tôi muốn nghiên cứu thị trường mỹ phẩm ở Việt Nam."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "CLARIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": {
+          "name": "generate_questions",
+          "arguments": {
+            "questions": [
+              "Bạn muốn tập trung vào phân khúc mỹ phẩm nào (skincare, makeup, organic, luxury,...) ?",
+              "Bạn quan tâm đến thị trường B2C hay B2B?",
+              "Bạn muốn phân tích thị trường trong khoảng thời gian nào?",
+              "Bạn có muốn so sánh với các quốc gia khác không?"
+            ],
+            "suggestions": [
+              "Xác định rõ nhóm khách hàng mục tiêu để kết quả nghiên cứu chính xác hơn.",
+              "Nên giới hạn phạm vi theo phân khúc sản phẩm hoặc độ tuổi người dùng.",
+              "Có thể bổ sung phân tích đối thủ cạnh tranh lớn tại Việt Nam."
+            ]
+          }
+        }
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a market research analyst. Generate clarification questions before conducting research."
+      },
+      {
+        "role": "user",
+        "content": "Hãy phân tích xu hướng AI trong ngành giáo dục."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "CLARIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": {
+          "name": "generate_questions",
+          "arguments": {
+            "questions": [
+              "Bạn muốn phân tích AI trong giáo dục ở quốc gia hay khu vực nào?",
+              "Bạn quan tâm đến giáo dục phổ thông, đại học hay đào tạo doanh nghiệp?",
+              "Bạn muốn tập trung vào xu hướng công nghệ, hành vi người dùng hay thị trường đầu tư?",
+              "Bạn cần dữ liệu trong giai đoạn thời gian nào?"
+            ],
+            "suggestions": [
+              "Nên xác định rõ phân khúc giáo dục để nghiên cứu sâu hơn.",
+              "Có thể bổ sung phân tích các startup EdTech nổi bật.",
+              "Xem xét thêm tác động của AI tới giáo viên và học sinh."
+            ]
+          }
+        }
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a market research analyst. Generate clarification questions before conducting research."
+      },
+      {
+        "role": "user",
+        "content": "Tôi cần tìm hiểu về hành vi mua sắm online của Gen Z."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "CLARIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": {
+          "name": "generate_questions",
+          "arguments": {
+            "questions": [
+              "Bạn muốn nghiên cứu Gen Z tại quốc gia nào?",
+              "Bạn quan tâm đến ngành hàng cụ thể nào không?",
+              "Bạn muốn phân tích hành vi trên sàn thương mại điện tử hay mạng xã hội?",
+              "Bạn cần dữ liệu định tính hay định lượng?"
+            ],
+            "suggestions": [
+              "Có thể chia theo nhóm độ tuổi nhỏ hơn trong Gen Z để tăng độ chính xác.",
+              "Nên xác định nền tảng mua sắm chính như TikTok Shop, Shopee hay Lazada.",
+              "Bổ sung phân tích yếu tố ảnh hưởng đến quyết định mua hàng."
+            ]
+          }
+        }
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a market research analyst. Generate clarification questions before conducting research."
+      },
+      {
+        "role": "user",
+        "content": "Tôi muốn nghiên cứu thị trường xe điện."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "CLARIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": {
+          "name": "generate_questions",
+          "arguments": {
+            "questions": [
+              "Bạn muốn nghiên cứu thị trường xe điện ở khu vực nào?",
+              "Bạn quan tâm đến xe máy điện hay ô tô điện?",
+              "Bạn muốn phân tích xu hướng tiêu dùng hay hoạt động của các hãng xe?",
+              "Bạn có cần dữ liệu dự báo thị trường trong tương lai không?"
+            ],
+            "suggestions": [
+              "Có thể bổ sung phân tích chính sách hỗ trợ từ chính phủ.",
+              "Nên xem xét thêm hạ tầng trạm sạc và hành vi người dùng.",
+              "So sánh giữa các thương hiệu lớn sẽ giúp nghiên cứu toàn diện hơn."
+            ]
+          }
+        }
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a market research analyst. Generate clarification questions before conducting research."
+      },
+      {
+        "role": "user",
+        "content": "Phân tích ngành du lịch sau đại dịch."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "CLARIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": {
+          "name": "generate_questions",
+          "arguments": {
+            "questions": [
+              "Bạn muốn phân tích ngành du lịch ở quốc gia hay khu vực nào?",
+              "Bạn quan tâm đến du lịch nội địa hay quốc tế?",
+              "Bạn muốn tập trung vào hành vi khách du lịch hay hiệu quả kinh doanh?",
+              "Bạn có muốn so sánh dữ liệu trước và sau đại dịch không?"
+            ],
+            "suggestions": [
+              "Có thể bổ sung xu hướng du lịch bền vững và du lịch số.",
+              "Nên xác định nhóm khách du lịch mục tiêu để nghiên cứu chi tiết hơn.",
+              "Xem xét thêm tác động của kinh tế và công nghệ đến ngành du lịch."
+            ]
+          }
+        }
       }
     ]
   }
