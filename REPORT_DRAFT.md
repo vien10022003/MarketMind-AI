@@ -79,6 +79,16 @@ Marketing Digital (Digital Marketing) là các hoạt động marketing được
 │     └─ Phân tích kết quả, điều chỉnh chiến lược          │
 │                                                             │
 └─────────────────────────────────────────────────────────────┘
+graph TD
+    A[1. Nghiên cứu thị trường<br/>Market Research] --> B[2. Lập kế hoạch chiến lược<br/>Strategy Planning]
+    B --> C[3. Sáng tạo nội dung<br/>Content Creation]
+    C --> D[4. Triển khai chiến dịch<br/>Campaign Execution]
+    D --> E[5. Theo dõi và Tối ưu hóa<br/>Monitoring và Optimization]
+    E -->|Dữ liệu phản hồi và Insight| A
+    E -->|Điều chỉnh và Mở rộng| B
+
+    classDef process fill:#e1f5fe,stroke:#01579b,stroke-width:2px,rx:5px,ry:5px;
+    class A,B,C,D,E process;
 ```
 
 ### 1.1.4 Thách thức của Marketing Digital
@@ -115,7 +125,7 @@ Marketing Digital (Digital Marketing) là các hoạt động marketing được
 
 ---
 
-## 1.3 Agentic AI (AI Agent) là gì?
+## 1.3 AI Agent là gì?
 
 ### 1.3.1 Định nghĩa
 
@@ -125,7 +135,7 @@ Marketing Digital (Digital Marketing) là các hoạt động marketing được
 - **Tương tác với thế giới bên ngoài**: Gọi API, tìm kiếm web, đọc tài liệu
 - **Tự sửa chữa**: Kiểm tra kết quả, thử lại nếu lỗi
 
-### 1.3.2 Agent vs ChatGPT
+### 1.3.2 Agentic vs ChatGPT
 
 | Tiêu chí | ChatGPT | Agent |
 |---------|---------|-------|
@@ -167,13 +177,108 @@ Marketing Digital (Digital Marketing) là các hoạt động marketing được
 
 ### 1.3.4 Ứng dụng Agentic AI trong hệ thống
 
-Hệ thống MarketMind AI sử dụng multi-agent architecture:
+Hệ thống MarketMind AI sử dụng multi-agent architecture với 4 agents chính:
 
-- **Supervisor Agent**: Phân chia và điều phối nhiệm vụ
-- **Research Agent**: Nghiên cứu thị trường (Stage A)
-- **Strategy Agent**: Lập chiến lược (Stage B)
-- **Content Agent**: Tạo nội dung quảng cáo (Stage C)
-- **Execution Agent**: Triển khai chiến dịch (Posting)
+#### 1. **Supervisor Agent (Orchestrator/Router)**
+- **Vị trí code**: `backend/stage_a/router.py` - `classify_intent_and_respond()`
+- **Chức năng**:
+  - Phân loại ý định người dùng: chat / knowledge / research
+  - Định hướng yêu cầu đến agent phù hợp
+  - Sử dụng LLM với function calling để phân tích ngữ cảnh
+- **Input**: Câu hỏi/yêu cầu của người dùng
+- **Output**: 
+  ```json
+  {
+    "intent": "chat|knowledge|research",
+    "response": "...",
+    "reasoning": "..."
+  }
+  ```
+
+#### 2. **Research Agent (Stage A - Nghiên cứu thị trường)**
+- **Vị trí code**: `backend/stage_a/main.py` + `backend/stage_a/flask_api.py`
+- **Chức năng chính**: Phân tích sâu thị trường và đối thủ cạnh tranh
+- **Pipeline 6 bước**:
+  1. **Clarification**: Làm rõ yêu cầu, trích xuất ngành hàng, thị trường mục tiêu
+  2. **Planning**: Lập kế hoạch chi tiết cho quá trình nghiên cứu
+  3. **ReAct Loop**: Lặp lại (Reasoning → Tool Calling → Observation) để tìm kiếm dữ liệu
+  4. **Evidence Processing**: Lọc, chuẩn hóa dữ liệu theo chất lượng
+  5. **Synthesis**: Tổng hợp thành báo cáo chuyên nghiệp
+  6. **Output Formatting**: Xuất Markdown + JSON, lưu MongoDB
+- **Tools**: Tavily Search API (tìm kiếm web), Llama 3 LLM
+- **Output**:
+  ```json
+  {
+    "tong_quan_thi_truong": "...",
+    "phan_tich_doi_thu": "...",
+    "xu_huong_nganh": "...",
+    "phan_khuc_va_insight_khach_hang": "...",
+    "citations": ["URL1", "URL2", ...]
+  }
+  ```
+
+#### 3. **Strategy Agent (Stage B - Lập chiến lược)**
+- **Vị trí code**: `backend/stage_b/campaign.py` + `backend/stage_b/strategy.py`
+- **Chức năng chính**: Tạo chiến lược marketing + content briefs
+- **Pipeline 5 bước**:
+  1. **SWOT Analysis**: Phân tích Strengths, Weaknesses, Opportunities, Threats
+  2. **USP Extraction**: Trích xuất Unique Selling Proposition (điểm bán được duy nhất)
+  3. **Buyer Persona**: Xây dựng profile chi tiết khách hàng mục tiêu
+  4. **Content Pillars**: Định nghĩa 4-5 chủ đề nội dung chính
+  5. **Campaign Plan**: Lập kế hoạch 7 ngày với content briefs chi tiết
+- **Tools**: Llama 3 LLM, Function Calling
+- **Output**: Chiến lược marketing + 7 content briefs
+  ```json
+  {
+    "strategy": {
+      "swot": {...},
+      "usp": {...},
+      "persona": {...},
+      "content_pillars": [...]
+    },
+    "campaign_plan": [...]
+  }
+  ```
+
+#### 4. **Content/Execution Agent (Stage C - Tạo & đăng nội dung)**
+- **Vị trí code**: `backend/stage_c/discord_publisher.py` + `backend/stage_c/content_expander.py`
+- **Chức năng chính**: Tạo nội dung chi tiết, sinh ảnh, đăng lên Discord
+- **Pipeline 5 bước**:
+  1. **Content Expansion**: Mở rộng content briefs → bài viết hoàn chỉnh + caption
+  2. **Image Generation**: Sinh ảnh chuyên nghiệp (DALL-E / Stable Diffusion)
+  3. **Format Discord**: Tạo Discord embed payload (title, description, image, etc.)
+  4. **Post to Discord**: Gửi webhook tới Discord
+  5. **Scheduling**: Lên lịch đăng bài theo thời gian cụ thể (tùy chọn)
+- **Tools**: Llama 3 LLM, DALL-E/Stable Diffusion API, Discord Webhook API
+- **Output**: Campaign log với số lượng bài đăng, ảnh, lỗi
+  ```json
+  {
+    "campaign_id": "ID",
+    "briefs_processed": 7,
+    "images_generated": 7,
+    "posts_published": 7,
+    "scheduled_posts": 0,
+    "errors": []
+  }
+  ```
+
+#### **Workflow Tổng Quan**:
+```
+User Request 
+  ↓ (Supervisor: Intent Classification)
+  ├─ Chat Intent → Trả lời trực tiếp
+  ├─ Knowledge Intent → Tìm kiếm web
+  └─ Research Intent → Hiển thị form marketing
+                         ↓ (User fills form)
+                   Stage A: Research Agent
+                   (6-step pipeline → Market Analysis)
+                         ↓ (User approval)
+                   Stage B: Strategy Agent
+                   (5-step pipeline → Campaign Plan)
+                         ↓ (User approval)
+                   Stage C: Content Agent
+                   (5-step pipeline → Posted Campaigns)
+```
 
 ---
 
@@ -232,18 +337,18 @@ Hệ thống MarketMind AI sử dụng multi-agent architecture:
 - Có đủ "khôn ngoan" để suy luận
 - Có thể fine-tune để cải tiến function calling
 
-**Mô hình được chọn: Llama 2 / Llama 3 / Qwen 2.5**
+**Mô hình được chọn: Llama-3.2-3B-Instruct
 
 **Lý do chọn:**
 1. ✅ Open source → có thể fine-tune
 2. ✅ Hỗ trợ function calling → có thể gọi tools
-3. ✅ Có phiên bản nhỏ (3B-8B) → chạy trên GPU yếu
+3. ✅ Có phiên bản nhỏ (3B) → chạy trên GPU yếu
 4. ✅ Community lớn → dễ tìm tài nguyên
-5. ⚠️ Nhược điểm: 3B/8B ít "khôn ngoan" hơn GPT-4
+5. ⚠️ Nhược điểm: 3B ít "khôn ngoan" hơn GPT-4
 
-### 1.4.5 Vấn đề với LLM kích thước nhỏ (3B/8B)
+### 1.4.5 Vấn đề với LLM kích thước nhỏ (3B)
 
-**Vấn đề 1: Không hiểu function calling**
+**Vấn đề 1: function calling kém hoặc không hiểu function calling**
 ```
 INPUT:
   "Tìm kiếm thị trường cho sản phẩm iPhone 15"
@@ -341,7 +446,7 @@ EXPECTED (Function calling):
 ### 1.5.3 Ví dụ Function Calling trong MarketMind AI
 
 ```python
-# Tools định nghĩa
+# Tools định nghĩa riêng (KHÔNG nối vào system prompt)
 TOOLS = [
     {
         "name": "search_market",
@@ -351,7 +456,8 @@ TOOLS = [
             "properties": {
                 "product": {"type": "string", "description": "Tên sản phẩm"},
                 "market": {"type": "string", "description": "Thị trường cần tìm"}
-            }
+            },
+            "required": ["product", "market"]
         }
     },
     {
@@ -378,23 +484,38 @@ TOOLS = [
     }
 ]
 
-# LLM được cấp danh sách tools
-system_prompt = """
-Bạn là AI Marketing Assistant. Bạn có các công cụ sau:
-""" + format_tools(TOOLS)
+# System message (KHÔNG chứa tools)
+system_message = "Bạn là AI Marketing Assistant chuyên phân tích thị trường và lập chiến lược."
 
-# User hỏi
-user_input = "Hãy lập chiến lược marketing cho iPhone 15 với ngân sách 10 triệu VNĐ"
+# Messages
+messages = [
+    {"role": "user", "content": "Hãy lập chiến lược marketing cho iPhone 15 với ngân sách 10 triệu VNĐ"}
+]
+
+# Gọi LLM với tools tách riêng
+# Tools được truyền qua tham số, KHÔNG nối vào system prompt
+llm_output = llm.generate(
+    messages=messages,
+    system_message=system_message,
+    tools=TOOLS,  # ← Tools tách riêng với các mô hình có hỗ trợ tool calling
+    max_new_tokens=500
+)
 
 # LLM trả lời với function calling
-llm_output = {
-    "function": "search_market",
-    "arguments": {
+# Tokenizer tự động inject tools vào chat template
+llm_response = {
+    "name": "search_market",
+    "parameters": {
         "product": "iPhone 15",
         "market": "Vietnam"
     }
 }
 ```
+
+**Lưu ý quan trọng:**
+- ✅ **Đúng**: Tools truyền qua `tools=TOOLS` (tham số riêng)
+- ❌ **Sai**: `system_prompt = "..." + format_tools(TOOLS)` (nối vào system)
+- Tokenizer (`apply_chat_template`) tự động xử lý tools, không cần thủ công
 
 ---
 

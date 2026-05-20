@@ -212,6 +212,11 @@ function ClarificationBubble({
     setOverrides((p) => ({ ...p, [field]: value }));
   };
 
+  // Provide safe defaults and convert objects to strings
+  const questions = (data?.questions_for_user || []).map(q =>
+    typeof q === 'string' ? q : JSON.stringify(q)
+  );
+
   return (
     <div className="chat-row chat-row--assistant">
       <div className="chat-avatar chat-avatar--assistant">📋</div>
@@ -221,10 +226,10 @@ function ClarificationBubble({
           <p>{typeof data.detected_info === 'object' ? JSON.stringify(data.detected_info) : String(data.detected_info || '')}</p>
         </div>
 
-        {data.questions_for_user.length > 0 && (
+        {questions.length > 0 && (
           <div className="clarify-questions">
             <span className="clarify-badge clarify-badge--warn">❓ Câu hỏi</span>
-            {data.questions_for_user.map((q, i) => (
+            {questions.map((q, i) => (
               <p key={i} className="clarify-q">• {q}</p>
             ))}
           </div>
@@ -275,6 +280,20 @@ function ClarificationBubble({
 
 /* ────── Plan Bubble ────── */
 function PlanBubble({ data, content }: { data: import('../types').Plan; content: string }) {
+  // Provide defaults for potentially undefined arrays
+  const research_questions = (data?.research_questions || []).map(item =>
+    typeof item === 'string' ? item : JSON.stringify(item)
+  );
+  const hypotheses = (data?.hypotheses || []).map(item =>
+    typeof item === 'string' ? item : JSON.stringify(item)
+  );
+  const steps = (data?.steps || []).map(item =>
+    typeof item === 'string' ? item : JSON.stringify(item)
+  );
+  const success_criteria = (data?.success_criteria || []).map(item =>
+    typeof item === 'string' ? item : JSON.stringify(item)
+  );
+
   return (
     <div className="chat-row chat-row--assistant">
       <div className="chat-avatar chat-avatar--assistant">📋</div>
@@ -288,19 +307,19 @@ function PlanBubble({ data, content }: { data: import('../types').Plan; content:
           <div className="plan-detail">
             <div className="plan-group">
               <h4>Câu Hỏi Nghiên Cứu</h4>
-              <ul>{data.research_questions.map((q, i) => <li key={i}>{q}</li>)}</ul>
+              <ul>{research_questions.map((q, i) => <li key={i}>{q}</li>)}</ul>
             </div>
             <div className="plan-group">
               <h4>Giả Thuyết</h4>
-              <ul>{data.hypotheses.map((h, i) => <li key={i}>{h}</li>)}</ul>
+              <ul>{hypotheses.map((h, i) => <li key={i}>{h}</li>)}</ul>
             </div>
             <div className="plan-group">
               <h4>Các Bước Thực Hiện</h4>
-              <ol>{data.steps.map((s, i) => <li key={i}>{s}</li>)}</ol>
+              <ol>{steps.map((s, i) => <li key={i}>{s}</li>)}</ol>
             </div>
             <div className="plan-group">
               <h4>Tiêu Chí Thành Công</h4>
-              <ul>{data.success_criteria.map((c, i) => <li key={i}>{c}</li>)}</ul>
+              <ul>{success_criteria.map((c, i) => <li key={i}>{c}</li>)}</ul>
             </div>
           </div>
         </CollapsibleCard>
@@ -362,6 +381,7 @@ function EvidenceBubble({
   count?: import('../types').EvidenceCount;
   content: string;
 }) {
+  const evidenceData = data || [];
   return (
     <div className="chat-row chat-row--assistant">
       <div className="chat-avatar chat-avatar--assistant">📚</div>
@@ -373,7 +393,7 @@ function EvidenceBubble({
           accentColor="var(--accent-evidence)"
         >
           <div className="evidence-detail">
-            {data.map((item, i) => (
+            {evidenceData.map((item, i) => (
               <div key={i} className="ev-item">
                 <a href={item.url} target="_blank" rel="noopener noreferrer">
                   {item.title}
@@ -400,8 +420,15 @@ function ReportBubble({
   data: import('../types').ResearchReport;
   mongodbId?: string;
 }) {
+  // Provide safe defaults
+  const tong_quan = data?.tong_quan_thi_truong || '';
+  const phan_tich = data?.phan_tich_doi_thu || '';
+  const xu_huong = data?.xu_huong_nganh || '';
+  const phan_khuc = data?.phan_khuc_va_insight_khach_hang || '';
+  const citations = data?.citations || [];
+  
   // Truncate to ~120 chars for preview
-  const preview = data.tong_quan_thi_truong?.slice(0, 120) + '…';
+  const preview = tong_quan.slice(0, 120) + (tong_quan.length > 120 ? '…' : '');
 
   return (
     <div className="chat-row chat-row--assistant">
@@ -421,36 +448,36 @@ function ReportBubble({
             <section className="report-section-inner">
               <h4>📊 Tổng Quan Thị Trường</h4>
               <div className="report-text">
-                {renderMarkdown(parseMarkdown(data.tong_quan_thi_truong))}
+                {renderMarkdown(parseMarkdown(tong_quan))}
               </div>
             </section>
 
             <section className="report-section-inner">
               <h4>🎯 Phân Tích Đối Thủ</h4>
               <div className="report-text">
-                {renderMarkdown(parseMarkdown(data.phan_tich_doi_thu))}
+                {renderMarkdown(parseMarkdown(phan_tich))}
               </div>
             </section>
 
             <section className="report-section-inner">
               <h4>📈 Xu Hướng Ngành</h4>
               <div className="report-text">
-                {renderMarkdown(parseMarkdown(data.xu_huong_nganh))}
+                {renderMarkdown(parseMarkdown(xu_huong))}
               </div>
             </section>
 
             <section className="report-section-inner">
               <h4>👥 Phân Khúc & Insight</h4>
               <div className="report-text">
-                {renderMarkdown(parseMarkdown(data.phan_khuc_va_insight_khach_hang))}
+                {renderMarkdown(parseMarkdown(phan_khuc))}
               </div>
             </section>
 
-            {data.citations && data.citations.length > 0 && (
+            {citations && citations.length > 0 && (
               <section className="report-section-inner">
-                <h4>📚 Nguồn Tham Khảo ({data.citations.length})</h4>
+                <h4>📚 Nguồn Tham Khảo ({citations.length})</h4>
                 <div className="citations-grid">
-                  {data.citations.map((c, i) => (
+                  {citations.map((c, i) => (
                     <div key={i} className="cite-card">
                       <a href={c.url} target="_blank" rel="noopener noreferrer">{c.title}</a>
                       <p>{c.snippet}</p>

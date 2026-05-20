@@ -7,6 +7,9 @@
 
 ### 1.6.2 Chat Template của Llama 2 / Llama 3
 
+**⚠️ Lưu ý quan trọng:** Có 2 cách để truyền tools:
+
+#### Cách 1: Manual (Thủ công) - Không nên dùng
 ```
 [INST] <<SYS>>
 Bạn là AI trợ lý Marketing thông minh. Bạn có quyền truy cập các công cụ sau:
@@ -18,9 +21,8 @@ Bạn là AI trợ lý Marketing thông minh. Bạn có quyền truy cập các 
 
 Khi cần gọi hàm, hãy trả lời theo định dạng JSON sau:
 {
-  "type": "function_call",
-  "function": "tên_hàm",
-  "arguments": {
+  "name": "tên_hàm",
+  "parameters": {
     "param1": "value1",
     "param2": "value2"
   }
@@ -29,6 +31,76 @@ Khi cần gọi hàm, hãy trả lời theo định dạng JSON sau:
 
 User: Hãy tìm kiếm thị trường cho iPhone 15 [/INST]
 ```
+
+**❌ Vấn đề cách này:** Khó maintain, dễ lỗi định dạng, tools được hard-code
+
+#### Cách 2: Tự động (apply_chat_template) - Nên dùng ✅
+```python
+# Định nghĩa tools
+TOOLS = [
+    {
+        "name": "search_market",
+        "description": "Tìm kiếm thông tin thị trường",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "product": {"type": "string"},
+                "market": {"type": "string"}
+            },
+            "required": ["product", "market"]
+        }
+    },
+    # ... more tools
+]
+
+# Gọi tokenizer với tools parameter
+messages = [{"role": "user", "content": "Tìm kiếm thị trường cho iPhone 15"}]
+
+model_input = tokenizer.apply_chat_template(
+    messages,
+    tools=TOOLS,  # ← Truyền tools tách riêng
+    tokenize=False,
+    add_generation_prompt=True
+)
+
+# Tokenizer tự động format tools vào chat template
+# Output: formatted chat template chứa đầy đủ tool definitions
+```
+
+**✅ Output của tokenizer (tự động format):**
+```
+<s>[INST] <<SYS>>
+...system message...
+
+Available Tools:
+[
+  {
+    "name": "search_market",
+    "description": "Tìm kiếm thông tin thị trường",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "product": {"type": "string"},
+        "market": {"type": "string"}
+      },
+      "required": ["product", "market"]
+    }
+  },
+  ...
+]
+
+When you call a tool, respond in this format:
+{"name": "tool_name", "parameters": {...}}
+<</SYS>>
+
+Tìm kiếm thị trường cho iPhone 15 [/INST]
+```
+
+**✅ Ưu điểm cách tự động:**
+- Model vẫn biết tools (tools được đưa vào chat template bởi tokenizer)
+- Không cần hard-code tools
+- Format đúng tự động
+- Easy to maintain, add/remove tools
 
 ### 1.6.3 Chat Template của Qwen
 
@@ -56,20 +128,39 @@ Tôi sẽ tìm kiếm thông tin thị trường cho iPhone 15.
 
 ### 1.6.4 Vị trí truyền function definition
 
-**Để LLM biết công cụ nào có thể gọi, chúng ta cần truyền:**
+**Câu hỏi:** Nếu không nối tools vào system prompt, model biết gì mà gọi tools?
 
-| Vị trí | Mô tả | Ví dụ |
-|--------|-------|-------|
-| **System message** | Định nghĩa tools, format gọi | `<<SYS>>` hoặc `<system>` |
-| **Prompt** | Mô tả chi tiết, ví dụ | Giải thích công cụ làm gì |
-| **User message** | Yêu cầu gọi công cụ | "Tìm kiếm thị trường" |
-| **Assistant message** | Gọi công cụ | JSON function call |
+**Trả lời:** Tokenizer tự động inject tools vào chat template!
 
-**Lưu ý quan trọng:**
-- ⚠️ **Không nên** truyền function definition vào user message (LLM sẽ quên)
-- ✅ **Nên** truyền vào system message hay prompt
-- ✅ **Nên** cấu hình format JSON rõ ràng
-- ✅ **Nên** cung cấp ví dụ (few-shot) để LLM hiểu
+**Cách hoạt động:**
+
+```python
+# 1. Tools được định nghĩa riêng (KHÔNG nối vào system prompt)
+TOOLS = [...]  # List of tool dicts
+
+# 2. Truyền vào apply_chat_template
+model_input = tokenizer.apply_chat_template(
+    messages,
+    tools=TOOLS,  # ← TOKENIZER sẽ format tools vào template
+    tokenize=False,
+    add_generation_prompt=True
+)
+
+# 3. Tokenizer OUTPUT: full chat template chứa tools definitions
+# Model nhận được template này, nên biết tools nào có thể gọi
+```
+
+| Vị trí | Cách Cũ (❌) | Cách Mới (✅) |
+|--------|----------|----------|
+| **System message** | Tools hard-coded | Không chứa tools |
+| **Chat template** | Manual format | Tokenizer format tự động |
+| **Model input** | Chứa tools | **Chứa tools** (do tokenizer) |
+| **Cách truyền** | String concatenation | Parameter `tools=TOOLS` |
+
+**Kết luận:**
+- ❌ **Sai**: `system_prompt = "..." + format_tools(TOOLS)` 
+- ✅ **Đúng**: `apply_chat_template(..., tools=TOOLS)`
+- Model vẫn **biết** tools vì **tokenizer** đưa vào template, không phải ta
 
 ---
 
@@ -93,40 +184,104 @@ LLM Output: "Tôi sẽ giúp bạn tìm kiếm. iPhone 15 là..."
 
 **Fine-tuning** là quá trình điều chỉnh LLM trên tập dữ liệu specialized để cải tiến hiệu suất.
 
-**Dataset fine-tuning cần có dạng:**
+**⚠️ Lưu ý quan trọng:** Dataset fine-tuning **cũng phải dùng chat template + tool definitions** giống khi inference!
+
+**Quy trình chuẩn bị dataset:**
+
+```python
+# Step 1: Định nghĩa tools (JSON - giống khi dùng)
+TOOLS = [
+    {
+        "name": "search_market",
+        "description": "Tìm kiếm thông tin thị trường",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "product": {"type": "string"},
+                "market": {"type": "string"}
+            },
+            "required": ["product", "market"]
+        }
+    },
+    {
+        "name": "analyze_competitors",
+        "description": "Phân tích đối thủ cạnh tranh",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "market": {"type": "string"}
+            },
+            "required": ["market"]
+        }
+    },
+    {
+        "name": "generate_strategy",
+        "description": "Tạo chiến lược marketing",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "market_data": {"type": "string"},
+                "budget": {"type": "number"}
+            }
+        }
+    }
+]
+
+# Step 2: Tạo messages list
+raw_examples = [
+    {
+        "user": "Tìm kiếm thị trường cho iPhone 15",
+        "expected_output": '{"name": "search_market", "parameters": {"product": "iPhone 15", "market": "Vietnam"}}'
+    },
+    {
+        "user": "Lập chiến lược marketing cho Shopee store",
+        "expected_output": '{"name": "generate_strategy", "parameters": {"platform": "shopee", "budget": 1000000}}'
+    },
+    # ... more examples ...
+]
+
+# Step 3: Apply chat template (QUAN TRỌNG!)
+system_message = "Bạn là AI Marketing Assistant. Hãy gọi công cụ khi cần thiết."
+
+final_dataset = []
+for example in raw_examples:
+    messages = [
+        {"role": "user", "content": example["user"]}
+    ]
+    
+    # Apply chat template với tools
+    model_input = tokenizer.apply_chat_template(
+        messages,
+        tools=TOOLS,  # ← Format tools đúng như inference
+        tokenize=False,
+        add_generation_prompt=True
+    )
+    
+    # model_input bây giờ chứa đầy đủ formatted tools
+    
+    # Step 4: Tạo training example
+    training_example = {
+        "input": model_input,  # ← Chat template + tools
+        "output": example["expected_output"]  # ← Expected function call
+    }
+    
+    final_dataset.append(training_example)
+
+# Step 5: Save dataset cho fine-tuning
+with open("finetuning_dataset.json", "w") as f:
+    json.dump(final_dataset, f)
+```
+
+**Dataset format sau apply_chat_template:**
 ```json
 [
   {
-    "messages": [
-      {
-        "role": "system",
-        "content": "Bạn là AI Marketing. Tools: [search_market, analyze_competitors, generate_strategy]"
-      },
-      {
-        "role": "user",
-        "content": "Tìm kiếm thị trường cho iPhone 15"
-      },
-      {
-        "role": "assistant",
-        "content": "{\"function\": \"search_market\", \"arguments\": {\"product\": \"iPhone 15\", \"market\": \"Vietnam\"}}"
-      }
-    ]
+    "input": "<s>[INST] <<SYS>>\nBạn là AI Marketing Assistant...\n\nAvailable Tools:\n[\n  {\"name\": \"search_market\", ...},\n  {\"name\": \"analyze_competitors\", ...},\n  {\"name\": \"generate_strategy\", ...}\n]\n<</SYS>>\n\nTìm kiếm thị trường cho iPhone 15 [/INST]",
+    "output": "{\"name\": \"search_market\", \"parameters\": {\"product\": \"iPhone 15\", \"market\": \"Vietnam\"}}"
   },
   {
-    "messages": [
-      {
-        "role": "system",
-        "content": "Bạn là AI Marketing. Tools: [search_market, analyze_competitors, ...]"
-      },
-      {
-        "role": "user",
-        "content": "Lập chiến lược marketing cho Shopee store"
-      },
-      {
-        "role": "assistant",
-        "content": "{\"function\": \"generate_strategy\", \"arguments\": {\"platform\": \"shopee\", \"budget\": 1000000}}"
-      }
-    ]
+    "input": "<s>[INST] <<SYS>>\nBạn là AI Marketing Assistant...\n\nAvailable Tools:\n[...]\n<</SYS>>\n\nLập chiến lược marketing cho Shopee store [/INST]",
+    "output": "{\"name\": \"generate_strategy\", \"parameters\": {\"platform\": \"shopee\", \"budget\": 1000000}}"
   }
 ]
 ```
@@ -134,20 +289,47 @@ LLM Output: "Tôi sẽ giúp bạn tìm kiếm. iPhone 15 là..."
 **Quá trình fine-tuning:**
 ```
 1. Chuẩn bị dataset (500-1000 examples)
-   └─ Ví dụ: [User query] → [Expected function call]
+   ├─ Tạo tool definitions (JSON)
+   ├─ Apply chat template + tools lên mỗi example
+   └─ Kết quả: input chứa formatted tools + expected output
 
-2. Cấu hình training
-   └─ Learning rate: 2e-5
-   └─ Batch size: 16
-   └─ Epochs: 3-5
-   └─ Max tokens: 512
+training_config = SFTConfig(
+    per_device_train_batch_size=2,
+    per_device_eval_batch_size=2,
+    gradient_accumulation_steps=2,
+    warmup_steps=10,
+    num_train_epochs=3,  # More epochs for small dataset
+    learning_rate=1e-4,  # Lower learning rate for precision
+    logging_steps=1,
+    optim="adamw_8bit",
+    weight_decay=0.01,
+    lr_scheduler_type="cosine",  # Better for small datasets
+    seed=3407,
+    output_dir="./llama_function_calling_finetune",
+    report_to="none",
+    save_strategy="epoch",
+    eval_strategy="epoch",
+    load_best_model_at_end=True,
+    metric_for_best_model="loss",
+    max_grad_norm=1.0,  # Gradient clipping for stability
+)
 
-3. Fine-tune model
+3. Fine-tune model trên dataset đã format
    └─ Input: pretrained Llama 3B
+   └─ Dataset: (formatted_input, expected_output) pairs
    └─ Output: Llama 3B + function calling capability
 
 4. Evaluate
    └─ Test trên unseen data
+   └─ Đo function call accuracy
+```
+
+**Ưu điểm cách này:**
+- ✅ Dataset format giống với inference → model học đúng
+- ✅ Tools được format bởi tokenizer → consistent
+- ✅ Dễ add/remove tools → chỉ cần update TOOLS list
+- ✅ Không hard-code text
+- ✅ Model học từ exact format mà nó sẽ gặp khi dùng
    └─ Đo tỷ lệ function calling chính xác
 ```
 
@@ -268,14 +450,36 @@ Hệ thống MarketMind AI phải có khả năng:
 
 | Yêu cầu | Mô tả | Ước tính |
 |--------|-------|---------|
-| **Performance** | Response time < 2s | Tối ưu streaming, parallel processing |
+| **Performance** | Response time < 5s | Tối ưu streaming, parallel processing |
 | **Reliability** | Uptime 99%+ | Health check, auto-restart |
-| **Scalability** | Hỗ trợ 1000+ users | Load balancing, caching |
 | **Security** | Xác thực & authorization | JWT token, role-based access |
 | **Data Privacy** | Bảo vệ dữ liệu người dùng | Encryption, compliance |
 | **Cost Efficiency** | Chi phí thấp | Local LLM, cached results |
 
 ---
+
+
+
+2.1.3 Đặc tả Use Case & Biểu đồ Use Case (Mới)
+
+
+Use Case Diagram
+Mô tả ai (Actor) làm gì với hệ thống
+- Danh sách Actor: User, Admin, External APIs (Google Search, CRM...)
+- Danh sách tính năng (Use Cases): "Tạo content", "Phân tích sentiment", "Lên lịch đăng bài"
+- Mối quan hệ: include (VD: đăng bài phải login), extend (VD: lỗi thì gửi alert)
+Draw.io, StarUML, PlantUML
+
+
+2.1.4 Biểu đồ hoạt động (Activity Diagram)
+
+
+Activity Diagram
+Mô tả luồng xử lý nghiệp vụ phức tạp
+- Logic điều hướng (routing logic): Khi nào dùng Agent A, khi nào dùng Agent B?
+- Flowchart xử lý lỗi hoặc duyệt nội dung (approval workflow).
+Draw.io, Visio
+
 
 ## 2.2 Kiến trúc tổng thể hệ thống
 
