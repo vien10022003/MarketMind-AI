@@ -30,7 +30,7 @@ Trả về với format sau:
 [Nội dung bài đăng chi tiết, hấp dẫn, có emoji, quảng bá sản phẩm]
 
 ** Prompt Ảnh **
-[Prompt ảnh chi tiết bằng tiếng Anh với các từ khóa cụ thể, phong cách, ánh sáng]
+[Prompt ảnh chi tiết bằng tiếng Anh liên quan đến nội dung bài đăng và sản phẩm]
 
 Sản phẩm/Yêu cầu quảng cáo: {product_context}
 
