@@ -86,7 +86,7 @@ def get_image_api_url() -> str:
 def generate_image(
     prompt: str,
     api_url: Optional[str] = None,
-    num_inference_steps: int = 50,
+    num_inference_steps: int = 30,
     timeout: int = 120,
 ) -> Optional[str]:
     """
