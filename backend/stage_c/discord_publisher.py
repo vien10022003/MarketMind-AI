@@ -257,6 +257,7 @@ def run_stage_c_pipeline(stage_c_input: StageCInput, llm=None) -> Generator[dict
                     "brief_index": idx,
                 }
                 image_url = generate_image(image_prompt, image_api_url)
+                print(f"Generated image URL: {image_url}")
                 image_skipped = False
                 if image_url:
                     yield {

@@ -118,8 +118,10 @@ def generate_image(
             },
             timeout=timeout,
         )
-
+        print(f"Image API response status: {response.status_code}")
+        print(f"Image API response body: {response.text}")
         if response.status_code == 200:
+            print(f"Image API response json: {response.json()}")
             data = response.json()
             if data.get("success"):
                 image_url = data.get("image_url", "")

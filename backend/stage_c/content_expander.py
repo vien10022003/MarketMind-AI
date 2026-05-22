@@ -30,7 +30,7 @@ Trả về với format sau:
 [Nội dung bài đăng chi tiết, hấp dẫn, có emoji, quảng bá sản phẩm]
 
 ** Prompt Ảnh **
-[Prompt ảnh về sản phẩm và bài đăng bằng tiếng Anh]
+[Prompt ảnh liên quan đến sản phẩm bằng tiếng Anh]
 
 Sản phẩm/Yêu cầu quảng cáo: {product_context}
 
@@ -67,6 +67,11 @@ Tóm tắt nội dung: {caption}
             # parts[4] = nội dung sau tiêu đề thứ hai
             new_caption = parts[2].strip()
             new_image_prompt = parts[4].strip()
+            print("aaaaa")
+            print("new_caption")
+            print(new_caption)
+            print("new_image_prompt")
+            print(new_image_prompt)
         
         # Cập nhật brief
         expanded_brief = brief.copy()
@@ -81,4 +86,6 @@ Tóm tắt nội dung: {caption}
     except Exception as e:
         rprint(f"[red]❌ Lỗi khi mở rộng nội dung: {e}[/red]")
         rprint(f"[yellow]LLM Output: {output}[/yellow]")
+        print("brief")
+        print(brief)
         return brief

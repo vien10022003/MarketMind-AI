@@ -62,7 +62,7 @@ INTENT_CLASSIFICATION_TOOLS = [
                 "description": "Provide a friendly, helpful response to the user"
             }
         },
-        required=["intent", "response", "reasoning"]
+        required=["intent", "response"]
     )
 ]
 
@@ -175,7 +175,7 @@ GENERATE_SEARCH_QUERIES_TOOLS = [
                 "description": "List of 3-4 optimized search queries"
             },
         },
-        required=["search_queries", "reasoning"]
+        required=["search_queries"]
     )
 ]
 
