@@ -48,16 +48,9 @@ export function ResearchReportComponent({ report, mongodbId }: ResearchReportPro
           <div className="citations-list">
             {report.citations.map((citation, index) => (
               <div key={index} className="citation-item">
-                <h4>
-                  <a href={citation.url} target="_blank" rel="noopener noreferrer">
-                    {citation.title}
-                  </a>
-                </h4>
-                <p className="citation-snippet">{citation.snippet}</p>
-                <div className="citation-meta">
-                  {citation.published_date && <span className="citation-date">📅 {citation.published_date}</span>}
-                  <span className="citation-score">⭐ {(citation.source_score * 100).toFixed(0)}%</span>
-                </div>
+                <a href={citation.url} target="_blank" rel="noopener noreferrer">
+                  {citation.title}
+                </a>
               </div>
             ))}
           </div>

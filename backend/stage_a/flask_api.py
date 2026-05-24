@@ -96,7 +96,7 @@ except Exception as e:
 
 try:
     from stage_c.scheduler_routes import create_scheduler_blueprint
-    scheduler_blueprint = create_scheduler_blueprint()
+    scheduler_blueprint = create_scheduler_blueprint(mongo=mongo)
     app.register_blueprint(scheduler_blueprint, url_prefix='/api/stage-c/scheduler')
     rprint("[green]✅ Scheduler blueprint registered[/green]")
 except Exception as e:

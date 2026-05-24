@@ -10,10 +10,15 @@ from rich import print as rprint
 
 from .campaign_scheduler import get_scheduler
 from .scheduler_service import get_scheduler_service
+from .campaign_log import get_campaign_log
 
 
-def create_scheduler_blueprint() -> Blueprint:
-    """Create Flask blueprint for scheduler endpoints"""
+def create_scheduler_blueprint(mongo=None) -> Blueprint:
+    """Create Flask blueprint for scheduler endpoints
+    
+    Args:
+        mongo: MongoDBManager instance for querying campaign logs
+    """
     bp = Blueprint("scheduler", __name__, url_prefix="/api/stage-c/scheduler")
     
     @bp.route("/<path:path>", methods=["OPTIONS"])
@@ -65,7 +70,7 @@ def create_scheduler_blueprint() -> Blueprint:
     
     @bp.route("/campaigns/<campaign_id>", methods=["GET"])
     def get_campaign(campaign_id: str):
-        """Get detailed information about a specific campaign"""
+        """Get detailed information about a specific campaign, including execution results"""
         try:
             scheduler = get_scheduler()
             campaign = scheduler.get_campaign_history(campaign_id)
@@ -75,6 +80,20 @@ def create_scheduler_blueprint() -> Blueprint:
                     "success": False,
                     "error": f"Campaign {campaign_id} not found"
                 }), 404
+            
+            # Try to fetch full execution results from campaign_logs if available
+            if mongo:
+                try:
+                    campaign_log = get_campaign_log(mongo, campaign_id)
+                    if campaign_log:
+                        # Enrich campaign with full execution results
+                        campaign["execution_results"] = campaign_log.get("results", [])
+                        campaign["total_posted"] = campaign_log.get("total_posted", 0)
+                        campaign["total_failed"] = campaign_log.get("total_failed", 0)
+                        campaign["total_skipped"] = campaign_log.get("total_skipped", 0)
+                        rprint(f"[cyan]Enriched campaign {campaign_id} with {len(campaign_log.get('results', []))} execution results[/cyan]")
+                except Exception as e:
+                    rprint(f"[yellow]⚠️ Could not enrich campaign with full results: {e}[/yellow]")
             
             return jsonify({
                 "success": True,
@@ -100,17 +119,25 @@ def create_scheduler_blueprint() -> Blueprint:
                     "error": f"Campaign {campaign_id} not found"
                 }), 404
             
-            results = campaign.get("execution_results", [])
+            # Try to get full results from campaign_logs
+            execution_results = campaign.get("execution_results", [])
+            if mongo and not execution_results:
+                try:
+                    campaign_log = get_campaign_log(mongo, campaign_id)
+                    if campaign_log:
+                        execution_results = campaign_log.get("results", [])
+                except Exception as e:
+                    rprint(f"[yellow]⚠️ Could not fetch results from campaign_logs: {e}[/yellow]")
             
             return jsonify({
                 "success": True,
                 "data": {
                     "campaign_id": campaign_id,
                     "status": campaign.get("status"),
-                    "total_results": len(results),
-                    "posted_count": campaign.get("posted_count", 0),
-                    "failed_count": campaign.get("failed_count", 0),
-                    "results": results
+                    "total_results": len(execution_results),
+                    "posted_count": campaign.get("total_posted", len([r for r in execution_results if r.get("status") == "success"])),
+                    "failed_count": campaign.get("total_failed", len([r for r in execution_results if r.get("status") == "failed"])),
+                    "results": execution_results
                 }
             }), 200
         except Exception as e:
