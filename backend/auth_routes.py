@@ -233,6 +233,9 @@ def init_auth_routes(mongo):
                 google_email = payload['email']
                 google_id = payload['sub']  # Google's unique user ID
                 
+                # Extract name from token, fallback to provided name or "User"
+                google_name = payload.get('name', google_name)
+                
             except ValueError as e:
                 return jsonify({
                     "status": "error",

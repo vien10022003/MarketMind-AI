@@ -67,7 +67,7 @@ Hãy tạo nội dung bài đăng chi tiết, đánh động, có emoji, quảng
 Product: {product_context}
 Post Content: {new_caption}
 
-Create a concise, professional image generation prompt in English that clearly describes the product and desired visual style."""
+Create a concise, professional image generation prompt in English that clearly describes the product and desired visual style. The prompt MUST be under 70 words."""
             
             messages = build_messages_from_history(image_prompt_text, conversation_history, max_history=2)
             image_prompt_output = llm.generate(
@@ -88,7 +88,7 @@ Trả về với format sau:
 [Nội dung bài đăng chi tiết, hấp dẫn, có emoji, quảng bá sản phẩm]
 
 ** Image Prompt **
-[Image generation prompt in English for product-focused photos]
+[Image generation prompt in English for product-focused photos. CRITICAL: MUST be under 70 words (max 77 tokens)]
 
 Sản phẩm/Yêu cầu quảng cáo: {product_context}
 

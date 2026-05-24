@@ -424,6 +424,8 @@ public class ResearchService {
             Response response = httpClient.newCall(builder.build()).execute();
             String responseBody = response.body() != null ? response.body().string() : "";
             
+            System.out.println("Get scheduled campaigns response: " + responseBody);
+            
             if (response.isSuccessful()) {
                 JsonObject jsonResponse = gson.fromJson(responseBody, JsonObject.class);
                 if (jsonResponse != null && jsonResponse.has("data")) {

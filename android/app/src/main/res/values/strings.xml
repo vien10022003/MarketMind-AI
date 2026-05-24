@@ -3,6 +3,7 @@
     <string name="app_tagline">Trợ lý nghiên cứu thị trường thông minh</string>
     <string name="initializing">Đang khởi tạo ứng dụng…</string>
     <string name="action_settings">Cài đặt</string>
+    <string name="server_client_id">955703799604-vkvq7u25q6la7k1rhmu9n5ncvfpftvis.apps.googleusercontent.com</string>
     
     <!-- Auth Screen -->
     <string name="login">Đăng nhập</string>

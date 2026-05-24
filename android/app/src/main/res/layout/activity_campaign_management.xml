@@ -12,7 +12,18 @@
         android:layout_height="56dp"
         android:background="?attr/colorSurface"
         android:elevation="4dp"
-        app:titleTextColor="?attr/colorOnSurface" />
+        app:titleTextColor="?attr/colorOnSurface">
+        
+        <ImageButton
+            android:id="@+id/btn_refresh"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="end"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_refresh"
+            android:padding="16dp"
+            app:tint="?attr/colorOnSurface" />
+    </androidx.appcompat.widget.Toolbar>
 
     <!-- Filter buttons -->
     <LinearLayout
@@ -32,7 +43,7 @@
             android:textAllCaps="false"
             android:background="@drawable/bg_button_secondary"
             android:textColor="?attr/colorOnSurface"
-            android:layout_marginEnd="6dp" />
+            android:layout_marginEnd="4dp" />
 
         <Button
             android:id="@+id/btn_filter_active"
@@ -43,7 +54,7 @@
             android:textAllCaps="false"
             android:background="@drawable/bg_button_secondary"
             android:textColor="?attr/colorOnSurface"
-            android:layout_marginHorizontal="6dp" />
+            android:layout_marginHorizontal="4dp" />
 
         <Button
             android:id="@+id/btn_filter_completed"
@@ -54,17 +65,7 @@
             android:textAllCaps="false"
             android:background="@drawable/bg_button_secondary"
             android:textColor="?attr/colorOnSurface"
-            android:layout_marginStart="6dp"
-            android:layout_marginEnd="12dp" />
-
-        <ImageButton
-            android:id="@+id/btn_refresh"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
-            android:background="@drawable/bg_button_primary"
-            android:src="@drawable/ic_refresh"
-            app:tint="?attr/colorOnPrimary"
-            android:padding="10dp" />
+            android:layout_marginStart="4dp" />
     </LinearLayout>
 
     <!-- Divider -->

@@ -644,25 +644,33 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     // ════════════════════════════════════════════
     
     public class MarketingFormVH extends RecyclerView.ViewHolder {
-        private EditText etProductName, etTargetAudience, etValueProp, etPricing;
+        private TextView tvDescription;
+        private EditText etUserPrompt, etBanChatSanPham, etKhachHangMucTieu, etGiaTriCotLoi, etGiaCaChinhSach;
         private Button btnSubmit, btnCancel;
         private boolean isSubmitted = false;
         
         public MarketingFormVH(@NonNull View itemView) {
             super(itemView);
-            etProductName = itemView.findViewById(R.id.et_product_name);
-            etTargetAudience = itemView.findViewById(R.id.et_target_audience);
-            etValueProp = itemView.findViewById(R.id.et_value_prop);
-            etPricing = itemView.findViewById(R.id.et_pricing);
+            tvDescription = itemView.findViewById(R.id.tv_form_description);
+            etUserPrompt = itemView.findViewById(R.id.et_user_prompt);
+            etBanChatSanPham = itemView.findViewById(R.id.et_ban_chat_san_pham);
+            etKhachHangMucTieu = itemView.findViewById(R.id.et_khach_hang_muc_tieu);
+            etGiaTriCotLoi = itemView.findViewById(R.id.et_gia_tri_cot_loi);
+            etGiaCaChinhSach = itemView.findViewById(R.id.et_gia_ca_chinh_sach);
             btnSubmit = itemView.findViewById(R.id.btn_form_submit);
             btnCancel = itemView.findViewById(R.id.btn_form_cancel);
         }
         
         public void bind(ChatMessage msg) {
-            // Pre-fill from detected prompt if available
+            // Set description from message content
+            if (msg.content != null && !msg.content.isEmpty() && tvDescription != null) {
+                tvDescription.setText(msg.content);
+            }
+            
+            // Pre-fill user_prompt from detected prompt
             if (msg.marketingFormData != null && msg.marketingFormData.detected_prompt != null
                     && !msg.marketingFormData.detected_prompt.isEmpty()) {
-                etProductName.setText(msg.marketingFormData.detected_prompt);
+                etUserPrompt.setText(msg.marketingFormData.detected_prompt);
             }
             
             // Reset state on rebind
@@ -671,45 +679,50 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             btnSubmit.setOnClickListener(v -> {
                 if (isSubmitted || actionListener == null) return;
                 
-                String productName = etProductName.getText().toString().trim();
-                if (productName.isEmpty()) {
-                    etProductName.setError("Vui lòng nhập tên sản phẩm");
+                String userPrompt = etUserPrompt.getText().toString().trim();
+                if (userPrompt.isEmpty()) {
+                    etUserPrompt.setError("Vui lòng nhập yêu cầu nghiên cứu");
                     return;
                 }
                 
                 isSubmitted = true;
                 setFormEnabled(false);
                 
-                // Build form data matching frontend ResearchRequest
+                // Build form data matching frontend ResearchRequest field names exactly
                 Map<String, Object> formData = new HashMap<>();
-                formData.put("user_prompt", productName);
+                formData.put("user_prompt", userPrompt);
                 
-                String audience = etTargetAudience.getText().toString().trim();
-                if (!audience.isEmpty()) formData.put("target_audience", audience);
+                String banChat = etBanChatSanPham.getText().toString().trim();
+                if (!banChat.isEmpty()) formData.put("ban_chat_san_pham", banChat);
                 
-                String valueProp = etValueProp.getText().toString().trim();
-                if (!valueProp.isEmpty()) formData.put("value_proposition", valueProp);
+                String khachHang = etKhachHangMucTieu.getText().toString().trim();
+                if (!khachHang.isEmpty()) formData.put("khach_hang_muc_tieu", khachHang);
                 
-                String pricing = etPricing.getText().toString().trim();
-                if (!pricing.isEmpty()) formData.put("pricing", pricing);
+                String giaTri = etGiaTriCotLoi.getText().toString().trim();
+                if (!giaTri.isEmpty()) formData.put("gia_tri_cot_loi", giaTri);
+                
+                String giaCa = etGiaCaChinhSach.getText().toString().trim();
+                if (!giaCa.isEmpty()) formData.put("gia_ca_chinh_sach", giaCa);
                 
                 actionListener.onMarketingFormSubmit(formData);
             });
             
             btnCancel.setOnClickListener(v -> {
-                // Clear fields
-                etProductName.setText("");
-                etTargetAudience.setText("");
-                etValueProp.setText("");
-                etPricing.setText("");
+                // Clear all fields
+                etUserPrompt.setText("");
+                etBanChatSanPham.setText("");
+                etKhachHangMucTieu.setText("");
+                etGiaTriCotLoi.setText("");
+                etGiaCaChinhSach.setText("");
             });
         }
         
         private void setFormEnabled(boolean enabled) {
-            etProductName.setEnabled(enabled);
-            etTargetAudience.setEnabled(enabled);
-            etValueProp.setEnabled(enabled);
-            etPricing.setEnabled(enabled);
+            etUserPrompt.setEnabled(enabled);
+            etBanChatSanPham.setEnabled(enabled);
+            etKhachHangMucTieu.setEnabled(enabled);
+            etGiaTriCotLoi.setEnabled(enabled);
+            etGiaCaChinhSach.setEnabled(enabled);
             btnSubmit.setEnabled(enabled);
             btnSubmit.setAlpha(enabled ? 1.0f : 0.5f);
         }

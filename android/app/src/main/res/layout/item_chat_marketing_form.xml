@@ -20,104 +20,206 @@
             android:padding="16dp"
             android:background="@color/bg_surface">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Hãy điền thông tin sản phẩm của bạn"
-                android:textColor="@color/accent_secondary"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="16dp" />
-
-            <!-- Product name -->
-            <EditText
-                android:id="@+id/et_product_name"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:hint="Tên sản phẩm"
-                android:textColorHint="@color/text_tertiary"
-                android:textColor="@color/text_primary"
-                android:background="@drawable/bg_input_field"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp"
-                android:textSize="13sp"
-                android:layout_marginBottom="8dp" />
-
-            <!-- Target audience -->
-            <EditText
-                android:id="@+id/et_target_audience"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:hint="Đối tượng mục tiêu"
-                android:textColorHint="@color/text_tertiary"
-                android:textColor="@color/text_primary"
-                android:background="@drawable/bg_input_field"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp"
-                android:textSize="13sp"
-                android:layout_marginBottom="8dp" />
-
-            <!-- Value proposition -->
-            <EditText
-                android:id="@+id/et_value_prop"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:hint="Giá trị độc đáo"
-                android:textColorHint="@color/text_tertiary"
-                android:textColor="@color/text_primary"
-                android:background="@drawable/bg_input_field"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp"
-                android:textSize="13sp"
-                android:layout_marginBottom="8dp" />
-
-            <!-- Pricing -->
-            <EditText
-                android:id="@+id/et_pricing"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:hint="Giá cả"
-                android:textColorHint="@color/text_tertiary"
-                android:textColor="@color/text_primary"
-                android:background="@drawable/bg_input_field"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp"
-                android:textSize="13sp"
-                android:layout_marginBottom="16dp" />
-
-            <!-- Action buttons -->
+            <!-- Header -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:gravity="end">
-
-                <Button
-                    android:id="@+id/btn_form_cancel"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="12dp">
+                
+                <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:text="Hủy"
-                    android:background="@drawable/bg_button_secondary"
-                    android:textColor="@color/text_primary"
-                    android:textSize="12sp"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
-                    android:minWidth="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="📋"
+                    android:textSize="18sp"
                     android:layout_marginEnd="8dp" />
-
-                <Button
-                    android:id="@+id/btn_form_submit"
+                    
+                <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:text="Tiếp tục"
-                    android:background="@drawable/bg_button_primary"
-                    android:textColor="@color/white"
-                    android:textSize="12sp"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
-                    android:minWidth="0dp" />
-
+                    android:layout_height="wrap_content"
+                    android:text="Nghiên cứu thị trường"
+                    android:textColor="@color/accent_secondary"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
             </LinearLayout>
+            
+            <!-- Description -->
+            <TextView
+                android:id="@+id/tv_form_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Hãy điền thông tin chi tiết để nghiên cứu chính xác hơn"
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Field 1: Yêu cầu nghiên cứu -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Yêu cầu nghiên cứu"
+                android:textColor="@color/text_primary"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="4dp" />
+
+            <EditText
+                android:id="@+id/et_user_prompt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="56dp"
+                android:hint="Mô tả yêu cầu nghiên cứu..."
+                android:textColorHint="@color/text_tertiary"
+                android:textColor="@color/text_primary"
+                android:background="@drawable/bg_input_field"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:textSize="13sp"
+                android:gravity="top|start"
+                android:inputType="textMultiLine"
+                android:maxLines="3"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Field 2: Thông tin sản phẩm -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Thông tin sản phẩm"
+                android:textColor="@color/text_primary"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="4dp" />
+
+            <EditText
+                android:id="@+id/et_ban_chat_san_pham"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="80dp"
+                android:hint="- Tên sản phẩm, danh mục, mô tả ngắn gọn\n- Tính năng nổi bật và lợi ích\n- Điểm khác biệt so với đối thủ (USP)"
+                android:textColorHint="@color/text_tertiary"
+                android:textColor="@color/text_primary"
+                android:background="@drawable/bg_input_field"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:textSize="13sp"
+                android:gravity="top|start"
+                android:inputType="textMultiLine"
+                android:maxLines="5"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Field 3: Khách hàng mục tiêu -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Khách hàng mục tiêu"
+                android:textColor="@color/text_primary"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="4dp" />
+
+            <EditText
+                android:id="@+id/et_khach_hang_muc_tieu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="80dp"
+                android:hint="- Họ là ai? (độ tuổi, giới tính, nghề nghiệp...)\n- Nhu cầu, nỗi đau (pain points)\n- Thói quen tiêu dùng và kênh tiếp cận"
+                android:textColorHint="@color/text_tertiary"
+                android:textColor="@color/text_primary"
+                android:background="@drawable/bg_input_field"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:textSize="13sp"
+                android:gravity="top|start"
+                android:inputType="textMultiLine"
+                android:maxLines="5"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Field 4: Giá trị & Lý do mua hàng -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Giá trị &amp; Lý do mua hàng"
+                android:textColor="@color/text_primary"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="4dp" />
+
+            <EditText
+                android:id="@+id/et_gia_tri_cot_loi"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="80dp"
+                android:hint="- Sản phẩm giải quyết vấn đề gì?\n- Lợi ích cảm xúc hoặc lý tính\n- Bằng chứng xã hội (review, chứng nhận...)"
+                android:textColorHint="@color/text_tertiary"
+                android:textColor="@color/text_primary"
+                android:background="@drawable/bg_input_field"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:textSize="13sp"
+                android:gravity="top|start"
+                android:inputType="textMultiLine"
+                android:maxLines="5"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Field 5: Giá cả & Chính sách -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Giá cả &amp; Chính sách"
+                android:textColor="@color/text_primary"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="4dp" />
+
+            <EditText
+                android:id="@+id/et_gia_ca_chinh_sach"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="80dp"
+                android:hint="- Mức giá bán, phương thức thanh toán\n- Chính sách bảo hành, đổi trả, khuyến mãi\n- Giá trị cảm nhận so với giá tiền"
+                android:textColorHint="@color/text_tertiary"
+                android:textColor="@color/text_primary"
+                android:background="@drawable/bg_input_field"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:textSize="13sp"
+                android:gravity="top|start"
+                android:inputType="textMultiLine"
+                android:maxLines="5"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Action buttons -->
+            <Button
+                android:id="@+id/btn_form_submit"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="🚀 Bắt Đầu Nghiên Cứu"
+                android:background="@drawable/bg_button_primary"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:textAllCaps="false"
+                android:layout_marginBottom="8dp" />
+
+            <Button
+                android:id="@+id/btn_form_cancel"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="Xóa Tất Cả"
+                android:background="@drawable/bg_button_secondary"
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp"
+                android:textAllCaps="false" />
 
         </LinearLayout>
 

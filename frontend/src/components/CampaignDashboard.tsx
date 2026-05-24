@@ -9,9 +9,11 @@ interface Campaign {
   status: string;
   execution_mode: string;
   total_briefs: number;
-  total_posted: number;
+  total_posted?: number;
+  posted_count?: number;
   total_scheduled: number;
-  total_failed: number;
+  total_failed?: number;
+  failed_count?: number;
   started_at: string;
   completed_at?: string;
   execution_results?: any[];
@@ -141,24 +143,24 @@ export function CampaignDashboard() {
                       <div className="campaign-details">
                         <div className="stats-grid">
                           <div className="stat">
-                            <div className="stat-value">{campaign.total_briefs}</div>
+                            <div className="stat-value">{campaign.total_scheduled ?? 0}</div>
                             <div className="stat-label">Tổng Bài</div>
                           </div>
                           <div className="stat">
                             <div className="stat-value" style={{ color: '#27ae60' }}>
-                              {campaign.total_posted}
+                              {campaign.total_posted ?? campaign.posted_count ?? 0}
                             </div>
                             <div className="stat-label">Đã Post</div>
                           </div>
                           <div className="stat">
                             <div className="stat-value" style={{ color: '#f39c12' }}>
-                              {campaign.total_scheduled}
+                              {Math.max(0, (campaign.total_scheduled ?? 0) - (campaign.total_posted ?? campaign.posted_count ?? 0) - (campaign.total_failed ?? campaign.failed_count ?? 0))}
                             </div>
                             <div className="stat-label">Chờ Post</div>
                           </div>
                           <div className="stat">
                             <div className="stat-value" style={{ color: '#e74c3c' }}>
-                              {campaign.total_failed}
+                              {campaign.total_failed ?? campaign.failed_count ?? 0}
                             </div>
                             <div className="stat-label">Lỗi</div>
                           </div>
