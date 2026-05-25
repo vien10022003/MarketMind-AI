@@ -61,8 +61,31 @@ public class ChatMessage implements Serializable {
     }
     
     public static class PlanData implements Serializable {
-        public java.util.List<PlanStep> steps;
+        // Use List<Object> to tolerate mixed types (String or PlanStep object) from MongoDB
+        public java.util.List<Object> steps;
         public String summary;
+        
+        /**
+         * Safely extract PlanStep objects from the mixed-type steps list.
+         * Skips entries that are plain Strings (not PlanStep objects).
+         */
+        public java.util.List<PlanStep> getTypedSteps() {
+            java.util.List<PlanStep> result = new java.util.ArrayList<>();
+            if (steps == null) return result;
+            for (Object step : steps) {
+                if (step instanceof Map) {
+                    try {
+                        Map<?, ?> map = (Map<?, ?>) step;
+                        PlanStep ps = new PlanStep();
+                        if (map.get("order") instanceof Number) ps.order = ((Number) map.get("order")).intValue();
+                        if (map.get("name") instanceof String) ps.name = (String) map.get("name");
+                        if (map.get("description") instanceof String) ps.description = (String) map.get("description");
+                        result.add(ps);
+                    } catch (Exception ignored) {}
+                }
+            }
+            return result;
+        }
     }
     
     public static class PlanStep implements Serializable {

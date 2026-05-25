@@ -325,7 +325,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     if (msg.planData != null && msg.planData.steps != null) {
                         StringBuilder sb = new StringBuilder();
                         if (msg.planData.summary != null) sb.append(msg.planData.summary).append("\n\n");
-                        for (ChatMessage.PlanStep step : msg.planData.steps) {
+                        for (ChatMessage.PlanStep step : msg.planData.getTypedSteps()) {
                             sb.append("**").append(step.order).append(". ").append(step.name).append("**\n");
                             sb.append(step.description).append("\n\n");
                         }
@@ -609,7 +609,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     if (msg.planData != null && msg.planData.steps != null) {
                         StringBuilder sb = new StringBuilder("**📋 Kế hoạch nghiên cứu**\n");
                         if (msg.planData.summary != null) sb.append(msg.planData.summary).append("\n");
-                        for (ChatMessage.PlanStep step : msg.planData.steps) {
+                        for (ChatMessage.PlanStep step : msg.planData.getTypedSteps()) {
                             sb.append("**").append(step.order).append(".** ").append(step.name).append("\n");
                         }
                         return sb.toString();
