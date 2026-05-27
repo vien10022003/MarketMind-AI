@@ -830,10 +830,6 @@ Result: Trả lời không chính xác, quên thông tin ban đầu
        return combined
    ```
 
-3. **RAG (Retrieval Augmented Generation)**
-   - Lưu market data vào vector DB
-   - Khi cần, chỉ retrieve thông tin liên quan
-   - Giảm token từ 1500 → 300
 
 ### 2.5.3 Vấn đề 3: Streaming & Real-time Status
 
