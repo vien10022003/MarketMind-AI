@@ -254,9 +254,13 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             // For campaign_results, build summary text
             if ("campaign_results".equals(msg.type) && msg.campaignLogData != null) {
                 StringBuilder sb = new StringBuilder("**Kết quả chiến dịch**\n\n");
-                sb.append("✅ Thành công: **").append(msg.campaignLogData.successful_posts).append("/").append(msg.campaignLogData.total_posts).append("** bài đăng\n\n");
-                if (msg.campaignLogData.briefs_executed != null) {
-                    for (ChatMessage.BriefExecution brief : msg.campaignLogData.briefs_executed) {
+                sb.append("✅ Thành công: **").append(msg.campaignLogData.getSuccessfulPosts()).append("/").append(msg.campaignLogData.getTotalPosts()).append("** bài đăng\n\n");
+                System.out.println("msg.campaignLogData");
+                System.out.println(msg.campaignLogData);
+                
+                java.util.List<ChatMessage.BriefExecution> briefs = msg.campaignLogData.getBriefExecutions();
+                if (briefs != null && !briefs.isEmpty()) {
+                    for (ChatMessage.BriefExecution brief : briefs) {
                         String icon = brief.success ? "✅" : "❌";
                         sb.append(icon).append(" ").append(brief.title != null ? brief.title : "Bài đăng").append("\n");
                         if (brief.message != null) sb.append("   _").append(brief.message).append("_\n");

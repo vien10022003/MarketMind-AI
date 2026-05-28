@@ -194,10 +194,82 @@ public class ChatMessage implements Serializable {
     }
     
     public static class CampaignLogData implements Serializable {
+        // Fields from Backend CampaignLog model
+        public String campaign_id;
+        public String mongodb_stage_a_id;
+        public java.util.List<ExecutionResult> results;  // Backend sends this, not briefs_executed
+        public int total_briefs;
+        public int total_posted;  // Backend sends this, not successful_posts
+        public int total_scheduled;
+        public int total_failed;
+        public int total_skipped;
+        public String execution_mode;
+        public String started_at;
+        public String completed_at;
+        
+        // Legacy fields for backward compatibility with ChatAdapter
         public java.util.List<BriefExecution> briefs_executed;
         public int total_posts;
         public int successful_posts;
         public java.util.List<String> image_urls;
+        
+        /**
+         * Get successful posts count
+         * Tries both Backend field (total_posted) and legacy field (successful_posts)
+         */
+        public int getSuccessfulPosts() {
+            return total_posted > 0 ? total_posted : successful_posts;
+        }
+        
+        /**
+         * Get total posts count
+         * Tries both Backend field (total_briefs) and legacy field (total_posts)
+         */
+        public int getTotalPosts() {
+            return total_briefs > 0 ? total_briefs : total_posts;
+        }
+        
+        /**
+         * Get brief executions
+         * Converts Backend ExecutionResult to BriefExecution if needed
+         */
+        public java.util.List<BriefExecution> getBriefExecutions() {
+            if (briefs_executed != null && !briefs_executed.isEmpty()) {
+                return briefs_executed;
+            }
+            
+            // Convert results to briefs_executed
+            if (results != null) {
+                java.util.List<BriefExecution> converted = new java.util.ArrayList<>();
+                for (ExecutionResult result : results) {
+                    BriefExecution brief = new BriefExecution();
+                    brief.brief_id = result.brief_id;
+                    brief.title = result.brief_title;
+                    brief.success = "success".equals(result.status) || "scheduled".equals(result.status);
+                    brief.message = result.error;
+                    brief.image_url = result.image_url;
+                    brief.post_url = result.content;
+                    converted.add(brief);
+                }
+                return converted;
+            }
+            
+            return new java.util.ArrayList<>();
+        }
+    }
+    
+    public static class ExecutionResult implements Serializable {
+        public String brief_id;
+        public String brief_title;
+        public String status;  // pending | scheduled | success | failed | skipped
+        public String image_url;
+        public boolean image_skipped;
+        public boolean discord_sent;
+        public String error;
+        public String scheduled_post_time;
+        public String content;
+        public String posted_at;
+        public String created_at;
     }
     
     public static class BriefExecution implements Serializable {
