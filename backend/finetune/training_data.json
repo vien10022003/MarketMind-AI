@@ -3,7 +3,7 @@
     "messages": [
       {
         "role": "system",
-        "content": "You are a market research analyst. Classify user intent and respond appropriately."
+        "content": "As an experienced market intelligence specialist, your role is to understand what users are asking for and respond conversationally."
       },
       {
         "role": "user",
@@ -23,7 +23,7 @@
     "messages": [
       {
         "role": "system",
-        "content": "You are a market research analyst. Classify user intent and respond appropriately."
+        "content": "Act as a business analyst who interprets user requests. Determine if they need market research, general knowledge, or something else."
       },
       {
         "role": "user",
@@ -43,7 +43,7 @@
     "messages": [
       {
         "role": "system",
-        "content": "You are a market research analyst. Classify user intent and respond appropriately."
+        "content": "You are an AI assistant specialized in market analysis. Understand user queries and categorize them appropriately."
       },
       {
         "role": "user",
@@ -63,7 +63,7 @@
     "messages": [
       {
         "role": "system",
-        "content": "You are a market research analyst. Classify user intent and respond appropriately."
+        "content": "As a strategic market consultant, analyze what information users are seeking and route their requests appropriately."
       },
       {
         "role": "user",
@@ -83,7 +83,7 @@
     "messages": [
       {
         "role": "system",
-        "content": "You are a market research analyst. Classify user intent and respond appropriately."
+        "content": "You are a knowledgeable research assistant. Identify user intent: are they looking for explanations, market data, comparisons, or personal advice?"
       },
       {
         "role": "user",
@@ -103,7 +103,7 @@
     "messages": [
       {
         "role": "system",
-        "content": "You are a market research analyst. Classify user intent and respond appropriately."
+        "content": "As a conversational AI with expertise in market insights, help users by understanding their query type and responding accordingly."
       },
       {
         "role": "user",
@@ -123,7 +123,7 @@
     "messages": [
       {
         "role": "system",
-        "content": "You are a market research analyst. Classify user intent and respond appropriately."
+        "content": "You work as a business intelligence expert. Analyze user requests to determine if they require current data research or can be answered from general knowledge."
       },
       {
         "role": "user",
@@ -143,7 +143,7 @@
     "messages": [
       {
         "role": "system",
-        "content": "You are a market research analyst. Validate whether the user's request contains enough information for research."
+        "content": "As a research project coordinator, your job is to assess whether a research request has all the necessary details to proceed."
       },
       {
         "role": "user",
@@ -163,7 +163,7 @@
     "messages": [
       {
         "role": "system",
-        "content": "You are a market research analyst. Validate whether the user's request contains enough information for research."
+        "content": "You are a data quality manager. Check if the research request includes sufficient scope and context to be actionable."
       },
       {
         "role": "user",
@@ -183,7 +183,7 @@
     "messages": [
       {
         "role": "system",
-        "content": "You are a market research analyst. Validate whether the user's request contains enough information for research."
+        "content": "Acting as a research requirements analyst, determine if the user's query has enough information to start research or needs clarification."
       },
       {
         "role": "user",
@@ -203,7 +203,7 @@
     "messages": [
       {
         "role": "system",
-        "content": "You are a market research analyst. Validate whether the user's request contains enough information for research."
+        "content": "You are a research request processor. Evaluate the completeness and clarity of market research inquiries."
       },
       {
         "role": "user",
@@ -223,7 +223,7 @@
     "messages": [
       {
         "role": "system",
-        "content": "You are a market research analyst. Validate whether the user's request contains enough information for research."
+        "content": "As a business analyst, examine user queries to identify missing critical information needed for thorough market research."
       },
       {
         "role": "user",
@@ -243,7 +243,7 @@
     "messages": [
       {
         "role": "system",
-        "content": "You are a market research analyst. Generate clarification questions before conducting research."
+        "content": "You are a research consultant who helps clients refine their research briefs. Ask targeted questions to clarify their needs."
       },
       {
         "role": "user",
@@ -263,7 +263,7 @@
     "messages": [
       {
         "role": "system",
-        "content": "You are a market research analyst. Generate clarification questions before conducting research."
+        "content": "Acting as a research strategist, pose clarifying questions to ensure the research scope is well-defined and achievable."
       },
       {
         "role": "user",
@@ -283,7 +283,7 @@
     "messages": [
       {
         "role": "system",
-        "content": "You are a market research analyst. Generate clarification questions before conducting research."
+        "content": "As a business intelligence consultant, ask probing questions to better understand the research requirements and business context."
       },
       {
         "role": "user",
@@ -303,7 +303,7 @@
     "messages": [
       {
         "role": "system",
-        "content": "You are a market research analyst. Generate clarification questions before conducting research."
+        "content": "You are a project manager specializing in market research. Ask clarifying questions to structure the research scope effectively."
       },
       {
         "role": "user",
@@ -323,7 +323,7 @@
     "messages": [
       {
         "role": "system",
-        "content": "You are a market research analyst. Generate clarification questions before conducting research."
+        "content": "As a research analyst, clarify user intent through targeted questions to develop a comprehensive research plan."
       },
       {
         "role": "user",
@@ -336,6 +336,5881 @@
       {
         "role": "assistant",
          "content": "{\"name\":\"generate_questions\",\"arguments\":{\"questions\":[\"Bạn muốn phân tích ngành du lịch ở quốc gia hay khu vực nào?\",\"Bạn quan tâm đến du lịch nội địa hay quốc tế?\",\"Bạn muốn tập trung vào hành vi khách du lịch hay hiệu quả kinh doanh?\",\"Bạn có muốn so sánh dữ liệu trước và sau đại dịch không?\"],\"suggestions\":[\"Có thể bổ sung xu hướng du lịch bền vững và du lịch số.\",\"Nên xác định nhóm khách du lịch mục tiêu để nghiên cứu chi tiết hơn.\",\"Xem xét thêm tác động của kinh tế và công nghệ đến ngành du lịch.\"]}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Act as an intelligent router for market intelligence workflows."
+      },
+      {
+        "role": "user",
+        "content": "Bạn có thể giải thích AI Agent khác chatbot truyền thống như thế nào không?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"knowledge\",\"response\":\"\",\"reasoning\":\"User requests conceptual explanation, not market research.\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Act as a market research assistant."
+      },
+      {
+        "role": "user",
+        "content": "Tôi muốn nghiên cứu thị trường xe điện."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INPUT_VALIDATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"validate_input\",\"arguments\":{\"is_complete\":false,\"missing_fields\":[\"market_scope\",\"geography\",\"time_range\"],\"suggestions\":[\"Specify country or region\",\"Define vehicle segment\",\"Add time horizon\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Generate clarification questions for incomplete research requests."
+      },
+      {
+        "role": "user",
+        "content": "Tôi muốn phân tích ngành fintech."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "CLARIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"generate_questions\",\"arguments\":{\"questions\":[\"Bạn muốn nghiên cứu thị trường nào?\",\"Bạn quan tâm startup hay doanh nghiệp lớn?\",\"Khoảng thời gian phân tích là bao lâu?\"],\"suggestions\":[\"Xác định mục tiêu nghiên cứu\",\"Ưu tiên KPI cụ thể\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Create market research plans."
+      },
+      {
+        "role": "user",
+        "content": "Lập kế hoạch nghiên cứu thị trường thương mại điện tử Việt Nam."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "PLANNING_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"create_research_plan\",\"arguments\":{\"research_questions\":[\"Quy mô thị trường hiện tại?\",\"Đối thủ chính là ai?\",\"Xu hướng tăng trưởng?\"],\"search_steps\":[{\"query\":\"Vietnam ecommerce market size\"},{\"query\":\"Top ecommerce platforms Vietnam\"},{\"query\":\"Vietnam ecommerce growth forecast\"}]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Generate search queries for knowledge retrieval."
+      },
+      {
+        "role": "user",
+        "content": "Tại sao tỷ lệ bỏ giỏ hàng trong ecommerce lại cao?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "GENERATE_SEARCH_QUERIES_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"generate_search_queries\",\"arguments\":{\"search_queries\":[\"cart abandonment causes ecommerce\",\"average cart abandonment rate 2025\",\"checkout optimization ecommerce\",\"consumer purchase friction online\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Summarize market findings."
+      },
+      {
+        "role": "user",
+        "content": "Tổng hợp kết quả nghiên cứu ngành edtech."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "SYNTHESIS_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"synthesize_overview\",\"arguments\":{\"tong_quan_thi_truong\":\"Edtech tiếp tục tăng trưởng nhờ học trực tuyến và AI cá nhân hóa.\",\"tro_ly\":[\"Tăng trưởng người dùng\",\"Gia tăng đầu tư\",\"Xu hướng microlearning\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Generate SWOT from market analysis."
+      },
+      {
+        "role": "user",
+        "content": "Tạo SWOT cho startup giao đồ ăn."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "SWOT_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"generate_swot\",\"arguments\":{\"strengths\":[\"Tăng trưởng nhanh\"],\"weaknesses\":[\"Chi phí logistics cao\"],\"opportunities\":[\"Mở rộng vùng phủ\"],\"threats\":[\"Cạnh tranh mạnh\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Generate Discord campaign schedule."
+      },
+      {
+        "role": "user",
+        "content": "Lập campaign Discord 7 ngày cho game mới."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "CAMPAIGN_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"create_campaign_plan\",\"arguments\":{\"duration_days\":7,\"posting_frequency\":\"3 times daily\",\"schedule\":[{\"day\":1,\"theme\":\"Launch\"},{\"day\":2,\"theme\":\"Community engagement\"}]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Expand short marketing briefs."
+      },
+      {
+        "role": "user",
+        "content": "Viết bài quảng bá tai nghe gaming."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "CONTENT_EXPANSION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"expand_content\",\"arguments\":{\"expanded_caption\":\"🎧 Trải nghiệm âm thanh sống động cùng chiếc tai nghe gaming thế hệ mới...\",\"expanded_image_prompt\":\"gaming headset, cinematic lighting, ultra detailed, product showcase, dark background\"}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Act as a business analyst who classifies user requests."
+      },
+      {
+        "role": "user",
+        "content": "GDP của Việt Nam năm ngoái tăng bao nhiêu phần trăm?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"knowledge\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Classify user intent."
+      },
+      {
+        "role": "user",
+        "content": "Cho tôi phân tích thị trường ví điện tử tại Việt Nam và cơ hội cạnh tranh."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"research\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Validate whether user provides enough market research information."
+      },
+      {
+        "role": "user",
+        "content": "Tôi muốn nghiên cứu thị trường xe điện."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INPUT_VALIDATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"validate_input\",\"arguments\":{\"is_complete\":false,\"missing_fields\":[\"location\",\"time_period\",\"target_segment\"],\"suggestions\":[\"Specify target country\",\"Add expected time range\",\"Define customer segment\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Generate clarification questions."
+      },
+      {
+        "role": "user",
+        "content": "Tôi muốn nghiên cứu ngành ngân hàng."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "CLARIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"generate_questions\",\"arguments\":{\"questions\":[\"Bạn muốn nghiên cứu ngân hàng ở quốc gia nào?\",\"Bạn quan tâm khách hàng cá nhân hay doanh nghiệp?\",\"Bạn muốn phân tích cạnh tranh hay xu hướng thị trường?\"],\"suggestions\":[\"Giới hạn phạm vi thời gian\",\"Xác định mục tiêu kinh doanh\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Create research plan."
+      },
+      {
+        "role": "user",
+        "content": "Lập kế hoạch nghiên cứu thị trường thanh toán QR tại Việt Nam."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "PLANNING_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"create_research_plan\",\"arguments\":{\"research_questions\":[\"Quy mô thị trường hiện tại?\",\"Những đơn vị dẫn đầu?\",\"Hành vi người dùng thay đổi ra sao?\"],\"search_steps\":[{\"query\":\"Vietnam QR payment market size\"},{\"query\":\"Top QR payment providers Vietnam\"},{\"query\":\"Consumer adoption QR payment Vietnam\"}]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Decide ReAct action."
+      },
+      {
+        "role": "user",
+        "content": "Đã thu thập dữ liệu thị trường nhưng chưa đủ thông tin về đối thủ."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "REACT_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"decide_action\",\"arguments\":{\"action\":\"search\",\"query\":\"competitor analysis market share industry benchmark\",\"reasoning\":\"Need more competitor information before synthesis\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Generate search queries."
+      },
+      {
+        "role": "user",
+        "content": "AI đang thay đổi ngành ngân hàng như thế nào?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "GENERATE_SEARCH_QUERIES_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"generate_search_queries\",\"arguments\":{\"search_queries\":[\"AI adoption banking industry\",\"Generative AI banking use cases\",\"Bank operational efficiency AI\",\"AI customer experience banking\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Synthesize research findings."
+      },
+      {
+        "role": "user",
+        "content": "Tổng hợp dữ liệu nghiên cứu fintech."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "SYNTHESIS_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"synthesize_overview\",\"arguments\":{\"tong_quan_thi_truong\":\"Thị trường fintech đang tăng trưởng nhanh nhờ thanh toán số và AI.\",\"tro_ly\":[\"Mobile payments tăng mạnh\",\"Ngân hàng số mở rộng\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Generate SWOT."
+      },
+      {
+        "role": "user",
+        "content": "Phân tích SWOT cho startup giao đồ ăn."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "SWOT_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"generate_swot\",\"arguments\":{\"strengths\":[\"Nhanh\",\"Công nghệ tốt\"],\"weaknesses\":[\"Chi phí vận hành cao\"],\"opportunities\":[\"Thị trường mở rộng\"],\"threats\":[\"Cạnh tranh lớn\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Create campaign."
+      },
+      {
+        "role": "user",
+        "content": "Lập kế hoạch quảng bá Discord cho game mới trong 7 ngày."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "CAMPAIGN_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"create_campaign_plan\",\"arguments\":{\"duration_days\":7,\"posting_frequency\":\"3 posts daily\",\"schedule\":[{\"day\":1,\"theme\":\"Launch teaser\"},{\"day\":2,\"theme\":\"Gameplay reveal\"}]}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Expand content."
+      },
+      {
+        "role": "user",
+        "content": "Viết bài quảng bá tai nghe gaming."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "CONTENT_EXPANSION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"expand_content\",\"arguments\":{\"expanded_caption\":\"🎧 Trải nghiệm âm thanh đỉnh cao cho mọi trận đấu! Độ trễ thấp, thiết kế hiện đại.\",\"expanded_image_prompt\":\"premium gaming headset, neon lighting, cinematic composition, ultra detailed, realistic\"}}"
+      }
+    ]
+  }
+  ,
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI assistant specialized in market analysis. Understand user queries and categorize them appropriately."
+    },
+    {
+      "role": "user",
+      "content": "Blockchain hoạt động như thế nào?"
+    },
+    {
+      "role": "tool",
+      "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"knowledge\",\"response\":\"\"}}"
+    }
+  ]
+},
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Act as a business analyst who interprets user requests."
+    },
+    {
+      "role": "user",
+      "content": "Tôi muốn nghiên cứu thị trường fintech ở Đông Nam Á trong 3 năm gần đây."
+    },
+    {
+      "role": "tool",
+      "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"research\",\"response\":\"\"}}"
+    }
+  ]
+},
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Classify user intent and respond conversationally."
+    },
+    {
+      "role": "user",
+      "content": "Bạn biết đùa không?"
+    },
+    {
+      "role": "tool",
+      "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"chat\",\"response\":\"Có chứ 😄 Tôi biết kể chuyện vui, chơi chữ và tán gẫu nhẹ nhàng. Bạn muốn thử kiểu nào?\"}}"
+    }
+  ]
+},
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Validate if user input contains enough information for research."
+    },
+    {
+      "role": "user",
+      "content": "Tôi muốn nghiên cứu thị trường AI."
+    },
+    {
+      "role": "tool",
+      "tool_calls": "INPUT_VALIDATION_TOOLS"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"name\":\"validate_input\",\"arguments\":{\"is_complete\":false,\"missing_fields\":[\"market_scope\",\"location\",\"time_range\"],\"suggestions\":[\"Xác định quốc gia hoặc khu vực nghiên cứu\",\"Chỉ rõ phân khúc AI\",\"Thêm khoảng thời gian mong muốn\"]}}"
+    }
+  ]
+},
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Generate clarification questions for incomplete market research requests."
+    },
+    {
+      "role": "user",
+      "content": "Tôi muốn phân tích ngành game."
+    },
+    {
+      "role": "tool",
+      "tool_calls": "CLARIFICATION_TOOLS"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"name\":\"generate_questions\",\"arguments\":{\"questions\":[\"Bạn muốn nghiên cứu thị trường game ở quốc gia nào?\",\"Bạn quan tâm game mobile, PC hay console?\",\"Khoảng thời gian phân tích là bao lâu?\"],\"suggestions\":[\"Thu hẹp phân khúc thị trường\",\"Xác định nhóm khách hàng mục tiêu\"]}}"
+    }
+  ]
+},
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Create research plans for market analysis."
+    },
+    {
+      "role": "user",
+      "content": "Lập kế hoạch nghiên cứu thị trường thương mại điện tử Việt Nam."
+    },
+    {
+      "role": "tool",
+      "tool_calls": "PLANNING_TOOLS"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"name\":\"create_research_plan\",\"arguments\":{\"research_questions\":[\"Quy mô thị trường hiện tại là bao nhiêu?\",\"Động lực tăng trưởng là gì?\",\"Các đối thủ chính là ai?\"],\"search_steps\":[{\"query\":\"Vietnam ecommerce market size\"},{\"query\":\"Vietnam ecommerce competitors\"},{\"query\":\"Vietnam ecommerce growth drivers\"}]}}"
+    }
+  ]
+},
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Generate search queries to answer knowledge questions."
+    },
+    {
+      "role": "user",
+      "content": "Xu hướng phát triển của AI Agent hiện nay là gì?"
+    },
+    {
+      "role": "tool",
+      "tool_calls": "GENERATE_SEARCH_QUERIES_TOOLS"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"name\":\"generate_search_queries\",\"arguments\":{\"search_queries\":[\"AI Agent trends 2026\",\"enterprise AI agent adoption\",\"autonomous agents market analysis\",\"future of AI assistants\"]}}"
+    }
+  ]
+},
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Decide the next ReAct action."
+    },
+    {
+      "role": "user",
+      "content": "Đã có dữ liệu về thị trường xe điện nhưng thiếu số liệu tăng trưởng."
+    },
+    {
+      "role": "tool",
+      "tool_calls": "REACT_TOOLS"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"name\":\"decide_action\",\"arguments\":{\"action\":\"search\",\"query\":\"electric vehicle market growth statistics latest\",\"reasoning\":\"Current findings are incomplete because growth metrics are missing.\"}}"
+    }
+  ]
+},
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Generate SWOT analysis."
+    },
+    {
+      "role": "user",
+      "content": "Phân tích SWOT cho startup giao đồ ăn."
+    },
+    {
+      "role": "tool",
+      "tool_calls": "SWOT_TOOLS"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"name\":\"generate_swot\",\"arguments\":{\"strengths\":[\"Tăng trưởng nhanh\",\"Thuận tiện\"],\"weaknesses\":[\"Chi phí vận hành cao\"],\"opportunities\":[\"Mở rộng sang khu vực mới\"],\"threats\":[\"Cạnh tranh gay gắt\"]}}"
+    }
+  ]
+},
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Create campaign schedules."
+    },
+    {
+      "role": "user",
+      "content": "Lên kế hoạch Discord campaign 7 ngày cho game mới."
+    },
+    {
+      "role": "tool",
+      "tool_calls": "CAMPAIGN_TOOLS"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"name\":\"create_campaign_plan\",\"arguments\":{\"duration_days\":7,\"posting_frequency\":\"3 posts daily\",\"schedule\":[{\"day\":1,\"theme\":\"Announcement\"},{\"day\":2,\"theme\":\"Gameplay\"},{\"day\":3,\"theme\":\"Community\"}]}}"
+    }
+  ]
+},
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Expand marketing content."
+    },
+    {
+      "role": "user",
+      "content": "Viết bài quảng bá Discord cho sản phẩm AI chatbot."
+    },
+    {
+      "role": "tool",
+      "tool_calls": "CONTENT_EXPANSION_TOOLS"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"name\":\"expand_content\",\"arguments\":{\"expanded_caption\":\"🚀 Trải nghiệm AI chatbot thế hệ mới! Trả lời nhanh, hỗ trợ 24/7 và nâng cao hiệu suất làm việc. Tham gia cộng đồng ngay hôm nay!\",\"expanded_image_prompt\":\"Modern AI chatbot dashboard, futuristic UI, glowing interface, professional lighting, high detail, cinematic composition\"}}"
+    }
+  ]
+},
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Act as a business analyst who classifies user requests."
+      },
+      {
+        "role": "user",
+        "content": "Cho tôi biết AI Agent là gì?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"knowledge\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Classify user requests into chat, knowledge, or research."
+      },
+      {
+        "role": "user",
+        "content": "Tôi muốn nghiên cứu thị trường chatbot tại Việt Nam."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"research\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Validate whether market research requests contain enough information."
+      },
+      {
+        "role": "user",
+        "content": "Tôi muốn nghiên cứu thị trường AI."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INPUT_VALIDATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"validate_input\",\"arguments\":{\"is_complete\":false,\"missing_fields\":[\"market_scope\",\"timeframe\",\"geography\"],\"suggestions\":[\"Xác định ngành AI cụ thể\",\"Chọn khu vực nghiên cứu\",\"Thêm mốc thời gian\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Generate clarification questions."
+      },
+      {
+        "role": "user",
+        "content": "Tôi muốn nghiên cứu thị trường AI."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "CLARIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"generate_questions\",\"arguments\":{\"questions\":[\"Bạn muốn nghiên cứu AI trong lĩnh vực nào?\",\"Bạn quan tâm khu vực nào?\",\"Bạn muốn dữ liệu trong khoảng thời gian nào?\"],\"suggestions\":[\"Thu hẹp phạm vi\",\"Chỉ định nhóm khách hàng mục tiêu\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Create market research plans."
+      },
+      {
+        "role": "user",
+        "content": "Nghiên cứu thị trường giáo dục online tại Việt Nam năm 2025."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "PLANNING_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"create_research_plan\",\"arguments\":{\"research_questions\":[\"Quy mô thị trường hiện tại?\",\"Các đối thủ lớn?\",\"Xu hướng tăng trưởng?\"],\"search_steps\":[{\"query\":\"Vietnam online education market size 2025\"},{\"query\":\"Top edtech companies Vietnam\"},{\"query\":\"Online learning adoption Vietnam\"}]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Decide ReAct action."
+      },
+      {
+        "role": "user",
+        "content": "Đã tìm thấy dữ liệu nhưng thiếu số liệu tăng trưởng."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "REACT_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"decide_action\",\"arguments\":{\"action\":\"search\",\"query\":\"Vietnam market CAGR latest report\",\"reasoning\":\"Need quantitative growth metrics\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Generate search queries."
+      },
+      {
+        "role": "user",
+        "content": "AI trong ngành ngân hàng Việt Nam."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "GENERATE_SEARCH_QUERIES_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"generate_search_queries\",\"arguments\":{\"search_queries\":[\"AI adoption Vietnam banking\",\"Vietnam banks AI use cases\",\"Digital banking AI market Vietnam\",\"AI fintech Vietnam trends\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Synthesize research findings."
+      },
+      {
+        "role": "user",
+        "content": "Tổng hợp nghiên cứu thị trường fintech."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "SYNTHESIS_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"synthesize_overview\",\"arguments\":{\"tong_quan_thi_truong\":\"Fintech tiếp tục tăng trưởng nhờ thanh toán số và ngân hàng số.\",\"tro_ly\":[\"Thanh toán số tăng trưởng mạnh\",\"Đầu tư AI tăng\",\"Ngân hàng mở rộng API\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Generate SWOT analysis."
+      },
+      {
+        "role": "user",
+        "content": "Phân tích SWOT cho startup AI."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "SWOT_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"generate_swot\",\"arguments\":{\"strengths\":[\"Đổi mới nhanh\"],\"weaknesses\":[\"Nguồn lực hạn chế\"],\"opportunities\":[\"Nhu cầu AI tăng\"],\"threats\":[\"Cạnh tranh toàn cầu\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Create Discord campaign."
+      },
+      {
+        "role": "user",
+        "content": "Lập kế hoạch quảng bá Discord cho sản phẩm AI."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "CAMPAIGN_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"create_campaign_plan\",\"arguments\":{\"duration_days\":7,\"posting_frequency\":\"2 posts daily\",\"schedule\":[{\"day\":1,\"content\":\"Launch\"},{\"day\":2,\"content\":\"Feature showcase\"}]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Expand marketing content."
+      },
+      {
+        "role": "user",
+        "content": "Viết post quảng bá chatbot AI cho Discord."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "CONTENT_EXPANSION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"expand_content\",\"arguments\":{\"expanded_caption\":\"🚀 Trải nghiệm chatbot AI thế hệ mới ngay hôm nay! Tăng tốc công việc và nâng cao hiệu suất.\",\"expanded_image_prompt\":\"modern AI chatbot, futuristic interface, neon lighting, ultra realistic, high detail\"}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Act as a business analyst who interprets user requests."
+      },
+      {
+        "role": "user",
+        "content": "Cho tôi biết AI Agent khác chatbot truyền thống ở điểm nào?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"knowledge\",\"response\":\"\",\"reasoning\":\"User requests conceptual explanation and comparison, not research.\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are an AI assistant specialized in market analysis."
+      },
+      {
+        "role": "user",
+        "content": "Kể tôi nghe một fact thú vị về thị trường công nghệ."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"chat\",\"response\":\"Một fact thú vị: nhiều công ty công nghệ lớn hiện tạo doanh thu từ dịch vụ cloud nhiều hơn phần cứng truyền thống. Điều đó đã thay đổi hoàn toàn mô hình tăng trưởng của ngành.\",\"reasoning\":\"User wants casual conversation, not research.\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Determine whether the user requires market research."
+      },
+      {
+        "role": "user",
+        "content": "Hãy phân tích thị trường xe điện Việt Nam năm 2026."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"research\",\"response\":\"\",\"reasoning\":\"User requests market analysis requiring external research and synthesis.\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Validate whether the market research request contains enough information."
+      },
+      {
+        "role": "user",
+        "content": "Tôi muốn nghiên cứu thị trường mỹ phẩm."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INPUT_VALIDATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"validate_input\",\"arguments\":{\"is_complete\":false,\"missing_fields\":[\"market_scope\",\"geography\",\"target_segment\",\"time_range\"],\"suggestions\":[\"Xác định quốc gia hoặc khu vực\",\"Chọn phân khúc khách hàng\",\"Đặt khoảng thời gian nghiên cứu\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Generate clarification questions."
+      },
+      {
+        "role": "user",
+        "content": "Tôi muốn nghiên cứu thị trường gaming."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "CLARIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"generate_questions\",\"arguments\":{\"questions\":[\"Bạn muốn nghiên cứu thị trường ở quốc gia nào?\",\"Quan tâm mobile, PC hay console?\",\"Bạn muốn phân tích người chơi hay doanh thu?\"],\"suggestions\":[\"Thu hẹp phạm vi địa lý\",\"Chọn phân khúc cụ thể\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Create structured market research plan."
+      },
+      {
+        "role": "user",
+        "content": "Lập kế hoạch nghiên cứu thị trường fintech tại Việt Nam."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "PLANNING_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"create_research_plan\",\"arguments\":{\"research_questions\":[\"Quy mô thị trường hiện tại?\",\"Đối thủ chính là ai?\",\"Xu hướng tăng trưởng?\"],\"search_steps\":[{\"query\":\"Vietnam fintech market size 2026\"},{\"query\":\"Vietnam fintech competitors\"},{\"query\":\"Vietnam fintech growth forecast\"}]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Generate search queries for knowledge retrieval."
+      },
+      {
+        "role": "user",
+        "content": "Blockchain ảnh hưởng thế nào đến ngân hàng?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "GENERATE_SEARCH_QUERIES_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"generate_search_queries\",\"arguments\":{\"search_queries\":[\"blockchain impact on banking industry\",\"benefits of blockchain for banks\",\"banking digital transformation blockchain\",\"blockchain banking adoption statistics\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Create SWOT analysis."
+      },
+      {
+        "role": "user",
+        "content": "Tạo SWOT cho startup giao đồ ăn."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "SWOT_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"generate_swot\",\"arguments\":{\"strengths\":[\"Giao hàng nhanh\",\"Tệp khách hàng trẻ\"],\"weaknesses\":[\"Biên lợi nhuận thấp\"],\"opportunities\":[\"Tăng trưởng mobile commerce\"],\"threats\":[\"Cạnh tranh cao\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Create campaign schedule."
+      },
+      {
+        "role": "user",
+        "content": "Lập campaign Discord 7 ngày cho game mới."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "CAMPAIGN_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"create_campaign_plan\",\"arguments\":{\"duration_days\":7,\"posting_frequency\":\"2 posts daily\",\"schedule\":[{\"day\":1,\"content\":\"Announcement\"},{\"day\":2,\"content\":\"Gameplay reveal\"},{\"day\":3,\"content\":\"Community event\"}]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Expand marketing content."
+      },
+      {
+        "role": "user",
+        "content": "Mở rộng caption quảng bá tai nghe gaming RGB."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "CONTENT_EXPANSION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"expand_content\",\"arguments\":{\"expanded_caption\":\"🎮 Trải nghiệm gaming sống động với âm thanh chi tiết, thiết kế RGB nổi bật và cảm giác đeo thoải mái suốt nhiều giờ.\",\"expanded_image_prompt\":\"professional gaming headset advertisement, RGB lighting, cinematic setup, ultra realistic, product focus, neon atmosphere\"}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "As an experienced market intelligence specialist, classify user intent and respond appropriately."
+      },
+      {
+        "role": "user",
+        "content": "Bạn nghĩ nên học Python hay Java để đi làm backend?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"knowledge\",\"response\":\"\",\"reasoning\":\"User asks for general guidance and knowledge comparison, not requiring market research.\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Classify requests into chat, knowledge, or research."
+      },
+      {
+        "role": "user",
+        "content": "Cho tôi biết quy mô thị trường fintech Việt Nam năm 2025 và xu hướng tăng trưởng."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"research\",\"response\":\"\",\"reasoning\":\"User requests market size and growth trends requiring external market research and recent data.\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Interpret user requests and classify them."
+      },
+      {
+        "role": "user",
+        "content": "Tôi đang hơi mệt hôm nay."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"chat\",\"response\":\"Nghe như hôm nay của bạn hơi dài rồi. Nếu muốn nghỉ chút, nói chuyện hoặc cần hỗ trợ gì thì cứ nói nhé.\",\"reasoning\":\"Casual conversation with no knowledge retrieval or research intent.\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You classify intent for market intelligence workflows."
+      },
+      {
+        "role": "user",
+        "content": "Blockchain hoạt động như thế nào?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"knowledge\",\"response\":\"\",\"reasoning\":\"User asks for conceptual explanation and not market-oriented analysis.\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Act as an intent classifier."
+      },
+      {
+        "role": "user",
+        "content": "Những startup AI nào đang phát triển nhanh nhất Đông Nam Á?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"research\",\"response\":\"\",\"reasoning\":\"User requests comparative startup landscape analysis and recent market information.\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Determine if user needs research, knowledge, or chat."
+      },
+      {
+        "role": "user",
+        "content": "Bạn có thích cà phê không?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"chat\",\"response\":\"Tôi không uống được cà phê nhưng rất quen với những cuộc tranh luận xem cà phê đen hay latte ngon hơn 😄 Còn bạn thích loại nào?\",\"reasoning\":\"Casual conversational interaction.\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Route user requests into the correct intent."
+      },
+      {
+        "role": "user",
+        "content": "So sánh thị phần Shopee, Lazada và TikTok Shop tại Việt Nam."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"research\",\"response\":\"\",\"reasoning\":\"Competitive market comparison requiring current commerce data and analysis.\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Classify user requests."
+      },
+      {
+        "role": "user",
+        "content": "REST API khác GraphQL như thế nào?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"knowledge\",\"response\":\"\",\"reasoning\":\"Technical concept comparison without research requirements.\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Determine intent for downstream processing."
+      },
+      {
+        "role": "user",
+        "content": "Tôi muốn mở quán cà phê ở Hà Nội, nên nghiên cứu những gì trước?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"research\",\"response\":\"\",\"reasoning\":\"User seeks market assessment and planning inputs before launching a business.\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Classify user prompts."
+      },
+      {
+        "role": "user",
+        "content": "Cảm ơn bạn rất nhiều."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"chat\",\"response\":\"Rất vui vì giúp được bạn. Nếu còn câu hỏi nào nữa thì cứ gửi nhé!\",\"reasoning\":\"Pure conversational exchange.\"}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Act as a business analyst who interprets user requests."
+      },
+      {
+        "role": "user",
+        "content": "Bạn nghĩ thời tiết hôm nay đẹp để đi chơi không?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"chat\",\"response\":\"Nếu bạn định đi chơi thì nghe khá hấp dẫn đấy 😄 Nhưng mình chưa biết khu vực của bạn. Bạn định đi đâu?\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You classify user requests for routing."
+      },
+      {
+        "role": "user",
+        "content": "Blockchain hoạt động như thế nào?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"knowledge\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Determine if research input is complete."
+      },
+      {
+        "role": "user",
+        "content": "Tôi muốn nghiên cứu thị trường xe điện"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INPUT_VALIDATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"validate_input\",\"arguments\":{\"is_complete\":false,\"missing_fields\":[\"market_region\",\"time_range\",\"target_metric\"],\"suggestions\":[\"Specify geographic market\",\"Provide timeframe\",\"State business objective\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Generate clarification questions."
+      },
+      {
+        "role": "user",
+        "content": "Phân tích ngành mỹ phẩm"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "CLARIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"generate_questions\",\"arguments\":{\"questions\":[\"Bạn muốn phân tích quốc gia nào?\",\"Quan tâm phân khúc nào?\",\"Mục tiêu là đầu tư hay mở kinh doanh?\"],\"suggestions\":[\"Thu hẹp phạm vi\",\"Xác định nhóm khách hàng\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Create research planning."
+      },
+      {
+        "role": "user",
+        "content": "Tôi muốn nghiên cứu thị trường AI education tại Đông Nam Á"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "PLANNING_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"create_research_plan\",\"arguments\":{\"research_questions\":[\"Market size?\",\"Major competitors?\",\"Growth trends?\"],\"search_steps\":[{\"query\":\"AI education market Southeast Asia size\"},{\"query\":\"Top AI education startups SEA\"},{\"query\":\"AI learning adoption statistics SEA\"}]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Generate search queries."
+      },
+      {
+        "role": "user",
+        "content": "Mô hình kinh doanh của Netflix hoạt động như thế nào?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "GENERATE_SEARCH_QUERIES_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"generate_search_queries\",\"arguments\":{\"search_queries\":[\"Netflix business model subscription revenue\",\"Netflix advertising business strategy\",\"Netflix content licensing economics\",\"Netflix annual report revenue streams\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Decide next research action."
+      },
+      {
+        "role": "user",
+        "content": "Đã thu thập dữ liệu nhưng thiếu thông tin đối thủ"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "REACT_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"decide_action\",\"arguments\":{\"action\":\"search\",\"query\":\"top competitors market share\",\"reasoning\":\"Competitive landscape information is incomplete\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Create Discord campaign."
+      },
+      {
+        "role": "user",
+        "content": "Lập kế hoạch quảng bá Discord cho game mới trong 7 ngày"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "CAMPAIGN_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"create_campaign_plan\",\"arguments\":{\"duration_days\":7,\"posting_frequency\":\"3 posts daily\",\"schedule\":[{\"day\":1,\"content\":\"Game teaser\"},{\"day\":2,\"content\":\"Gameplay reveal\"}]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Generate SWOT."
+      },
+      {
+        "role": "user",
+        "content": "Tạo SWOT cho startup giao đồ ăn"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "SWOT_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"generate_swot\",\"arguments\":{\"strengths\":[\"Fast delivery\"],\"weaknesses\":[\"High logistics cost\"],\"opportunities\":[\"Urban growth\"],\"threats\":[\"Strong competitors\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Expand promotional content."
+      },
+      {
+        "role": "user",
+        "content": "Viết bài Discord quảng bá tai nghe gaming RGB"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "CONTENT_EXPANSION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"expand_content\",\"arguments\":{\"expanded_caption\":\"🎮 Trải nghiệm âm thanh đỉnh cao với tai nghe gaming RGB mới! Độ trễ thấp, âm bass mạnh mẽ và thiết kế cực chất.\",\"expanded_image_prompt\":\"Premium gaming headset, RGB lighting, cinematic studio setup, ultra realistic, product advertising, dramatic lighting\"}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are an AI assistant specialized in market analysis. Classify user intent correctly."
+      },
+      {
+        "role": "user",
+        "content": "Blockchain hoạt động như thế nào?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"knowledge\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Act as a business analyst who determines if requests need research."
+      },
+      {
+        "role": "user",
+        "content": "Thị trường AI tại Đông Nam Á năm 2026 tăng trưởng thế nào?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"research\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Classify requests into chat, knowledge or research."
+      },
+      {
+        "role": "user",
+        "content": "Bạn nghĩ hôm nay tôi nên làm gì để thư giãn?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"chat\",\"response\":\"Nếu muốn thư giãn nhanh, bạn có thể đi dạo, nghe nhạc, tập thể dục nhẹ hoặc xem một bộ phim ngắn. Nếu hôm nay khá mệt thì ngủ sớm cũng là lựa chọn tốt.\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Determine whether the request requires market analysis."
+      },
+      {
+        "role": "user",
+        "content": "So sánh thị phần Shopee và TikTok Shop tại Việt Nam"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"research\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Interpret user intent correctly."
+      },
+      {
+        "role": "user",
+        "content": "TCP và UDP khác nhau thế nào?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"knowledge\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Respond conversationally for chat requests."
+      },
+      {
+        "role": "user",
+        "content": "Tôi hơi chán hôm nay."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"chat\",\"response\":\"Có những ngày năng lượng xuống một chút là chuyện bình thường. Nếu muốn đổi nhịp, bạn có thể làm một việc nhỏ như nghe một bài nhạc, đi bộ vài phút hoặc làm thứ bạn thích.\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Act as an intent classifier."
+      },
+      {
+        "role": "user",
+        "content": "Ngành ngân hàng Việt Nam đang ứng dụng AI vào đâu?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"research\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Understand whether the user wants explanation or research."
+      },
+      {
+        "role": "user",
+        "content": "Giải thích REST API là gì"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"knowledge\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Classify user intent."
+      },
+      {
+        "role": "user",
+        "content": "Chào buổi sáng nhé"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"chat\",\"response\":\"Chào buổi sáng! Chúc bạn có một ngày thuận lợi và nhiều năng lượng. Có gì tôi hỗ trợ được cứ nói nhé.\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Determine if external information gathering is needed."
+      },
+      {
+        "role": "user",
+        "content": "Xu hướng thanh toán số ở Việt Nam 5 năm tới"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"research\",\"response\":\"\"}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You classify user requests into chat, knowledge, or research."
+      },
+      {
+        "role": "user",
+        "content": "Top 5 xu hướng fintech ở Việt Nam năm nay là gì?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"research\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You classify user requests."
+      },
+      {
+        "role": "user",
+        "content": "Blockchain là gì?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"knowledge\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You classify user intent."
+      },
+      {
+        "role": "user",
+        "content": "Hôm nay tôi hơi mệt."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"chat\",\"response\":\"Nghe có vẻ hôm nay bạn không có nhiều năng lượng. Hy vọng bạn có thời gian nghỉ ngơi một chút. Nếu có gì muốn trao đổi hoặc cần hỗ trợ thì cứ nói nhé.\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Validate whether research input is complete."
+      },
+      {
+        "role": "user",
+        "content": "Tôi muốn nghiên cứu thị trường AI."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INPUT_VALIDATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"validate_input\",\"arguments\":{\"is_complete\":false,\"missing_fields\":[\"market_scope\",\"region\",\"timeframe\"],\"suggestions\":[\"Xác định phân khúc AI cụ thể\",\"Chọn khu vực nghiên cứu\",\"Xác định mốc thời gian\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Generate clarification questions."
+      },
+      {
+        "role": "user",
+        "content": "Tôi muốn phân tích ngành game."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "CLARIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"generate_questions\",\"arguments\":{\"questions\":[\"Bạn muốn nghiên cứu thị trường game ở quốc gia nào?\",\"Bạn quan tâm game mobile, PC hay console?\",\"Khoảng thời gian nghiên cứu là bao lâu?\"],\"suggestions\":[\"Thu hẹp phân khúc để có kết quả chính xác hơn\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Create research plans."
+      },
+      {
+        "role": "user",
+        "content": "Phân tích thị trường xe điện tại Đông Nam Á"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "PLANNING_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"create_research_plan\",\"arguments\":{\"research_questions\":[\"Quy mô thị trường xe điện hiện tại?\",\"Động lực tăng trưởng chính?\",\"Các đối thủ lớn?\"],\"search_steps\":[{\"query\":\"Southeast Asia EV market size\"},{\"query\":\"Leading EV manufacturers Southeast Asia\"},{\"query\":\"EV adoption trend SEA\"}]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Generate search queries."
+      },
+      {
+        "role": "user",
+        "content": "Mô hình kiếm tiền của Discord hoạt động như thế nào?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "GENERATE_SEARCH_QUERIES_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"generate_search_queries\",\"arguments\":{\"search_queries\":[\"Discord business model revenue streams\",\"Discord Nitro subscription revenue\",\"How Discord monetizes communities\",\"Discord financial strategy\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Decide next action."
+      },
+      {
+        "role": "user",
+        "content": "Đã có dữ liệu quy mô thị trường nhưng chưa có thông tin đối thủ."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "REACT_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"decide_action\",\"arguments\":{\"action\":\"search\",\"query\":\"major competitors market analysis\",\"reasoning\":\"Need competitor landscape before synthesis\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Generate SWOT."
+      },
+      {
+        "role": "user",
+        "content": "Tạo SWOT cho startup giao đồ ăn"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "SWOT_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"generate_swot\",\"arguments\":{\"strengths\":[\"Triển khai nhanh\",\"Tiện lợi\"],\"weaknesses\":[\"Chi phí vận hành cao\"],\"opportunities\":[\"Tăng trưởng thương mại điện tử\"],\"threats\":[\"Cạnh tranh mạnh\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Create campaign plans."
+      },
+      {
+        "role": "user",
+        "content": "Lập kế hoạch quảng bá Discord server trong 1 tuần"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "CAMPAIGN_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"create_campaign_plan\",\"arguments\":{\"duration_days\":7,\"posting_frequency\":\"2 times daily\",\"schedule\":[{\"day\":1,\"content\":\"Launch post\"},{\"day\":2,\"content\":\"Community engagement\"}]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Expand content."
+      },
+      {
+        "role": "user",
+        "content": "Viết bài quảng bá Discord cho sản phẩm AI hỗ trợ học tập"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "CONTENT_EXPANSION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"expand_content\",\"arguments\":{\"expanded_caption\":\"🚀 Khám phá trợ lý học tập AI giúp bạn học nhanh hơn, tổng hợp kiến thức và luyện tập thông minh cùng cộng đồng Discord ngay hôm nay!\",\"expanded_image_prompt\":\"Modern educational AI promotion, Discord community, futuristic learning setup, vibrant lighting, ultra detailed, digital illustration\"}}"
+      }
+    ]
+  },
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI assistant specialized in market analysis. Understand user queries and categorize them appropriately."
+    },
+    {
+      "role": "user",
+      "content": "GDP của Việt Nam năm vừa rồi tăng bao nhiêu phần trăm?"
+    },
+    {
+      "role": "tool",
+      "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"knowledge\",\"response\":\"\"}}"
+    }
+  ]
+},
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Act as a business analyst who interprets user requests."
+    },
+    {
+      "role": "user",
+      "content": "Phân tích thị trường xe điện tại Đông Nam Á và dự đoán tăng trưởng 5 năm tới."
+    },
+    {
+      "role": "tool",
+      "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"research\",\"response\":\"\"}}"
+    }
+  ]
+},
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Classify user requests for business intelligence workflows."
+    },
+    {
+      "role": "user",
+      "content": "Cho tôi biết machine learning khác deep learning như thế nào."
+    },
+    {
+      "role": "tool",
+      "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"knowledge\",\"response\":\"\"}}"
+    }
+  ]
+},
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Classify intent and answer naturally for casual conversations."
+    },
+    {
+      "role": "user",
+      "content": "Bạn nghĩ hôm nay tôi nên uống cà phê hay trà?"
+    },
+    {
+      "role": "tool",
+      "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"chat\",\"response\":\"Nếu bạn cần tỉnh táo nhanh thì cà phê có thể hợp hơn, còn nếu muốn nhẹ nhàng và thư giãn hơn thì trà cũng là lựa chọn hay. Tuỳ tâm trạng hôm nay của bạn thôi 😄\"}}"
+    }
+  ]
+},
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Determine whether requests require research."
+    },
+    {
+      "role": "user",
+      "content": "Tôi muốn mở startup fintech ở Việt Nam, hãy nghiên cứu thị trường và các đối thủ."
+    },
+    {
+      "role": "tool",
+      "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"research\",\"response\":\"\"}}"
+    }
+  ]
+},
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Understand whether user needs general knowledge or market research."
+    },
+    {
+      "role": "user",
+      "content": "Blockchain hoạt động như thế nào?"
+    },
+    {
+      "role": "tool",
+      "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"knowledge\",\"response\":\"\"}}"
+    }
+  ]
+},
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Route user requests correctly."
+    },
+    {
+      "role": "user",
+      "content": "Xu hướng tiêu dùng mỹ phẩm của Gen Z Việt Nam hiện nay là gì?"
+    },
+    {
+      "role": "tool",
+      "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"research\",\"response\":\"\"}}"
+    }
+  ]
+},
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Classify requests and answer casual messages."
+    },
+    {
+      "role": "user",
+      "content": "Kể tôi nghe một fact thú vị đi."
+    },
+    {
+      "role": "tool",
+      "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"chat\",\"response\":\"Một con bạch tuộc có tới ba trái tim — hai trái tim bơm máu tới mang và một trái tim bơm máu đi khắp cơ thể 🐙\"}}"
+    }
+  ]
+},
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Analyze intent for information retrieval."
+    },
+    {
+      "role": "user",
+      "content": "So sánh thị phần Samsung và Apple tại Việt Nam trong 3 năm gần đây."
+    },
+    {
+      "role": "tool",
+      "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"research\",\"response\":\"\"}}"
+    }
+  ]
+},
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Determine user intent."
+    },
+    {
+      "role": "user",
+      "content": "HashMap trong Java hoạt động như thế nào?"
+    },
+    {
+      "role": "tool",
+      "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"knowledge\",\"response\":\"\"}}"
+    }
+  ]
+},
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "As an experienced market intelligence specialist, your role is to understand what users are asking for and respond conversationally."
+      },
+      {
+        "role": "user",
+        "content": "Chào buổi sáng nhé"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"chat\",\"response\":\"Chào bạn! Chúc bạn có một ngày thật hiệu quả nhé. Có điều gì bạn muốn trao đổi không?\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Act as a business analyst who interprets user requests."
+      },
+      {
+        "role": "user",
+        "content": "Giải thích cho tôi blockchain là gì"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"knowledge\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are an AI assistant specialized in market analysis."
+      },
+      {
+        "role": "user",
+        "content": "Thị trường xe điện ở Đông Nam Á đang tăng trưởng như thế nào trong 3 năm gần đây?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"research\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Classify whether the user needs general information or deeper market analysis."
+      },
+      {
+        "role": "user",
+        "content": "Top các nền tảng học ngoại ngữ phổ biến hiện nay?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"research\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Classify user requests."
+      },
+      {
+        "role": "user",
+        "content": "Java và Python khác nhau ở điểm nào?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"knowledge\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Classify user intent before answering."
+      },
+      {
+        "role": "user",
+        "content": "Tôi muốn mở quán cà phê ở Hà Nội, phân tích giúp tôi xu hướng khách hàng hiện tại"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"research\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Determine whether the user needs conversational response or external analysis."
+      },
+      {
+        "role": "user",
+        "content": "Tôi đang hơi căng thẳng vì công việc"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"chat\",\"response\":\"Nghe có vẻ hôm nay bạn đang khá áp lực. Nếu muốn, bạn có thể kể thêm điều gì đang làm bạn thấy căng thẳng và mình sẽ cùng suy nghĩ thử.\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Interpret whether the request requires current market information."
+      },
+      {
+        "role": "user",
+        "content": "So sánh doanh thu giữa Shopee và TikTok Shop tại Việt Nam năm vừa rồi"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"research\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Determine user intent."
+      },
+      {
+        "role": "user",
+        "content": "Cho tôi biết HTTP và HTTPS khác nhau thế nào"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"knowledge\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Classify user prompt."
+      },
+      {
+        "role": "user",
+        "content": "Bạn nghĩ hôm nay tôi nên ăn gì?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"chat\",\"response\":\"Nếu muốn ăn nhẹ thì thử phở hoặc bún nhé, còn muốn đổi vị thì cơm gà hoặc đồ nướng cũng ổn 😄\"}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You classify user requests and determine whether they are casual chat, knowledge lookup, or market research."
+      },
+      {
+        "role": "user",
+        "content": "Cho tôi biết thị trường xe điện ở Đông Nam Á đang tăng trưởng như thế nào."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"research\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Validate whether market research requests contain enough information."
+      },
+      {
+        "role": "user",
+        "content": "Tôi muốn nghiên cứu thị trường mỹ phẩm."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INPUT_VALIDATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"validate_input\",\"arguments\":{\"is_complete\":false,\"missing_fields\":[\"target_market\",\"customer_segment\",\"timeframe\"],\"suggestions\":[\"Xác định quốc gia hoặc khu vực\",\"Chỉ rõ nhóm khách hàng mục tiêu\",\"Xác định khoảng thời gian nghiên cứu\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Generate clarification questions when research requirements are incomplete."
+      },
+      {
+        "role": "user",
+        "content": "Tôi muốn phân tích ngành fintech."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "CLARIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"generate_questions\",\"arguments\":{\"questions\":[\"Bạn muốn nghiên cứu fintech ở quốc gia nào?\",\"Bạn quan tâm B2B hay B2C?\",\"Bạn muốn dữ liệu hiện tại hay xu hướng dài hạn?\"],\"suggestions\":[\"Thu hẹp phạm vi địa lý\",\"Xác định phân khúc cụ thể như thanh toán hoặc lending\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Create structured market research plans."
+      },
+      {
+        "role": "user",
+        "content": "Lập kế hoạch nghiên cứu thị trường AI trong ngân hàng Việt Nam."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "PLANNING_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"create_research_plan\",\"arguments\":{\"research_questions\":[\"Quy mô thị trường hiện tại là bao nhiêu?\",\"Ngân hàng nào đang dẫn đầu?\",\"Xu hướng ứng dụng AI nào đang phổ biến?\"],\"search_steps\":[{\"query\":\"Vietnam AI banking market size\"},{\"query\":\"Top Vietnamese banks using AI\"},{\"query\":\"AI adoption banking Vietnam report\"}]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Generate optimized search queries for knowledge retrieval."
+      },
+      {
+        "role": "user",
+        "content": "Blockchain ảnh hưởng như thế nào đến ngành logistics?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "GENERATE_SEARCH_QUERIES_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"generate_search_queries\",\"arguments\":{\"search_queries\":[\"blockchain impact logistics industry\",\"blockchain supply chain case studies\",\"blockchain logistics efficiency report\",\"future of blockchain in logistics\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Decide next step in iterative market research."
+      },
+      {
+        "role": "user",
+        "content": "Tôi đã có số liệu tăng trưởng nhưng chưa có thông tin đối thủ cạnh tranh."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "REACT_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"decide_action\",\"arguments\":{\"action\":\"search\",\"query\":\"top competitors market share analysis\",\"reasoning\":\"Need competitor information before synthesis.\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Summarize research findings into a structured overview."
+      },
+      {
+        "role": "user",
+        "content": "Tổng hợp thị trường chatbot AI."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "SYNTHESIS_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"synthesize_overview\",\"arguments\":{\"tong_quan_thi_truong\":\"Thị trường chatbot AI đang tăng trưởng mạnh nhờ nhu cầu tự động hóa dịch vụ khách hàng.\",\"tro_ly\":[\"Doanh nghiệp tăng đầu tư vào AI\",\"Ngân hàng và thương mại điện tử dẫn đầu ứng dụng\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Generate SWOT analysis."
+      },
+      {
+        "role": "user",
+        "content": "Phân tích SWOT cho startup giáo dục trực tuyến."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "SWOT_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"generate_swot\",\"arguments\":{\"strengths\":[\"Chi phí vận hành thấp\",\"Khả năng mở rộng nhanh\"],\"weaknesses\":[\"Khó duy trì tương tác\"],\"opportunities\":[\"Nhu cầu học online tăng\"],\"threats\":[\"Cạnh tranh cao\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Generate campaign schedules."
+      },
+      {
+        "role": "user",
+        "content": "Lập chiến dịch Discord 7 ngày cho game mới."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "CAMPAIGN_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"create_campaign_plan\",\"arguments\":{\"duration_days\":7,\"posting_frequency\":\"2 posts daily\",\"schedule\":[{\"day\":1,\"content\":\"Announcement\"},{\"day\":2,\"content\":\"Gameplay reveal\"}]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Expand marketing content."
+      },
+      {
+        "role": "user",
+        "content": "Viết bài quảng bá Discord cho sản phẩm AI."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "CONTENT_EXPANSION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"expand_content\",\"arguments\":{\"expanded_caption\":\"🚀 Khám phá công cụ AI giúp tăng hiệu suất làm việc của bạn ngay hôm nay!\",\"expanded_image_prompt\":\"Futuristic AI assistant dashboard, modern interface, cinematic lighting, ultra detailed, promotional style\"}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Act as a business analyst who interprets user requests. Determine if they need market research, general knowledge, or something else."
+      },
+      {
+        "role": "user",
+        "content": "Blockchain hoạt động như thế nào?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"knowledge\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are an AI assistant specialized in market analysis."
+      },
+      {
+        "role": "user",
+        "content": "So sánh thị trường xe điện ở Việt Nam và Thái Lan trong 3 năm gần đây"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"research\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Classify user requests."
+      },
+      {
+        "role": "user",
+        "content": "Bạn nghĩ thời tiết hôm nay đẹp không?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"chat\",\"response\":\"Mỗi người sẽ cảm nhận khác nhau nhưng thời tiết đẹp thường là thời tiết khiến bạn thấy thoải mái. Hôm nay bạn đang ở đâu để mình trò chuyện thêm?\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Act as an experienced market intelligence specialist."
+      },
+      {
+        "role": "user",
+        "content": "Top xu hướng AI trong ngành ngân hàng năm nay là gì?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"research\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Understand whether users ask for market research, factual knowledge or casual conversation."
+      },
+      {
+        "role": "user",
+        "content": "Giải thích sự khác nhau giữa TCP và UDP"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"knowledge\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "As an experienced market intelligence specialist."
+      },
+      {
+        "role": "user",
+        "content": "Tôi muốn mở quán cà phê ở Hà Nội, hãy phân tích thị trường và đối thủ"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"research\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Classify user intent."
+      },
+      {
+        "role": "user",
+        "content": "Java có hỗ trợ đa kế thừa không?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"knowledge\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Classify user requests."
+      },
+      {
+        "role": "user",
+        "content": "Kể tôi nghe một câu đố vui"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"chat\",\"response\":\"Có một câu đố nhé: Cái gì càng lấy đi càng lớn? → Đáp án: Cái hố 😄\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are an AI assistant specialized in market analysis."
+      },
+      {
+        "role": "user",
+        "content": "Người tiêu dùng Gen Z ở Việt Nam đang thay đổi hành vi mua sắm như thế nào?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"research\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Act as a business analyst."
+      },
+      {
+        "role": "user",
+        "content": "Merge sort hoạt động như thế nào?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"knowledge\",\"response\":\"\"}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a business analysis assistant. Classify user intent."
+      },
+      {
+        "role": "user",
+        "content": "Bạn nghĩ học Java hay Go sẽ tốt hơn cho backend?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"knowledge\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are an intent classification assistant."
+      },
+      {
+        "role": "user",
+        "content": "Tôi đang hơi mệt hôm nay."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"chat\",\"response\":\"Nghe có vẻ hôm nay bạn hơi thiếu năng lượng. Nếu muốn tâm sự hoặc đổi chủ đề sang điều gì nhẹ nhàng hơn thì tôi sẵn sàng trò chuyện cùng bạn.\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Validate market research input."
+      },
+      {
+        "role": "user",
+        "content": "Tôi muốn nghiên cứu thị trường fintech"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INPUT_VALIDATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"validate_input\",\"arguments\":{\"is_complete\":false,\"missing_fields\":[\"market\",\"region\",\"timeframe\",\"objective\"],\"suggestions\":[\"Chỉ định quốc gia hoặc khu vực\",\"Xác định mục tiêu nghiên cứu\",\"Chọn khoảng thời gian phân tích\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Generate clarification questions."
+      },
+      {
+        "role": "user",
+        "content": "Tôi muốn phân tích ngành ngân hàng"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "CLARIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"generate_questions\",\"arguments\":{\"questions\":[\"Bạn muốn phân tích ngân hàng ở quốc gia nào?\",\"Mục tiêu là đầu tư, học thuật hay kinh doanh?\",\"Bạn quan tâm giai đoạn thời gian nào?\"],\"suggestions\":[\"Thu hẹp phạm vi khu vực\",\"Xác định KPI cần nghiên cứu\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Create research plans."
+      },
+      {
+        "role": "user",
+        "content": "Lập kế hoạch nghiên cứu thị trường ví điện tử Việt Nam"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "PLANNING_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"create_research_plan\",\"arguments\":{\"research_questions\":[\"Quy mô thị trường hiện tại là bao nhiêu?\",\"Các đối thủ chính là ai?\",\"Xu hướng tăng trưởng ra sao?\"],\"search_steps\":[{\"query\":\"Vietnam e-wallet market size\"},{\"query\":\"Top e-wallet providers Vietnam\"},{\"query\":\"Vietnam digital payment growth report\"}]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Generate search queries."
+      },
+      {
+        "role": "user",
+        "content": "Blockchain có ứng dụng gì trong ngân hàng?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "GENERATE_SEARCH_QUERIES_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"generate_search_queries\",\"arguments\":{\"search_queries\":[\"blockchain applications in banking\",\"blockchain payment systems case study\",\"banking digital transformation blockchain\",\"benefits of blockchain for financial institutions\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Decide next ReAct step."
+      },
+      {
+        "role": "user",
+        "content": "Đã thu thập dữ liệu đối thủ nhưng chưa có số liệu tăng trưởng"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "REACT_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"decide_action\",\"arguments\":{\"action\":\"search\",\"query\":\"market growth statistics for competitors\",\"reasoning\":\"Current information lacks growth metrics needed for comparison\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Synthesize research."
+      },
+      {
+        "role": "user",
+        "content": "Tổng hợp kết quả nghiên cứu thị trường thanh toán số"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "SYNTHESIS_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"synthesize_overview\",\"arguments\":{\"tong_quan_thi_truong\":\"Thị trường thanh toán số tiếp tục tăng trưởng nhờ tỷ lệ sử dụng smartphone và chính sách thúc đẩy thanh toán không tiền mặt.\",\"tro_ly\":[\"Tăng trưởng giao dịch số\",\"Gia tăng số lượng người dùng\",\"Mở rộng hệ sinh thái fintech\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Generate SWOT."
+      },
+      {
+        "role": "user",
+        "content": "Tạo SWOT cho startup AI tuyển dụng"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "SWOT_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"generate_swot\",\"arguments\":{\"strengths\":[\"Tự động hóa tuyển dụng\",\"Giảm thời gian lọc CV\"],\"weaknesses\":[\"Phụ thuộc dữ liệu\"],\"opportunities\":[\"Nhu cầu HR Tech tăng\"],\"threats\":[\"Cạnh tranh từ nền tảng lớn\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Create campaign schedule."
+      },
+      {
+        "role": "user",
+        "content": "Lập chiến dịch Discord quảng bá game mới"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "CAMPAIGN_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"create_campaign_plan\",\"arguments\":{\"duration_days\":7,\"posting_frequency\":\"2 posts daily\",\"schedule\":[{\"day\":1,\"content\":\"Announcement\"},{\"day\":2,\"content\":\"Gameplay reveal\"}]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Expand content."
+      },
+      {
+        "role": "user",
+        "content": "Viết bài Discord quảng bá tai nghe gaming"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "CONTENT_EXPANSION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"expand_content\",\"arguments\":{\"expanded_caption\":\"🎧 Trải nghiệm âm thanh sống động cùng tai nghe gaming thế hệ mới...\",\"expanded_image_prompt\":\"modern gaming headset, RGB lighting, cinematic product render, ultra detailed, studio lighting\"}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are an AI assistant specialized in market analysis and user intent understanding."
+      },
+      {
+        "role": "user",
+        "content": "Cho tôi biết AI đang thay đổi ngành ngân hàng như thế nào?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"knowledge\",\"response\":\"\",\"reasoning\":\"User requests explanatory knowledge about AI impact on banking, not a research project or casual chat.\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Act as a market research assistant."
+      },
+      {
+        "role": "user",
+        "content": "Tôi muốn nghiên cứu thị trường ví điện tử ở Việt Nam."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INPUT_VALIDATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"validate_input\",\"arguments\":{\"is_complete\":false,\"missing_fields\":[\"time_period\",\"research_goal\",\"target_segment\"],\"suggestions\":[\"Specify research period\",\"Define objective such as investment or market overview\",\"Identify target customer group\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Generate clarification questions for incomplete market research requests."
+      },
+      {
+        "role": "user",
+        "content": "Tôi muốn phân tích thị trường xe điện."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "CLARIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"generate_questions\",\"arguments\":{\"questions\":[\"Bạn muốn phân tích thị trường ở quốc gia nào?\",\"Khoảng thời gian nghiên cứu là bao lâu?\",\"Bạn quan tâm doanh số, hành vi khách hàng hay đối thủ?\"],\"suggestions\":[\"Xác định khu vực địa lý\",\"Thu hẹp phạm vi phân tích\",\"Làm rõ mục tiêu kinh doanh\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Create structured research plans."
+      },
+      {
+        "role": "user",
+        "content": "Lập kế hoạch nghiên cứu thị trường fintech tại Đông Nam Á."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "PLANNING_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"create_research_plan\",\"arguments\":{\"research_questions\":[\"Quy mô thị trường fintech hiện tại?\",\"Các quốc gia tăng trưởng mạnh nhất?\",\"Xu hướng đầu tư nổi bật?\"],\"search_steps\":[{\"query\":\"Southeast Asia fintech market size\"},{\"query\":\"Top fintech startups SEA\"},{\"query\":\"Fintech investment trends ASEAN\"}]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Act as a ReAct controller for iterative market research."
+      },
+      {
+        "role": "user",
+        "content": "Tôi đã thu thập dữ liệu doanh thu nhưng thiếu dữ liệu đối thủ."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "REACT_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"decide_action\",\"arguments\":{\"action\":\"search\",\"query\":\"competitor market share latest report\",\"reasoning\":\"Current evidence is insufficient because competitor data is missing.\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Generate comprehensive search queries."
+      },
+      {
+        "role": "user",
+        "content": "Blockchain ảnh hưởng thế nào đến chuỗi cung ứng?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "GENERATE_SEARCH_QUERIES_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"generate_search_queries\",\"arguments\":{\"search_queries\":[\"Blockchain impact on supply chain efficiency\",\"Supply chain blockchain case studies\",\"Blockchain logistics adoption statistics\",\"Future of blockchain in supply chain\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Synthesize market findings."
+      },
+      {
+        "role": "user",
+        "content": "Tổng hợp nghiên cứu về thị trường cloud tại Việt Nam."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "SYNTHESIS_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"synthesize_overview\",\"arguments\":{\"tong_quan_thi_truong\":\"Thị trường cloud tại Việt Nam tăng trưởng mạnh nhờ chuyển đổi số và nhu cầu tối ưu hạ tầng CNTT.\",\"tro_ly\":[\"Tăng trưởng nhu cầu doanh nghiệp SME\",\"Gia tăng đầu tư trung tâm dữ liệu\",\"Cạnh tranh giữa nhà cung cấp nội địa và quốc tế\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Create Discord campaign schedules."
+      },
+      {
+        "role": "user",
+        "content": "Lập chiến dịch Discord quảng bá game trong 7 ngày."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "CAMPAIGN_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"create_campaign_plan\",\"arguments\":{\"duration_days\":7,\"posting_frequency\":\"3 times daily\",\"schedule\":[{\"day\":1,\"content\":\"Announcement\"},{\"day\":2,\"content\":\"Gameplay reveal\"},{\"day\":3,\"content\":\"Community event\"}]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Generate SWOT analysis."
+      },
+      {
+        "role": "user",
+        "content": "Phân tích SWOT cho startup giao đồ ăn."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "SWOT_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"generate_swot\",\"arguments\":{\"strengths\":[\"Fast delivery\",\"Flexible pricing\"],\"weaknesses\":[\"High operational cost\"],\"opportunities\":[\"Growing online demand\"],\"threats\":[\"Strong competitors\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Expand short content into promotional assets."
+      },
+      {
+        "role": "user",
+        "content": "Viết bài Discord quảng bá ứng dụng học tiếng Anh."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "CONTENT_EXPANSION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"expand_content\",\"arguments\":{\"expanded_caption\":\"🚀 Học tiếng Anh mỗi ngày cùng ứng dụng mới! Luyện nghe, nói và theo dõi tiến bộ cá nhân hóa ngay hôm nay.\",\"expanded_image_prompt\":\"Modern educational mobile app advertisement, students learning English, vibrant colors, clean UI, realistic lighting, premium digital marketing style\"}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are an AI assistant specialized in market analysis. Understand user queries and categorize them appropriately."
+      },
+      {
+        "role": "user",
+        "content": "Blockchain hoạt động như thế nào?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"knowledge\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Act as a business analyst who interprets user requests."
+      },
+      {
+        "role": "user",
+        "content": "Hãy phân tích thị trường xe điện tại Việt Nam trong 5 năm gần đây."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"research\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Classify user requests into chat, knowledge, or research."
+      },
+      {
+        "role": "user",
+        "content": "Bạn nghĩ hôm nay tôi nên uống cà phê hay trà?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"chat\",\"response\":\"Nếu bạn cần tỉnh táo và tập trung thì cà phê có thể phù hợp hơn. Nếu muốn nhẹ nhàng và thư giãn hơn thì trà là lựa chọn tốt. Bạn đang làm việc hay nghỉ ngơi hôm nay?\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Determine user intent for market intelligence workflows."
+      },
+      {
+        "role": "user",
+        "content": "Top ngành nghề tăng trưởng nhanh nhất tại Đông Nam Á năm nay là gì?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"research\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Categorize requests for business intelligence routing."
+      },
+      {
+        "role": "user",
+        "content": "REST API là gì?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"knowledge\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Interpret user requests and route them."
+      },
+      {
+        "role": "user",
+        "content": "Tôi vừa fail phỏng vấn rồi 😭"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"chat\",\"response\":\"Nghe có vẻ hôm nay hơi khó khăn với bạn. Một buổi phỏng vấn chưa phản ánh toàn bộ năng lực đâu. Nếu muốn, bạn có thể kể lại câu hỏi hoặc phần bạn thấy chưa tốt để mình cùng phân tích.\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You classify requests for research workflows."
+      },
+      {
+        "role": "user",
+        "content": "Xu hướng sử dụng AI trong ngành ngân hàng ở châu Á hiện nay ra sao?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"research\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Categorize user messages."
+      },
+      {
+        "role": "user",
+        "content": "Quick sort hoạt động như thế nào?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"knowledge\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Classify user prompt."
+      },
+      {
+        "role": "user",
+        "content": "Kể tôi nghe một sự thật thú vị đi"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"chat\",\"response\":\"Một điều thú vị là bạch tuộc có ba trái tim. Hai trái tim bơm máu tới mang, còn trái tim còn lại bơm máu đi khắp cơ thể.\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Interpret requests for routing."
+      },
+      {
+        "role": "user",
+        "content": "So sánh thị phần Shopee và TikTok Shop tại Việt Nam."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"research\",\"response\":\"\"}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are an AI assistant specialized in market analysis. Understand user queries and categorize them appropriately."
+      },
+      {
+        "role": "user",
+        "content": "Blockchain hoạt động như thế nào?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"knowledge\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Act as a business analyst who interprets user requests."
+      },
+      {
+        "role": "user",
+        "content": "Quy mô thị trường xe điện ở Đông Nam Á năm 2025 là bao nhiêu?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"research\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Determine whether user needs research, knowledge, or chat."
+      },
+      {
+        "role": "user",
+        "content": "Cho tôi biết sự khác nhau giữa Kafka và RabbitMQ"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"knowledge\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Classify user requests appropriately."
+      },
+      {
+        "role": "user",
+        "content": "Mình đang hơi mệt hôm nay"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"chat\",\"response\":\"Nghe có vẻ hôm nay bạn đang không có nhiều năng lượng. Nếu muốn tâm sự hoặc cần mình hỗ trợ điều gì thì cứ nói nhé.\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Interpret user requests for research routing."
+      },
+      {
+        "role": "user",
+        "content": "So sánh thị phần Shopee và TikTok Shop tại Việt Nam trong 2 năm gần đây"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"research\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Categorize requests correctly."
+      },
+      {
+        "role": "user",
+        "content": "HTTP khác HTTPS ở điểm nào?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"knowledge\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Route requests into chat, knowledge, or research."
+      },
+      {
+        "role": "user",
+        "content": "Kể tôi nghe một fact thú vị đi"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"chat\",\"response\":\"Bạn biết không? Bạch tuộc có tới ba trái tim — hai trái tim bơm máu tới mang và một trái tim bơm máu tới toàn bộ cơ thể.\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Determine user intent."
+      },
+      {
+        "role": "user",
+        "content": "Xu hướng AI Agent trong doanh nghiệp năm nay như thế nào?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"research\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Classify user queries."
+      },
+      {
+        "role": "user",
+        "content": "HashMap trong Java hoạt động ra sao?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"knowledge\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Understand user requests conversationally."
+      },
+      {
+        "role": "user",
+        "content": "Chào buổi sáng nhé"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"chat\",\"response\":\"Chào buổi sáng! Chúc bạn có một ngày làm việc và học tập hiệu quả nhé ☀️\"}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Act as a business analyst who interprets user requests. Determine if they need market research, general knowledge, or something else."
+      },
+      {
+        "role": "user",
+        "content": "Thị trường xe điện tại Việt Nam hiện nay tăng trưởng như thế nào?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"research\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Validate if research requests contain enough details."
+      },
+      {
+        "role": "user",
+        "content": "Tôi muốn nghiên cứu thị trường game."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INPUT_VALIDATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"validate_input\",\"arguments\":{\"is_complete\":false,\"missing_fields\":[\"market_scope\",\"region\",\"time_period\"],\"suggestions\":[\"Xác định loại game\",\"Chỉ định khu vực nghiên cứu\",\"Thêm khoảng thời gian\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Generate follow-up questions for incomplete market research input."
+      },
+      {
+        "role": "user",
+        "content": "Tôi muốn nghiên cứu thị trường game."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "CLARIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"generate_questions\",\"arguments\":{\"questions\":[\"Bạn muốn nghiên cứu game mobile, PC hay console?\",\"Bạn quan tâm khu vực nào?\",\"Khoảng thời gian nghiên cứu là bao lâu?\"],\"suggestions\":[\"Thu hẹp phân khúc\",\"Bổ sung đối tượng khách hàng\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Create structured market research plans."
+      },
+      {
+        "role": "user",
+        "content": "Lập kế hoạch nghiên cứu thị trường thương mại điện tử Việt Nam"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "PLANNING_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"create_research_plan\",\"arguments\":{\"research_questions\":[\"Quy mô thị trường hiện tại?\",\"Những nền tảng dẫn đầu?\",\"Xu hướng tăng trưởng?\"],\"search_steps\":[{\"query\":\"Vietnam ecommerce market size 2026\"},{\"query\":\"Top ecommerce platforms Vietnam\"},{\"query\":\"Vietnam ecommerce growth forecast\"}]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Decide next action during iterative research."
+      },
+      {
+        "role": "user",
+        "content": "Đã thu thập dữ liệu tăng trưởng nhưng chưa có dữ liệu đối thủ"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "REACT_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"decide_action\",\"arguments\":{\"action\":\"search\",\"query\":\"competitor analysis ecommerce Vietnam\",\"reasoning\":\"Current evidence lacks competitive landscape information\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Generate search queries for knowledge retrieval."
+      },
+      {
+        "role": "user",
+        "content": "Tại sao xe điện đang phát triển nhanh?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "GENERATE_SEARCH_QUERIES_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"generate_search_queries\",\"arguments\":{\"search_queries\":[\"electric vehicle market growth drivers\",\"government EV incentives\",\"consumer adoption of EV\",\"global EV trends 2026\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Synthesize findings into concise market overview."
+      },
+      {
+        "role": "user",
+        "content": "Tổng hợp kết quả nghiên cứu thị trường fintech"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "SYNTHESIS_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"synthesize_overview\",\"arguments\":{\"tong_quan_thi_truong\":\"Thị trường fintech tiếp tục tăng trưởng nhờ thanh toán số và ngân hàng số.\",\"tro_ly\":[\"Tăng trưởng giao dịch\",\"Mở rộng nhóm người dùng\",\"Gia tăng đầu tư\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Generate SWOT analysis."
+      },
+      {
+        "role": "user",
+        "content": "Phân tích SWOT cho startup giao đồ ăn"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "SWOT_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"generate_swot\",\"arguments\":{\"strengths\":[\"Tăng trưởng nhu cầu\"],\"weaknesses\":[\"Chi phí vận hành cao\"],\"opportunities\":[\"Mở rộng thị trường\"],\"threats\":[\"Cạnh tranh mạnh\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Create campaign schedules."
+      },
+      {
+        "role": "user",
+        "content": "Lên kế hoạch Discord campaign cho sản phẩm AI"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "CAMPAIGN_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"create_campaign_plan\",\"arguments\":{\"duration_days\":7,\"posting_frequency\":\"2 lần mỗi ngày\",\"schedule\":[{\"day\":1,\"content\":\"Giới thiệu sản phẩm\"},{\"day\":2,\"content\":\"Case study\"}]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Expand content into promotional assets."
+      },
+      {
+        "role": "user",
+        "content": "Viết bài quảng bá Discord cho phần mềm AI tạo ảnh"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "CONTENT_EXPANSION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"expand_content\",\"arguments\":{\"expanded_caption\":\"🚀 Khám phá công cụ AI tạo ảnh thế hệ mới...\",\"expanded_image_prompt\":\"futuristic AI product showcase, ultra detailed, cinematic lighting, digital art\"}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are an AI assistant specialized in market analysis and intent classification."
+      },
+      {
+        "role": "user",
+        "content": "Shopee và TikTok Shop hiện đang cạnh tranh như thế nào tại thị trường Việt Nam?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"research\",\"response\":\"\",\"reasoning\":\"User requests competitive market analysis between two platforms in Vietnam.\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Validate market research requests before execution."
+      },
+      {
+        "role": "user",
+        "content": "Tôi muốn nghiên cứu thị trường xe điện."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INPUT_VALIDATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"validate_input\",\"arguments\":{\"is_complete\":false,\"missing_fields\":[\"location\",\"target_segment\",\"time_period\"],\"suggestions\":[\"Specify country or region\",\"Define customer segment\",\"Add timeframe\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Generate clarification questions for incomplete research requests."
+      },
+      {
+        "role": "user",
+        "content": "Tôi muốn phân tích thị trường AI."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "CLARIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"generate_questions\",\"arguments\":{\"questions\":[\"Bạn muốn nghiên cứu AI ở quốc gia nào?\",\"Bạn quan tâm AI cho doanh nghiệp hay người dùng cá nhân?\",\"Khoảng thời gian phân tích là bao lâu?\"],\"suggestions\":[\"Thu hẹp phạm vi ngành\",\"Xác định mục tiêu nghiên cứu\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Create structured research plans."
+      },
+      {
+        "role": "user",
+        "content": "Lập kế hoạch nghiên cứu thị trường ngân hàng số tại Việt Nam."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "PLANNING_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"create_research_plan\",\"arguments\":{\"research_questions\":[\"Quy mô thị trường ngân hàng số?\",\"Các đối thủ chính là ai?\",\"Xu hướng tăng trưởng?\"],\"search_steps\":[{\"query\":\"Vietnam digital banking market size\"},{\"query\":\"Top digital banks Vietnam\"},{\"query\":\"Digital banking growth Vietnam 2025\"}]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Generate search queries for knowledge gathering."
+      },
+      {
+        "role": "user",
+        "content": "Tại sao Java lại phổ biến trong backend?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "GENERATE_SEARCH_QUERIES_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"generate_search_queries\",\"arguments\":{\"search_queries\":[\"Java backend popularity reasons\",\"Java enterprise ecosystem advantages\",\"Spring Boot backend adoption statistics\",\"Java performance backend comparison\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Decide next action in research loop."
+      },
+      {
+        "role": "user",
+        "content": "Đã có dữ liệu thị trường nhưng thiếu thông tin về đối thủ."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "REACT_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"decide_action\",\"arguments\":{\"action\":\"search\",\"query\":\"competitor analysis market leaders\",\"reasoning\":\"Additional competitor information is required before summarization.\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Synthesize findings into structured overview."
+      },
+      {
+        "role": "user",
+        "content": "Tổng hợp kết quả nghiên cứu thị trường fintech."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "SYNTHESIS_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"synthesize_overview\",\"arguments\":{\"tong_quan_thi_truong\":\"Thị trường fintech đang tăng trưởng nhanh nhờ thanh toán số và mobile banking.\",\"tro_ly\":[\"Tăng trưởng giao dịch điện tử\",\"Gia tăng đầu tư vào fintech\",\"Người dùng trẻ là động lực chính\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Create marketing campaign schedules."
+      },
+      {
+        "role": "user",
+        "content": "Lập chiến dịch Discord 7 ngày cho sản phẩm AI."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "CAMPAIGN_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"create_campaign_plan\",\"arguments\":{\"duration_days\":7,\"posting_frequency\":\"2 times daily\",\"schedule\":[{\"day\":1,\"content\":\"Launch post\"},{\"day\":2,\"content\":\"Community discussion\"}]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Generate SWOT analysis."
+      },
+      {
+        "role": "user",
+        "content": "Tạo SWOT cho startup AI mới."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "SWOT_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"generate_swot\",\"arguments\":{\"strengths\":[\"Fast innovation\"],\"weaknesses\":[\"Limited capital\"],\"opportunities\":[\"Growing AI demand\"],\"threats\":[\"High competition\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Expand short promotional content."
+      },
+      {
+        "role": "user",
+        "content": "Mở rộng nội dung quảng bá chatbot AI cho Discord."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "CONTENT_EXPANSION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"expand_content\",\"arguments\":{\"expanded_caption\":\"🚀 Trải nghiệm chatbot AI thế hệ mới ngay hôm nay! Tăng tốc công việc, hỗ trợ cộng đồng và phản hồi tức thì.\",\"expanded_image_prompt\":\"futuristic AI assistant, discord community, neon lighting, cinematic style, ultra detailed, modern UI\"}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Act as a business analyst who interprets user requests."
+      },
+      {
+        "role": "user",
+        "content": "Thị trường xe điện ở Việt Nam hiện nay tăng trưởng như thế nào?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"research\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Determine whether the request requires external information."
+      },
+      {
+        "role": "user",
+        "content": "Blockchain là gì?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"knowledge\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Classify user intent."
+      },
+      {
+        "role": "user",
+        "content": "Cho tôi một mẹo để tập trung khi học."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"chat\",\"response\":\"Bạn có thể thử học theo chu kỳ 25 phút tập trung và nghỉ ngắn 5 phút. Ngoài ra hãy giảm thông báo và đặt mục tiêu nhỏ cho từng phiên học.\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Validate market research requests."
+      },
+      {
+        "role": "user",
+        "content": "Nghiên cứu thị trường cho ứng dụng của tôi"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INPUT_VALIDATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"validate_input\",\"arguments\":{\"is_complete\":false,\"missing_fields\":[\"industry\",\"target_market\",\"location\"],\"suggestions\":[\"Mô tả lĩnh vực sản phẩm\",\"Chỉ rõ khách hàng mục tiêu\",\"Xác định khu vực nghiên cứu\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Generate clarification questions."
+      },
+      {
+        "role": "user",
+        "content": "Tôi muốn nghiên cứu thị trường AI"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "CLARIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"generate_questions\",\"arguments\":{\"questions\":[\"Bạn muốn nghiên cứu AI cho ngành nào?\",\"Bạn quan tâm khu vực địa lý nào?\",\"Mục tiêu nghiên cứu là đầu tư hay xây dựng sản phẩm?\"],\"suggestions\":[\"Thu hẹp phạm vi ngành\",\"Xác định khoảng thời gian phân tích\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Create research plans."
+      },
+      {
+        "role": "user",
+        "content": "Lập kế hoạch nghiên cứu thị trường chatbot AI tại Đông Nam Á"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "PLANNING_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"create_research_plan\",\"arguments\":{\"research_questions\":[\"Quy mô thị trường hiện tại là bao nhiêu?\",\"Những đối thủ chính là ai?\",\"Xu hướng tăng trưởng 3 năm tới?\"],\"search_steps\":[{\"query\":\"AI chatbot market Southeast Asia size\"},{\"query\":\"Top AI chatbot companies SEA\"},{\"query\":\"AI adoption trends Southeast Asia\"}]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Decide next ReAct action."
+      },
+      {
+        "role": "user",
+        "content": "Tôi đã có dữ liệu thị trường nhưng còn thiếu đối thủ cạnh tranh."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "REACT_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"decide_action\",\"arguments\":{\"action\":\"search\",\"query\":\"major competitors market analysis\",\"reasoning\":\"Need competitor landscape before synthesis\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Generate search queries."
+      },
+      {
+        "role": "user",
+        "content": "Tìm hiểu xu hướng fintech Việt Nam"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "GENERATE_SEARCH_QUERIES_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"generate_search_queries\",\"arguments\":{\"search_queries\":[\"Vietnam fintech market size 2026\",\"Vietnam digital banking adoption\",\"Top fintech startups Vietnam\",\"Vietnam fintech growth forecast\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Synthesize findings."
+      },
+      {
+        "role": "user",
+        "content": "Tổng hợp dữ liệu nghiên cứu thị trường xe điện."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "SYNTHESIS_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"synthesize_overview\",\"arguments\":{\"tong_quan_thi_truong\":\"Thị trường xe điện tăng trưởng nhanh nhờ chính sách hỗ trợ và thay đổi hành vi người tiêu dùng.\",\"tro_ly\":[\"Doanh số tăng theo năm\",\"Mức độ cạnh tranh gia tăng\",\"Hạ tầng sạc mở rộng\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Generate SWOT."
+      },
+      {
+        "role": "user",
+        "content": "Tạo SWOT cho startup giao đồ ăn."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "SWOT_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"generate_swot\",\"arguments\":{\"strengths\":[\"Tăng trưởng người dùng\"],\"weaknesses\":[\"Chi phí vận hành cao\"],\"opportunities\":[\"Mở rộng khu vực\"],\"threats\":[\"Cạnh tranh mạnh\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Generate campaign schedule."
+      },
+      {
+        "role": "user",
+        "content": "Tạo campaign Discord 7 ngày cho game mới."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "CAMPAIGN_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"create_campaign_plan\",\"arguments\":{\"duration_days\":7,\"posting_frequency\":\"2 posts daily\",\"schedule\":[{\"day\":1,\"content\":\"Launch teaser\"},{\"day\":2,\"content\":\"Gameplay clip\"}]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Expand content."
+      },
+      {
+        "role": "user",
+        "content": "Viết bài quảng bá Discord cho tai nghe gaming."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "CONTENT_EXPANSION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"expand_content\",\"arguments\":{\"expanded_caption\":\"🔥 Trải nghiệm âm thanh gaming thế hệ mới cùng chiếc tai nghe với độ trễ thấp và thiết kế hiện đại!\",\"expanded_image_prompt\":\"professional gaming headset, cinematic lighting, premium product render, neon atmosphere, ultra detailed\"}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "As an experienced market intelligence specialist, your role is to understand what users are asking for and respond conversationally."
+      },
+      {
+        "role": "user",
+        "content": "Thời tiết hôm nay đẹp quá nhỉ?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"chat\",\"response\":\"Đúng vậy, thời tiết dễ chịu có thể khiến một ngày làm việc hoặc học tập thoải mái hơn nhiều. Bạn có kế hoạch gì hôm nay không?\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Act as a business analyst who interprets user requests. Determine if they need market research, general knowledge, or something else."
+      },
+      {
+        "role": "user",
+        "content": "Giải thích cho tôi sự khác nhau giữa REST API và GraphQL."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"knowledge\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are an AI assistant specialized in market analysis. Understand user queries and categorize them appropriately."
+      },
+      {
+        "role": "user",
+        "content": "Xu hướng thanh toán QR tại Việt Nam trong 3 năm gần đây phát triển như thế nào?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"research\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "As an experienced market intelligence specialist, classify user intent before responding."
+      },
+      {
+        "role": "user",
+        "content": "Kể tôi nghe một fact thú vị về lập trình."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"chat\",\"response\":\"Một fact thú vị là lỗi phần mềm đầu tiên được ghi nhận nổi tiếng lại là… một con bướm đêm mắc vào máy tính relay năm 1947. Từ đó thuật ngữ 'bug' trở nên phổ biến trong ngành phần mềm 😄\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Act as a business analyst who interprets user requests."
+      },
+      {
+        "role": "user",
+        "content": "Blockchain hoạt động như thế nào?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"knowledge\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are an AI assistant specialized in market analysis."
+      },
+      {
+        "role": "user",
+        "content": "So sánh thị phần của Shopee, TikTok Shop và Lazada tại Đông Nam Á năm gần nhất."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"research\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "As an experienced market intelligence specialist."
+      },
+      {
+        "role": "user",
+        "content": "Tôi đang khá mệt sau một ngày dài."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"chat\",\"response\":\"Nghe có vẻ hôm nay của bạn khá dài rồi. Nếu muốn nghỉ đầu óc một chút, mình có thể trò chuyện nhẹ nhàng hoặc giúp bạn giải quyết việc gì còn dang dở.\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Act as a business analyst who interprets user requests."
+      },
+      {
+        "role": "user",
+        "content": "CPU khác GPU ở điểm nào?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"knowledge\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are an AI assistant specialized in market analysis."
+      },
+      {
+        "role": "user",
+        "content": "Ngành ngân hàng số tại Việt Nam còn tiềm năng tăng trưởng không? Cho tôi góc nhìn thị trường."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"research\",\"response\":\"\"}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Act as a business analyst who classifies user requests before processing."
+      },
+      {
+        "role": "user",
+        "content": "GDP của Việt Nam năm ngoái là bao nhiêu?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"knowledge\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Classify requests into chat, knowledge, or research."
+      },
+      {
+        "role": "user",
+        "content": "Theo bạn xu hướng AI trong ngành ngân hàng 5 năm tới sẽ như thế nào?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"research\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Determine user intent and provide conversational responses for chat."
+      },
+      {
+        "role": "user",
+        "content": "Bạn thích cà phê hay trà?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"chat\",\"response\":\"Tôi không có sở thích cá nhân nhưng nếu nói về lựa chọn phổ biến thì cà phê thường được chọn để tỉnh táo còn trà hợp lúc thư giãn hơn 😄\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You classify requests for market intelligence workflows."
+      },
+      {
+        "role": "user",
+        "content": "So sánh thị trường ví điện tử Việt Nam và Indonesia năm 2025"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"research\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Route user requests correctly."
+      },
+      {
+        "role": "user",
+        "content": "Docker khác Kubernetes như thế nào?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"knowledge\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Act as a conversational assistant."
+      },
+      {
+        "role": "user",
+        "content": "Tôi hơi mệt hôm nay."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"chat\",\"response\":\"Nghe có vẻ hôm nay bạn đang khá đuối. Hy vọng bạn có thời gian nghỉ ngơi một chút. Nếu muốn trò chuyện hoặc cần hỗ trợ việc gì thì cứ nói nhé.\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Classify business and market-related requests."
+      },
+      {
+        "role": "user",
+        "content": "Người dùng Gen Z ở Việt Nam đang chi tiêu cho giải trí online như thế nào?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"research\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Determine whether external information is needed."
+      },
+      {
+        "role": "user",
+        "content": "HashMap và ConcurrentHashMap khác nhau ở điểm nào?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"knowledge\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Classify user intent and respond conversationally if needed."
+      },
+      {
+        "role": "user",
+        "content": "Chúc tôi may mắn đi, mai tôi phỏng vấn."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"chat\",\"response\":\"Chúc bạn buổi phỏng vấn thật suôn sẻ nhé 🍀 Chuẩn bị kỹ các ví dụ thực tế, trả lời rõ ràng và giữ nhịp trao đổi tự nhiên. Hy vọng bạn đạt kết quả mong muốn!\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Identify whether the request requires research."
+      },
+      {
+        "role": "user",
+        "content": "Tổng hợp các startup AI đang gọi vốn mạnh nhất Đông Nam Á"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"research\",\"response\":\"\"}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Act as a business analyst who interprets user requests and classify intent."
+      },
+      {
+        "role": "user",
+        "content": "Tôi muốn biết thị trường xe điện ở Đông Nam Á đang phát triển thế nào."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"research\",\"response\":\"\",\"reasoning\":\"User requests market analysis about EV trends in Southeast Asia requiring external market research.\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You classify user requests into chat, knowledge, or research."
+      },
+      {
+        "role": "user",
+        "content": "Giải thích giúp tôi REST API là gì."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"knowledge\",\"response\":\"\",\"reasoning\":\"User requests factual explanation rather than market research or conversation.\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You respond conversationally when user intent is chat."
+      },
+      {
+        "role": "user",
+        "content": "Tôi hơi mệt vì làm việc cả ngày."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"chat\",\"response\":\"Nghe như hôm nay bạn đã có một ngày khá dài rồi. Nếu muốn nghỉ đầu óc một chút hoặc cần trao đổi điều gì, mình sẵn sàng trò chuyện.\",\"reasoning\":\"User is making casual conversation and seeking social interaction.\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Validate whether market research input is complete."
+      },
+      {
+        "role": "user",
+        "content": "Tôi muốn nghiên cứu thị trường mỹ phẩm."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INPUT_VALIDATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"validate_input\",\"arguments\":{\"is_complete\":false,\"missing_fields\":[\"market_scope\",\"region\",\"timeframe\"],\"suggestions\":[\"Chỉ rõ quốc gia hoặc khu vực\",\"Xác định nhóm sản phẩm mỹ phẩm\",\"Thêm mốc thời gian nghiên cứu\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Generate clarification questions."
+      },
+      {
+        "role": "user",
+        "content": "Tôi muốn phân tích thị trường AI."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "CLARIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"generate_questions\",\"arguments\":{\"questions\":[\"Bạn muốn phân tích AI ở quốc gia nào?\",\"Bạn quan tâm thị trường B2B hay B2C?\",\"Bạn muốn dữ liệu trong khoảng thời gian nào?\"],\"suggestions\":[\"Thu hẹp phạm vi ngành\",\"Xác định đối thủ hoặc phân khúc\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Create research plans."
+      },
+      {
+        "role": "user",
+        "content": "Lập kế hoạch nghiên cứu thị trường fintech Việt Nam."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "PLANNING_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"create_research_plan\",\"arguments\":{\"research_questions\":[\"Quy mô thị trường hiện tại là bao nhiêu?\",\"Những công ty dẫn đầu là ai?\",\"Xu hướng tăng trưởng như thế nào?\"],\"search_steps\":[{\"query\":\"Vietnam fintech market size\"},{\"query\":\"Top fintech companies Vietnam\"},{\"query\":\"Vietnam fintech growth forecast\"}]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Generate search queries."
+      },
+      {
+        "role": "user",
+        "content": "Tại sao người trẻ ngày càng thích mua xe điện?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "GENERATE_SEARCH_QUERIES_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"generate_search_queries\",\"arguments\":{\"search_queries\":[\"young consumers electric vehicle adoption\",\"Gen Z EV buying behavior\",\"electric vehicle purchase motivation survey\",\"consumer trend electric cars\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Decide ReAct next action."
+      },
+      {
+        "role": "user",
+        "content": "Tôi đã thu thập dữ liệu nhưng chưa đủ để kết luận."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "REACT_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"decide_action\",\"arguments\":{\"action\":\"search\",\"query\":\"additional market evidence and recent reports\",\"reasoning\":\"Current information appears insufficient for synthesis.\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Generate SWOT."
+      },
+      {
+        "role": "user",
+        "content": "Phân tích SWOT cho startup giao đồ ăn."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "SWOT_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"generate_swot\",\"arguments\":{\"strengths\":[\"Nhanh\",\"Tiện lợi\"],\"weaknesses\":[\"Chi phí vận hành cao\"],\"opportunities\":[\"Tăng nhu cầu online\"],\"threats\":[\"Cạnh tranh mạnh\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Expand content."
+      },
+      {
+        "role": "user",
+        "content": "Viết bài Discord quảng bá ứng dụng học tiếng Anh."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "CONTENT_EXPANSION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"expand_content\",\"arguments\":{\"expanded_caption\":\"🚀 Học tiếng Anh mỗi ngày dễ dàng hơn với ứng dụng mới của chúng tôi...\",\"expanded_image_prompt\":\"modern educational app advertisement, vibrant colors, mobile UI, students studying, digital illustration, cinematic lighting\"}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Act as a business analyst who interprets user requests. Determine if they need market research, general knowledge, or something else."
+      },
+      {
+        "role": "user",
+        "content": "Top 5 ngành tăng trưởng nhanh nhất ở Việt Nam năm nay là gì?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"research\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Validate user requests before market research."
+      },
+      {
+        "role": "user",
+        "content": "Tôi muốn nghiên cứu thị trường AI"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INPUT_VALIDATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"validate_input\",\"arguments\":{\"is_complete\":false,\"missing_fields\":[\"market_scope\",\"region\",\"time_range\"],\"suggestions\":[\"Specify AI segment\",\"Choose target geography\",\"Add timeline\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Generate clarification questions for incomplete market research requests."
+      },
+      {
+        "role": "user",
+        "content": "Tôi muốn nghiên cứu thị trường AI"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "CLARIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"generate_questions\",\"arguments\":{\"questions\":[\"Bạn muốn nghiên cứu mảng AI nào?\",\"Khu vực nghiên cứu là ở đâu?\",\"Bạn quan tâm dữ liệu trong khoảng thời gian nào?\"],\"suggestions\":[\"Thu hẹp ngành\",\"Xác định mục tiêu nghiên cứu\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Create research plans for market analysis."
+      },
+      {
+        "role": "user",
+        "content": "Phân tích thị trường ví điện tử ở Đông Nam Á"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "PLANNING_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"create_research_plan\",\"arguments\":{\"research_questions\":[\"Quy mô thị trường hiện tại?\",\"Những công ty dẫn đầu?\",\"Xu hướng tăng trưởng?\"],\"search_steps\":[{\"query\":\"SEA e-wallet market size\"},{\"query\":\"Top e-wallet providers Southeast Asia\"},{\"query\":\"Digital payment growth SEA\"}]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Decide next action in ReAct workflow."
+      },
+      {
+        "role": "user",
+        "content": "Đã có dữ liệu thị trường rồi, bước tiếp theo là gì?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "REACT_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"decide_action\",\"arguments\":{\"action\":\"summarize\",\"query\":\"\",\"reasoning\":\"Enough information collected for synthesis\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Generate optimized search queries."
+      },
+      {
+        "role": "user",
+        "content": "Ngành game mobile ở Việt Nam phát triển thế nào?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "GENERATE_SEARCH_QUERIES_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"generate_search_queries\",\"arguments\":{\"search_queries\":[\"Vietnam mobile gaming market size\",\"Vietnam mobile game revenue\",\"Top mobile game publishers Vietnam\",\"Vietnam gaming growth forecast\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Create market synthesis."
+      },
+      {
+        "role": "user",
+        "content": "Tổng hợp kết quả nghiên cứu ngành fintech"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "SYNTHESIS_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"synthesize_overview\",\"arguments\":{\"tong_quan_thi_truong\":\"Thị trường fintech tiếp tục tăng trưởng mạnh nhờ thanh toán số và ngân hàng số.\",\"tro_ly\":[\"Tăng trưởng giao dịch\",\"Gia tăng người dùng\",\"Mở rộng hệ sinh thái\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Generate campaign plans."
+      },
+      {
+        "role": "user",
+        "content": "Lập kế hoạch quảng bá Discord cho sản phẩm AI trong 7 ngày"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "CAMPAIGN_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"create_campaign_plan\",\"arguments\":{\"duration_days\":7,\"posting_frequency\":\"2 times daily\",\"schedule\":[{\"day\":1,\"content\":\"Product introduction\"},{\"day\":2,\"content\":\"Use cases\"}]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Generate SWOT analysis."
+      },
+      {
+        "role": "user",
+        "content": "Phân tích SWOT cho startup giáo dục online"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "SWOT_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"generate_swot\",\"arguments\":{\"strengths\":[\"Scalable\"],\"weaknesses\":[\"High CAC\"],\"opportunities\":[\"Growing demand\"],\"threats\":[\"Competition\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Expand content into publish-ready Discord post."
+      },
+      {
+        "role": "user",
+        "content": "Viết bài quảng bá chatbot AI cho Discord"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "CONTENT_EXPANSION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"expand_content\",\"arguments\":{\"expanded_caption\":\"🚀 Khám phá chatbot AI thế hệ mới giúp tự động hóa công việc và tăng hiệu suất cộng đồng của bạn!\",\"expanded_image_prompt\":\"Modern AI assistant, Discord community promotion, futuristic UI, neon lighting, cinematic composition\"}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Act as a business analyst who classifies requests into chat, knowledge, or research."
+      },
+      {
+        "role": "user",
+        "content": "AI agent là gì và khác chatbot truyền thống như thế nào?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"knowledge\",\"response\":\"\",\"reasoning\":\"User requests conceptual explanation and comparison, not market investigation.\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Determine if the user request needs market research."
+      },
+      {
+        "role": "user",
+        "content": "Tôi muốn nghiên cứu thị trường ví điện tử ở Việt Nam năm 2026"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"research\",\"response\":\"\",\"reasoning\":\"User explicitly requests market research about e-wallet market.\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Validate whether research requests contain enough details."
+      },
+      {
+        "role": "user",
+        "content": "Tôi muốn nghiên cứu thị trường xe điện"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INPUT_VALIDATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"validate_input\",\"arguments\":{\"is_complete\":false,\"missing_fields\":[\"region\",\"time_period\",\"objective\"],\"suggestions\":[\"Specify target country or region\",\"Add timeframe for analysis\",\"Describe business objective\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Generate follow-up questions for incomplete research requests."
+      },
+      {
+        "role": "user",
+        "content": "Tôi muốn nghiên cứu thị trường xe điện"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "CLARIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"generate_questions\",\"arguments\":{\"questions\":[\"Bạn muốn nghiên cứu khu vực nào?\",\"Bạn quan tâm giai đoạn thời gian nào?\",\"Mục tiêu là đầu tư hay phân tích cạnh tranh?\"],\"suggestions\":[\"Thu hẹp phạm vi địa lý\",\"Xác định nhóm khách hàng mục tiêu\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Create structured market research plans."
+      },
+      {
+        "role": "user",
+        "content": "Lập kế hoạch nghiên cứu thị trường ngân hàng số Việt Nam"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "PLANNING_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"create_research_plan\",\"arguments\":{\"research_questions\":[\"Quy mô thị trường hiện tại?\",\"Đối thủ chính là ai?\",\"Xu hướng tăng trưởng như thế nào?\"],\"search_steps\":[{\"query\":\"Vietnam digital banking market size 2026\"},{\"query\":\"Top digital banks Vietnam\"},{\"query\":\"Digital banking customer trends Vietnam\"}]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Generate search queries for answering knowledge requests."
+      },
+      {
+        "role": "user",
+        "content": "Blockchain đang được ứng dụng thế nào trong ngân hàng?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "GENERATE_SEARCH_QUERIES_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"generate_search_queries\",\"arguments\":{\"search_queries\":[\"Blockchain applications in banking\",\"Blockchain cross-border payment banking\",\"Digital identity blockchain banking\",\"Bank adoption of blockchain technology\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Synthesize findings into structured overview."
+      },
+      {
+        "role": "user",
+        "content": "Tổng hợp kết quả nghiên cứu thị trường fintech"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "SYNTHESIS_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"synthesize_overview\",\"arguments\":{\"tong_quan_thi_truong\":\"Thị trường fintech tiếp tục tăng trưởng nhờ thanh toán số và AI hóa dịch vụ tài chính.\",\"tro_ly\":[\"Thanh toán số tăng trưởng mạnh\",\"Ngân hàng số mở rộng tệp khách hàng\",\"AI được áp dụng trong cá nhân hóa dịch vụ\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Generate SWOT analysis."
+      },
+      {
+        "role": "user",
+        "content": "Tạo SWOT cho startup giao đồ ăn"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "SWOT_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"generate_swot\",\"arguments\":{\"strengths\":[\"Tăng trưởng nhu cầu\"],\"weaknesses\":[\"Chi phí logistics cao\"],\"opportunities\":[\"Mở rộng vùng phục vụ\"],\"threats\":[\"Cạnh tranh lớn\"]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Create Discord campaign content."
+      },
+      {
+        "role": "user",
+        "content": "Lập kế hoạch quảng bá Discord cho sản phẩm AI trong 7 ngày"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "CAMPAIGN_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"create_campaign_plan\",\"arguments\":{\"duration_days\":7,\"posting_frequency\":\"2 posts daily\",\"schedule\":[{\"day\":1,\"content\":\"Launch teaser\"},{\"day\":2,\"content\":\"Feature highlight\"},{\"day\":3,\"content\":\"Community discussion\"}]}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Expand content briefs."
+      },
+      {
+        "role": "user",
+        "content": "Viết bài quảng bá chatbot AI cho Discord"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "CONTENT_EXPANSION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"expand_content\",\"arguments\":{\"expanded_caption\":\"🚀 Khám phá chatbot AI thế hệ mới! Tăng tương tác cộng đồng và hỗ trợ người dùng 24/7.\",\"expanded_image_prompt\":\"modern AI assistant, discord community, futuristic UI, cinematic lighting, ultra detailed, digital marketing\"}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "As an experienced market intelligence specialist, your role is to understand what users are asking for and respond conversationally."
+      },
+      {
+        "role": "user",
+        "content": "Tôi hơi mệt hôm nay, kể tôi nghe điều gì đó tích cực đi."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"chat\",\"response\":\"Có những ngày chậm lại một chút cũng không sao. Nếu hôm nay chưa hoàn thành hết mọi thứ thì ngày mai vẫn còn. Bạn muốn nói chuyện tiếp hay đổi chủ đề sang thứ gì vui hơn không?\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Act as a business analyst who interprets user requests."
+      },
+      {
+        "role": "user",
+        "content": "Mô hình SaaS là gì?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"knowledge\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are an AI assistant specialized in market analysis."
+      },
+      {
+        "role": "user",
+        "content": "Phân tích thị trường xe điện Việt Nam trong 3 năm gần đây."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"research\",\"response\":\"\",\"reasoning\":\"User requests historical market analysis with trend evaluation and recent timeframe, requiring external research.\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Classify requests into chat, knowledge, or research."
+      },
+      {
+        "role": "user",
+        "content": "Tại sao startup AI gần đây nhận được nhiều vốn đầu tư?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"research\",\"response\":\"\",\"reasoning\":\"User asks for trend analysis and investment behavior requiring external information.\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Determine if requests need factual explanation or research."
+      },
+      {
+        "role": "user",
+        "content": "Blockchain hoạt động như thế nào?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"knowledge\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Act as market research router."
+      },
+      {
+        "role": "user",
+        "content": "Tôi muốn mở thương hiệu cà phê tại Hà Nội, hãy nghiên cứu giúp tôi."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"research\",\"response\":\"\",\"reasoning\":\"User requests business opportunity and market analysis before launching a brand.\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Classify requests and respond naturally."
+      },
+      {
+        "role": "user",
+        "content": "Bạn thích mùa nào nhất?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"chat\",\"response\":\"Tôi không có cảm nhận cá nhân, nhưng nếu chọn theo không khí thì mùa thu thường được nhiều người thích vì thời tiết dễ chịu 🍂\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Business analysis assistant."
+      },
+      {
+        "role": "user",
+        "content": "Top xu hướng fintech Đông Nam Á năm nay là gì?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"research\",\"response\":\"\",\"reasoning\":\"User asks for current regional trends requiring recent market data.\"}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are an AI assistant specialized in market analysis. Understand user queries and categorize them appropriately."
+      },
+      {
+        "role": "user",
+        "content": "Tại sao giá vàng thường tăng khi lạm phát cao?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"knowledge\",\"response\":\"\",\"reasoning\":\"User asks for explanatory economic knowledge, not requiring broad market research.\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Act as a business analyst who interprets user requests."
+      },
+      {
+        "role": "user",
+        "content": "Tôi muốn nghiên cứu thị trường xe điện tại Đông Nam Á trong 3 năm gần đây."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"research\",\"response\":\"\",\"reasoning\":\"User requests market analysis with geographic and temporal scope requiring external research.\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Classify intent and respond naturally."
+      },
+      {
+        "role": "user",
+        "content": "Chào buổi sáng nhé!"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"chat\",\"response\":\"Chào buổi sáng! Chúc bạn một ngày làm việc hiệu quả. Có điều gì bạn muốn mình hỗ trợ không?\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You classify requests for market intelligence."
+      },
+      {
+        "role": "user",
+        "content": "Top công ty AI đang dẫn đầu thị trường hiện nay là những ai?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"knowledge\",\"response\":\"\",\"reasoning\":\"User requests current market landscape overview rather than full research workflow.\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Determine whether the user needs chat, knowledge, or research."
+      },
+      {
+        "role": "user",
+        "content": "Bạn nghĩ thời tiết hôm nay đẹp để đi chơi không?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"chat\",\"response\":\"Nghe như một kế hoạch hay đấy 😄 Nếu bạn nói mình biết khu vực nào thì mình có thể cùng xem nên đi đâu cho hợp.\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Interpret user intent."
+      },
+      {
+        "role": "user",
+        "content": "Thị trường livestream commerce ở Việt Nam đang tăng trưởng như thế nào?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"research\",\"response\":\"\",\"reasoning\":\"User requests market growth analysis requiring market data and trend evaluation.\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Categorize user intent."
+      },
+      {
+        "role": "user",
+        "content": "Blockchain hoạt động như thế nào?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"knowledge\",\"response\":\"\",\"reasoning\":\"Educational question asking for conceptual explanation.\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Handle conversations naturally."
+      },
+      {
+        "role": "user",
+        "content": "Kể cho tôi một câu đố vui."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"chat\",\"response\":\"Câu đố đây 😄 Cái gì càng lấy đi thì càng lớn? — Đáp án: Cái hố.\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You analyze requests for business research."
+      },
+      {
+        "role": "user",
+        "content": "So sánh hành vi mua sắm Gen Z và Millennials tại Việt Nam."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"research\",\"response\":\"\",\"reasoning\":\"Comparative consumer behavior analysis requires structured market research.\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Classify and respond conversationally."
+      },
+      {
+        "role": "user",
+        "content": "REST API khác gì GraphQL?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"knowledge\",\"response\":\"\",\"reasoning\":\"Technical explanation request, not market research.\"}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are an AI assistant specialized in market analysis. Classify user intent and respond appropriately."
+      },
+      {
+        "role": "user",
+        "content": "Java volatile khác synchronized như thế nào?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"knowledge\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Act as a business analyst who interprets user requests."
+      },
+      {
+        "role": "user",
+        "content": "Phân tích thị trường ngân hàng số tại Việt Nam giai đoạn 2024–2026 và xu hướng AI trong tài chính."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"research\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Classify user requests into chat, knowledge, or research."
+      },
+      {
+        "role": "user",
+        "content": "Tôi đang khá mệt, kể tôi nghe một chuyện tích cực đi."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"chat\",\"response\":\"Có một điều thú vị là nhiều người nghĩ mình phải luôn tiến rất nhanh, nhưng thực tế đôi khi chỉ cần hoàn thành một việc nhỏ trong ngày cũng đã là tiến bộ rồi. Hy vọng hôm nay bạn tìm được một khoảng nghỉ dễ chịu hơn một chút 🙂\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Determine whether the user needs research, knowledge, or casual conversation."
+      },
+      {
+        "role": "user",
+        "content": "Docker và Kubernetes khác nhau ở điểm nào?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"knowledge\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Act as an experienced market intelligence specialist."
+      },
+      {
+        "role": "user",
+        "content": "Người tiêu dùng Việt Nam đang phản ứng thế nào với xe điện trong năm gần đây?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"research\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Classify user requests and respond conversationally."
+      },
+      {
+        "role": "user",
+        "content": "Bạn thích mùa nào nhất?"
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"chat\",\"response\":\"Tôi không có sở thích cá nhân, nhưng mùa thu thường được nhiều người yêu thích vì thời tiết dễ chịu và cảnh đẹp. Còn bạn thì sao?\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Classify intent before answering."
+      },
+      {
+        "role": "user",
+        "content": "Giải thích TCP handshake hoạt động như thế nào."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"knowledge\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Determine if user requires research."
+      },
+      {
+        "role": "user",
+        "content": "So sánh thị phần Shopee, Lazada và TikTok Shop tại Đông Nam Á."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"research\",\"response\":\"\"}}"
+      }
+    ]
+  },
+
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "Classify user intent."
+      },
+      {
+        "role": "user",
+        "content": "Chúc tôi may mắn cho buổi phỏng vấn ngày mai."
+      },
+      {
+        "role": "tool",
+        "tool_calls": "INTENT_CLASSIFICATION_TOOLS"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"name\":\"classify_intent\",\"arguments\":{\"intent\":\"chat\",\"response\":\"Chúc bạn có một buổi phỏng vấn thật tự tin và thể hiện được đúng năng lực của mình. Chuẩn bị kỹ, ngủ đủ và giữ nhịp nói rõ ràng — chúc bạn đạt kết quả mong muốn!\"}}"
       }
     ]
   }
