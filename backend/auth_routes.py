@@ -82,6 +82,7 @@ def init_auth_routes(mongo):
                 'username': username,
                 'password_hash': hashed_password,
                 'name': name,
+                'role': 'user',
                 'auth_method': 'password',
                 'created_at': datetime.now(),
                 'updated_at': datetime.now(),
@@ -91,7 +92,7 @@ def init_auth_routes(mongo):
             user_id = str(result.inserted_id)
             
             # Create access token
-            token_data = create_access_token(user_id, username)
+            token_data = create_access_token(user_id, username, role='user')
             
             return jsonify({
                 "status": "success",
@@ -103,6 +104,7 @@ def init_auth_routes(mongo):
                     "id": user_id,
                     "username": username,
                     "name": name,
+                    "role": "user",
                 }
             }), 201
             
@@ -152,9 +154,10 @@ def init_auth_routes(mongo):
                     "message": "Invalid username or password"
                 }), 401
             
-            # Create access token
+            # Create access token (backward compat: default role='user' for old users)
             user_id = str(user['_id'])
-            token_data = create_access_token(user_id, username)
+            user_role = user.get('role', 'user')
+            token_data = create_access_token(user_id, username, role=user_role)
             
             # Update last login
             users_collection.update_one(
@@ -172,6 +175,7 @@ def init_auth_routes(mongo):
                     "id": user_id,
                     "username": username,
                     "name": user.get('name', username),
+                    "role": user_role,
                 }
             }), 200
             
@@ -252,6 +256,7 @@ def init_auth_routes(mongo):
                     'google_id': google_id,
                     'email': google_email,
                     'name': google_name,
+                    'role': 'user',
                     'auth_method': 'google',
                     'created_at': datetime.now(),
                     'updated_at': datetime.now(),
@@ -259,10 +264,12 @@ def init_auth_routes(mongo):
                 
                 result = users_collection.insert_one(new_user)
                 user_id = str(result.inserted_id)
+                user_role = 'user'
                 
             else:
                 # Update existing user
                 user_id = str(user['_id'])
+                user_role = user.get('role', 'user')  # Backward compat
                 users_collection.update_one(
                     {'_id': user['_id']},
                     {
@@ -275,7 +282,7 @@ def init_auth_routes(mongo):
                 )
             
             # Create access token
-            token_data = create_access_token(user_id, google_email)
+            token_data = create_access_token(user_id, google_email, role=user_role)
             
             return jsonify({
                 "status": "success",
@@ -287,6 +294,7 @@ def init_auth_routes(mongo):
                     "id": user_id,
                     "email": google_email,
                     "name": google_name,
+                    "role": user_role,
                 }
             }), 200
             

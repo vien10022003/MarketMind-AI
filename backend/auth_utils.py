@@ -26,13 +26,14 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
 
 
-def create_access_token(user_id: str, email: str = None) -> dict:
+def create_access_token(user_id: str, email: str = None, role: str = "user") -> dict:
     """
     Create a JWT access token
     
     Args:
         user_id: The user's MongoDB ObjectId as string
         email: Optional user email
+        role: User role ('user' or 'admin')
     
     Returns:
         Dictionary with token and expiration info
@@ -40,6 +41,7 @@ def create_access_token(user_id: str, email: str = None) -> dict:
     payload = {
         "user_id": user_id,
         "email": email,
+        "role": role,
         "exp": datetime.now(timezone.utc) + timedelta(days=JWT_EXPIRATION_DAYS),
         "iat": datetime.now(timezone.utc),
     }

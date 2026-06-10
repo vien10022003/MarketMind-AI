@@ -47,9 +47,63 @@ def require_auth(f):
             if not user_id:
                 return jsonify({"status": "error", "message": "Invalid token payload"}), 401
             
-            # Attach user_id to request context for use in the route handler
+            # Attach user info to request context for use in the route handler
             request.user_id = user_id
             request.user_email = payload.get("email")
+            request.user_role = payload.get("role", "user")  # Backward compat: default "user"
+            
+            return f(*args, **kwargs)
+            
+        except jwt.InvalidTokenError as e:
+            return jsonify({"status": "error", "message": str(e)}), 401
+        except Exception as e:
+            return jsonify({"status": "error", "message": f"Authentication error: {str(e)}"}), 401
+    
+    return decorated_function
+
+
+def require_admin(f):
+    """
+    Decorator to protect Flask routes with admin-only access.
+    Must be used AFTER @require_auth (or handles auth itself).
+    
+    Usage:
+        @app.route('/api/admin/...')
+        @require_admin
+        def admin_route():
+            ...
+    """
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if request.method == 'OPTIONS':
+            return '', 200
+        
+        # Get token from Authorization header
+        auth_header = request.headers.get('Authorization')
+        
+        if not auth_header:
+            return jsonify({"status": "error", "message": "Missing authorization header"}), 401
+        
+        parts = auth_header.split()
+        if len(parts) != 2 or parts[0].lower() != 'bearer':
+            return jsonify({"status": "error", "message": "Invalid authorization header format"}), 401
+        
+        token = parts[1]
+        
+        try:
+            payload = verify_access_token(token)
+            user_id = payload.get("user_id")
+            
+            if not user_id:
+                return jsonify({"status": "error", "message": "Invalid token payload"}), 401
+            
+            role = payload.get("role", "user")
+            if role != "admin":
+                return jsonify({"status": "error", "message": "Admin access required"}), 403
+            
+            request.user_id = user_id
+            request.user_email = payload.get("email")
+            request.user_role = role
             
             return f(*args, **kwargs)
             
@@ -84,3 +138,14 @@ def get_user_email_from_request() -> str:
         The user email from the JWT token (may be None)
     """
     return getattr(request, 'user_email', None)
+
+
+def get_user_role_from_request() -> str:
+    """
+    Get the user role from the current request context
+    Should be used inside a @require_auth protected route
+    
+    Returns:
+        The user role from the JWT token ('user' or 'admin')
+    """
+    return getattr(request, 'user_role', 'user')

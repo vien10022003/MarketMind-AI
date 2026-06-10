@@ -15,6 +15,7 @@ export interface User {
   username?: string;
   email?: string;
   name?: string;
+  role?: string; // 'user' | 'admin'
 }
 
 export interface AuthResponse {
@@ -217,6 +218,14 @@ class AuthService {
   isAuthenticated(): boolean {
     const token = this.getToken();
     return !!token && !this.isTokenExpired();
+  }
+
+  /**
+   * Check if current user has admin role
+   */
+  isAdmin(): boolean {
+    const user = this.getUser();
+    return user?.role === 'admin';
   }
 
   /**

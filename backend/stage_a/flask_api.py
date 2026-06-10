@@ -28,6 +28,7 @@ from .mongodb import MongoDBManager
 
 # Auth imports
 from auth_routes import init_auth_routes
+from admin_routes import init_admin_routes
 from auth_middleware import require_auth, get_user_id_from_request
 
 # Stage B & C imports
@@ -93,6 +94,13 @@ try:
     rprint("[green]✅ Auth blueprint registered[/green]")
 except Exception as e:
     rprint(f"[yellow]⚠️  Auth blueprint registration failed: {e}[/yellow]")
+
+try:
+    admin_bp = init_admin_routes(mongo)
+    app.register_blueprint(admin_bp)
+    rprint("[green]✅ Admin blueprint registered[/green]")
+except Exception as e:
+    rprint(f"[yellow]⚠️  Admin blueprint registration failed: {e}[/yellow]")
 
 try:
     from stage_c.scheduler_routes import create_scheduler_blueprint

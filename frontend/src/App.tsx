@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { ChatMessageBubble, ConversationList, ModelSelector } from './components';
 import { ProcessLog, isProcessLogMessage } from './components/ProcessLog';
 import AuthPage from './components/AuthPage';
+import AdminPanel from './components/AdminPanel';
 import type { ChatMessage, ResearchRequest, ConversationTurn, ContentBrief, StageBOutput, ResearchReport } from './types';
 import { researchService } from './services/researchService';
 import { authService } from './services/authService';
@@ -22,6 +23,7 @@ function App() {
     return (localStorage.getItem('theme') as 'dark' | 'light') || 'dark';
   });
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [showAdminPanel, setShowAdminPanel] = useState(false);
 
   // Conversation state
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
@@ -68,6 +70,7 @@ function App() {
   }, [theme]);
 
   const userName = authService.getUser()?.name || authService.getUser()?.username || 'User';
+  const isAdmin = authService.isAdmin();
 
   // Check authentication on mount
   useEffect(() => {
@@ -756,6 +759,16 @@ function App() {
             <button className="header-reset" onClick={handleReset} title="Cuộc hội thoại mới">
               Mới
             </button>
+            {isAdmin && (
+              <button
+                className="header-reset"
+                onClick={() => setShowAdminPanel(true)}
+                title="Quản lý người dùng"
+                style={{ background: 'linear-gradient(135deg, #f59e0b, #ef4444)', color: '#fff' }}
+              >
+                👑 Quản lý
+              </button>
+            )}
             <div className="header-user">
               <span className="header-user-name">{userName}</span>
               <button className="header-logout" onClick={handleLogout} title="Đăng xuất">
@@ -899,6 +912,11 @@ function App() {
         </div>
       </footer>
       </div>
+
+      {/* Admin Panel Overlay */}
+      {showAdminPanel && (
+        <AdminPanel onClose={() => setShowAdminPanel(false)} />
+      )}
     </div>
   );
 }
