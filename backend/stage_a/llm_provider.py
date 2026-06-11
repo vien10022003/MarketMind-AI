@@ -222,15 +222,17 @@ class LocalLlamaProvider(LLMProvider):
 class GeminiProvider(LLMProvider):
     """Gemini API provider"""
     
-    def __init__(self, model_variant: str = "gemini-2.5-flash-lite"):
+    def __init__(self, model_variant: str = "gemini-2.5-flash-lite", api_key: Optional[str] = None):
         """
         Initialize Gemini provider
         
         Args:
             model_variant: Either "gemini-2.5-flash-lite" or "gemini-3.1-flash-lite-preview"
+            api_key: Optional custom API key (per-user). Falls back to GEMINI_API_KEY env.
         """
         self.model_variant = model_variant
-        self.api_key = os.getenv("GEMINI_API_KEY")
+        self.api_key = api_key or os.getenv("GEMINI_API_KEY")
+        self._using_custom_key = bool(api_key)
         
         if not self.api_key:
             rprint("[red]❌ GEMINI_API_KEY not found in environment[/red]")
@@ -239,7 +241,8 @@ class GeminiProvider(LLMProvider):
         try:
             from google import genai
             self.client = genai.Client(api_key=self.api_key)
-            rprint(f"[green]✅ Gemini client initialized: {model_variant}[/green]")
+            key_source = "custom (user)" if self._using_custom_key else "system default"
+            rprint(f"[green]✅ Gemini client initialized: {model_variant} (key: {key_source})[/green]")
         except ImportError:
             rprint("[red]❌ google-genai package not installed. Install it with: pip install google-genai[/red]")
             raise
@@ -407,12 +410,13 @@ class GeminiProvider(LLMProvider):
 # FACTORY FUNCTION
 # ─────────────────────────────────────────────────────────────────────────
 
-def get_llm_provider(provider_name: str = "llama") -> LLMProvider:
+def get_llm_provider(provider_name: str = "llama", gemini_api_key: Optional[str] = None) -> LLMProvider:
     """
     Factory function to get LLM provider instance
     
     Args:
         provider_name: One of "llama", "gemini-2.5", "gemini-3.1"
+        gemini_api_key: Optional custom Gemini API key (per-user override)
     
     Returns:
         LLMProvider instance
@@ -424,6 +428,9 @@ def get_llm_provider(provider_name: str = "llama") -> LLMProvider:
         For LocalLlamaProvider, instances are cached globally to avoid reloading
         the model into VRAM. The first call to get_llm_provider("llama") will 
         load the model, subsequent calls will reuse the cached instance.
+        
+        When gemini_api_key is provided, a NEW GeminiProvider instance is created
+        (not cached) to use the user's personal API key.
     """
     provider_name = provider_name.lower().strip()
     
@@ -431,10 +438,10 @@ def get_llm_provider(provider_name: str = "llama") -> LLMProvider:
         return LocalLlamaProvider()
     
     elif provider_name == "gemini-2.5":
-        return GeminiProvider(model_variant="gemini-2.5-flash-lite")
+        return GeminiProvider(model_variant="gemini-2.5-flash-lite", api_key=gemini_api_key)
     
     elif provider_name == "gemini-3.1":
-        return GeminiProvider(model_variant="gemini-3.1-flash-lite-preview")
+        return GeminiProvider(model_variant="gemini-3.1-flash-lite-preview", api_key=gemini_api_key)
     
     else:
         raise ValueError(

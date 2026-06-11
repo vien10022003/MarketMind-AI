@@ -29,6 +29,7 @@ from .mongodb import MongoDBManager
 # Auth imports
 from auth_routes import init_auth_routes
 from admin_routes import init_admin_routes
+from apikey_routes import init_apikey_routes
 from auth_middleware import require_auth, get_user_id_from_request
 
 # Stage B & C imports
@@ -109,6 +110,28 @@ try:
     rprint("[green]✅ Scheduler blueprint registered[/green]")
 except Exception as e:
     rprint(f"[yellow]⚠️  Scheduler blueprint registration failed: {e}[/yellow]")
+
+try:
+    apikey_bp = init_apikey_routes(mongo)
+    app.register_blueprint(apikey_bp)
+    rprint("[green]✅ API Key blueprint registered[/green]")
+except Exception as e:
+    rprint(f"[yellow]⚠️  API Key blueprint registration failed: {e}[/yellow]")
+
+
+def _get_user_gemini_key(user_id: Optional[str]) -> Optional[str]:
+    """Get user's custom Gemini API key from MongoDB (stored encrypted by FE)."""
+    if not user_id or not mongo or not mongo.db:
+        return None
+    try:
+        from bson.objectid import ObjectId
+        user = mongo.db['users'].find_one({'_id': ObjectId(user_id)})
+        if user:
+            api_keys = user.get('api_keys', {})
+            return api_keys.get('gemini_api_key') or None
+    except Exception:
+        pass
+    return None
 
 
 def run_stage_a_pipeline_generator(req_data: dict, user_id: Optional[str] = None, llm: LLMProvider = None):
@@ -425,13 +448,17 @@ def api_research_stage_a_marketing():
 
 # ─── Stage B: Strategy Generation ────────────────────────────────────
 
-def run_stage_b_generator(req_data: dict):
+def run_stage_b_generator(req_data: dict, user_id: Optional[str] = None):
     """Generator for Stage B strategy pipeline streaming."""
     try:
         # Get or initialize LLM provider for Stage B
         provider_name = req_data.get("llm_provider", "llama").lower().strip()
+        
+        # Get user's custom Gemini key if available
+        user_gemini_key = _get_user_gemini_key(user_id)
+        
         try:
-            stage_b_llm = get_llm_provider(provider_name)
+            stage_b_llm = get_llm_provider(provider_name, gemini_api_key=user_gemini_key)
             rprint(f"[cyan]Stage B using provider: {provider_name}[/cyan]")
         except Exception as e:
             rprint(f"[red]❌ Failed to initialize LLM for Stage B: {e}[/red]")
@@ -459,16 +486,18 @@ def run_stage_b_generator(req_data: dict):
 
 
 @app.route('/api/strategy/stage_b', methods=['POST', 'OPTIONS'])
+@require_auth
 def api_strategy_stage_b():
     """Stage B: Generate marketing strategy from Stage A report."""
     if request.method == 'OPTIONS':
         return '', 200
     rprint(f"[yellow][API] POST /api/strategy/stage_b[/yellow]")
+    user_id = get_user_id_from_request()
     data = request.get_json()
     if not data:
         return {"error": "Missing JSON body"}, 400
     return Response(
-        stream_with_context(run_stage_b_generator(data)),
+        stream_with_context(run_stage_b_generator(data, user_id=user_id)),
         content_type='application/x-ndjson', status=200
     )
 
@@ -510,13 +539,17 @@ def api_strategy_stage_b_approve():
 
 # ─── Stage C: Campaign Execution ─────────────────────────────────────
 
-def run_stage_c_generator(req_data: dict):
+def run_stage_c_generator(req_data: dict, user_id: Optional[str] = None):
     """Generator for Stage C campaign execution streaming."""
     try:
         # Get or initialize LLM provider for Stage C
         provider_name = req_data.get("llm_provider", "llama").lower().strip()
+        
+        # Get user's custom Gemini key if available
+        user_gemini_key = _get_user_gemini_key(user_id)
+        
         try:
-            stage_c_llm = get_llm_provider(provider_name)
+            stage_c_llm = get_llm_provider(provider_name, gemini_api_key=user_gemini_key)
             rprint(f"[cyan]Stage C using provider: {provider_name}[/cyan]")
         except Exception as e:
             rprint(f"[red]❌ Failed to initialize LLM for Stage C: {e}[/red]")
@@ -553,16 +586,18 @@ def run_stage_c_generator(req_data: dict):
 
 
 @app.route('/api/campaign/stage_c', methods=['POST', 'OPTIONS'])
+@require_auth
 def api_campaign_stage_c():
     """Stage C: Execute approved campaign (image gen + Discord posting)."""
     if request.method == 'OPTIONS':
         return '', 200
     rprint(f"[yellow][API] POST /api/campaign/stage_c[/yellow]")
+    user_id = get_user_id_from_request()
     data = request.get_json()
     if not data:
         return {"error": "Missing JSON body"}, 400
     return Response(
-        stream_with_context(run_stage_c_generator(data)),
+        stream_with_context(run_stage_c_generator(data, user_id=user_id)),
         content_type='application/x-ndjson', status=200
     )
 
