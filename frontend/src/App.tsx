@@ -17,7 +17,7 @@ function nextId() {
 function App() {
   // Authentication state
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(authService.isAuthenticated());
-  
+
   // UI state
   const [theme, setTheme] = useState<'dark' | 'light'>(() => {
     return (localStorage.getItem('theme') as 'dark' | 'light') || 'dark';
@@ -80,7 +80,7 @@ function App() {
       const isAuth = authService.isAuthenticated();
       setIsAuthenticated(isAuth);
     };
-    
+
     checkAuth();
   }, []);
 
@@ -196,7 +196,7 @@ function App() {
     if (!text || isLoading) return;
 
     let convId = currentConversationId;
-    
+
     // Create conversation on first message if it doesn't exist
     if (!convId) {
       convId = await createNewConversation(text);
@@ -228,20 +228,8 @@ function App() {
     // ─── Chat response ───
     if (streamMessage.status === 'chat_response') {
       addMessage({ type: 'assistant', content: streamMessage.message });
-      // Show research suggestion on new conversation
-      if (isNewConversation) {
-        addMessage({
-          type: 'research_suggestion',
-          content: 'Có vẻ bạn muốn nghiên cứu marketing — bấm vào đây để bắt đầu 🚀',
-          researchSuggestionData: {
-            buttonText: 'Bắt đầu Nghiên Cứu Marketing',
-          },
-        });
-        setIsNewConversation(false);
-      }
       setIsLoading(false);
-
-    // ─── Knowledge path ───
+      // ─── Knowledge path ───
     } else if (streamMessage.status === 'knowledge_searching') {
       addMessage({ type: 'status', content: streamMessage.message });
     } else if (streamMessage.status === 'knowledge_response') {
@@ -256,14 +244,14 @@ function App() {
       // Show research suggestion button after knowledge response
       addMessage({
         type: 'research_suggestion',
-        content: 'Có vẻ bạn muốn nghiên cứu marketing — bấm vào đây để bắt đầu 🚀',
+        content: 'Có phải bạn muốn marketing — bấm vào đây để bắt đầu',
         researchSuggestionData: {
           buttonText: 'Bắt đầu Nghiên Cứu Marketing',
         },
       });
       setIsLoading(false);
 
-    // ─── Marketing form path ───
+      // ─── Marketing form path ───
     } else if (streamMessage.status === 'show_marketing_form') {
       addMessage({
         type: 'marketing_form',
@@ -275,7 +263,7 @@ function App() {
       setIsLoading(false);
       setWaitingMarketingForm(true);
 
-    // ─── Research pipeline events (unchanged) ───
+      // ─── Research pipeline events (unchanged) ───
     } else if (streamMessage.status === 'clarification_provided') {
       addMessage({
         type: 'clarification',
@@ -812,9 +800,16 @@ function App() {
                 className="header-reset"
                 onClick={() => setShowAdminPanel(true)}
                 title="Quản lý người dùng"
-                style={{ background: 'linear-gradient(135deg, #f59e0b, #ef4444)', color: '#fff' }}
+                style={{
+                  background: 'linear-gradient(135deg, #f59e0b, #ef4444)',
+                  color: '#fff',
+                  fontWeight: 'bold',
+                  padding: '4px 8px',
+                  fontSize: '1rem',
+                  boxShadow: '0 4px 10px rgba(239, 68, 68, 0.4)'
+                }}
               >
-                👑 Quản lý
+                👑 Quản lý người dùng
               </button>
             )}
             <div className="header-user">
@@ -844,13 +839,13 @@ function App() {
                 </p>
                 <div className="welcome-features">
                   <div className="welcome-feature">
-                    <div><strong>Nghiên cứu thị trường</strong><br/>Phân tích sâu từ dữ liệu thực tế</div>
+                    <div><strong>Nghiên cứu thị trường</strong><br />Phân tích sâu từ dữ liệu thực tế</div>
                   </div>
                   <div className="welcome-feature">
-                    <div><strong>Chiến lược marketing</strong><br/>Tự động lập kế hoạch chi tiết</div>
+                    <div><strong>Chiến lược marketing</strong><br />Tự động lập kế hoạch chi tiết</div>
                   </div>
                   <div className="welcome-feature">
-                    <div><strong>Thực thi chiến dịch</strong><br/>Đăng bài tự động lên Discord</div>
+                    <div><strong>Thực thi chiến dịch</strong><br />Đăng bài tự động lên Discord</div>
                   </div>
                 </div>
                 <p className="welcome-hero-hint">Thử hỏi một trong các câu gợi ý bên dưới</p>
@@ -875,7 +870,7 @@ function App() {
                     key={segment.key}
                     messages={segment.messages}
                     isLoading={isLoading}
-                    onClarificationConfirm={() => {}}
+                    onClarificationConfirm={() => { }}
                     onMarketingFormSubmit={handleMarketingFormSubmit}
                     onShowResearchForm={handleShowResearchForm}
                     onStartCampaign={handleStartCampaign}
@@ -890,7 +885,7 @@ function App() {
                   key={segment.messages[0].id}
                   message={segment.messages[0]}
                   isLoading={isLoading}
-                  onClarificationConfirm={() => {}}
+                  onClarificationConfirm={() => { }}
                   onMarketingFormSubmit={handleMarketingFormSubmit}
                   onShowResearchForm={handleShowResearchForm}
                   onStartCampaign={handleStartCampaign}
@@ -908,59 +903,59 @@ function App() {
                   <span className="typing-dot" />
                   <span className="typing-dot" />
                   <span className="typing-dot" />
+                </div>
               </div>
-            </div>
-          )}
-
-          <div ref={chatEndRef} />
-        </div>
-      </main>
-
-      {/* Input bar */}
-      <footer className="chat-input-bar">
-        <div className={`input-bar-inner ${isLoading ? 'is-loading' : ''}`}>
-          <textarea
-            className="chat-input"
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder={isLoading ? 'Đang xử lý yêu cầu...' : 'Nhập yêu cầu nghiên cứu của bạn...'}
-            disabled={isLoading}
-            rows={1}
-          />
-          <button
-            className={`send-btn ${isLoading ? 'is-loading' : ''}`}
-            onClick={() => handleSend()}
-            disabled={isLoading || !inputValue.trim()}
-            title={isLoading ? 'Processing...' : 'Send'}
-          >
-            {isLoading ? (
-              <span className="send-btn-spinner" />
-            ) : (
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="20" height="20">
-                <line x1="22" y1="2" x2="11" y2="13" />
-                <polygon points="22 2 15 22 11 13 2 9 22 2" />
-              </svg>
             )}
-          </button>
-        </div>
-        <div className="input-footer">
-          <small className="input-hint">
-            {isLoading ? (
-              <span className="input-loading-hint">
-                <span className="input-loading-spinner" />
-                Processing your request...
-              </span>
-            ) : (
-              <>Press <kbd>Enter</kbd> to send · <kbd>Shift+Enter</kbd> for new line</>
-            )}
-          </small>
-          <ModelSelector
-            currentProvider={selectedLLMProvider}
-            onProviderChange={setSelectedLLMProvider}
-          />
-        </div>
-      </footer>
+
+            <div ref={chatEndRef} />
+          </div>
+        </main>
+
+        {/* Input bar */}
+        <footer className="chat-input-bar">
+          <div className={`input-bar-inner ${isLoading ? 'is-loading' : ''}`}>
+            <textarea
+              className="chat-input"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder={isLoading ? 'Đang xử lý yêu cầu...' : 'Nhập yêu cầu nghiên cứu của bạn...'}
+              disabled={isLoading}
+              rows={1}
+            />
+            <button
+              className={`send-btn ${isLoading ? 'is-loading' : ''}`}
+              onClick={() => handleSend()}
+              disabled={isLoading || !inputValue.trim()}
+              title={isLoading ? 'Processing...' : 'Send'}
+            >
+              {isLoading ? (
+                <span className="send-btn-spinner" />
+              ) : (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="20" height="20">
+                  <line x1="22" y1="2" x2="11" y2="13" />
+                  <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                </svg>
+              )}
+            </button>
+          </div>
+          <div className="input-footer">
+            <small className="input-hint">
+              {isLoading ? (
+                <span className="input-loading-hint">
+                  <span className="input-loading-spinner" />
+                  Processing your request...
+                </span>
+              ) : (
+                <>Press <kbd>Enter</kbd> to send · <kbd>Shift+Enter</kbd> for new line</>
+              )}
+            </small>
+            <ModelSelector
+              currentProvider={selectedLLMProvider}
+              onProviderChange={setSelectedLLMProvider}
+            />
+          </div>
+        </footer>
       </div>
 
       {/* Admin Panel Overlay */}

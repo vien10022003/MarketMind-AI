@@ -121,7 +121,7 @@ except Exception as e:
 
 def _get_user_gemini_key(user_id: Optional[str]) -> Optional[str]:
     """Get user's custom Gemini API key from MongoDB (stored encrypted by FE)."""
-    if not user_id or not mongo or not mongo.db:
+    if not user_id or mongo is None or mongo.db is None:
         return None
     try:
         from bson.objectid import ObjectId
@@ -358,7 +358,7 @@ def run_stage_a_pipeline_generator(req_data: dict, user_id: Optional[str] = None
             torch.cuda.empty_cache()
 
         # Step 6: Save to MongoDB
-        if mongo:
+        if mongo is not None:
             rprint("[yellow][STEP 6] Saving to MongoDB...[/yellow]")
             yield json.dumps({
                 "status": "progress",
@@ -567,7 +567,7 @@ def run_stage_c_generator(req_data: dict, user_id: Optional[str] = None):
             yield json.dumps(event) + "\n"
 
             # Save campaign log to MongoDB when completed
-            if event.get("status") == "stage_c_completed" and mongo:
+            if event.get("status") == "stage_c_completed" and mongo is not None:
                 campaign_log_data = event.get("campaign_log", {})
                 if campaign_log_data:
                     log = CampaignLog(**campaign_log_data)
