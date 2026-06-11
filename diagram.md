@@ -1,57 +1,35 @@
 ## UC Tổng Quát ##
 
 @startuml
+left to right direction
+
 title Hệ thống Trợ lý Marketing Agentic AI
 
-' Định nghĩa các Actor
 actor "Người dùng" as User
-actor "<center><<Service>>\nSocial Media APIs" as SocialAPI
-actor "<center><<Service>>\nImage Generation Modul" as ImageMod
-actor "<center><<Service>>\nLLM Modul\n(Llama 3 / Gemini)" as LLM
-actor "<center><<Service>>\nSearch API" as SearchAPI
+actor "Quản trị viên" as Admin
 
-' Khung hệ thống (System Boundary)
 rectangle "Hệ thống Trợ lý Marketing Agentic AI" {
 
-    ' Các Use Case chính
-    usecase "Triển khai chiến dịch\n(Stage C)" as UC_Campaign
-    usecase "Xây dựng chiến lược\n(Stage B)" as UC_Strategy
-    usecase "Quản lý chiến dịch/ Đoạn chat" as UC_Report
-    usecase "Xác thực & Quản lý phiên" as UC_Auth
+    usecase "Xác thực &\nQuản lý phiên" as UC_Auth
+
     usecase "Nghiên cứu thị trường\n(Stage A)" as UC_Research
 
-    ' Các Use Case con / phụ
-    usecase "Lập lịch & đăng bài" as UC_Schedule
-    usecase "Tạo nội dung đa phương tiện" as UC_Content
-    usecase "Sinh Content Brief" as UC_Brief
-    usecase "Phân tích yêu cầu" as UC_Analyze
-    usecase "Thu thập dữ liệu thị trường" as UC_Data
+    usecase "Xây dựng chiến lược\n(Stage B)" as UC_Strategy
 
-    ' Mối quan hệ giữa Actor và Use Case (Association)
-    User --> UC_Campaign
-    User --> UC_Strategy
-    User --> UC_Report
-    User --> UC_Auth
-    User --> UC_Research
+    usecase "Triển khai chiến dịch\n(Stage C)" as UC_Campaign
 
-    ' Mối quan hệ với các Actor bên ngoài
-    UC_Schedule --> SocialAPI
-    UC_Content --> ImageMod
-    UC_Brief --> LLM
-    UC_Analyze --> LLM
-    UC_Data --> SearchAPI
-    UC_Data --> LLM
+    usecase "Quản lý chiến dịch\n/ Đoạn chat" as UC_Report
 
-    ' Mối quan hệ Include
-    UC_Campaign ..> UC_Schedule : <<include>>
-    UC_Campaign ..> UC_Content : <<include>>
-    
-    UC_Strategy ..> UC_Brief : <<include>>
-    
-    UC_Research ..> UC_Analyze : <<include>>
-    UC_Research ..> UC_Data : <<include>>
+    usecase "Quản lý người dùng" as UC_QL
 }
 
+User --> UC_Auth
+User --> UC_Research
+User --> UC_Strategy
+User --> UC_Campaign
+User --> UC_Report
+
+Admin --> UC_QL
 @enduml
 
 

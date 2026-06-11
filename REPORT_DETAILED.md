@@ -497,95 +497,86 @@ Draw.io, Visio
 ┌─────────────────────────────────────────────────────────────┐
 │                    API LAYER (Flask)                        │
 │  ┌────────────────────────────────────────────────────────┐ │
-│  │ Routes: /api/auth, /api/chat, /api/research, ...       │ │
+│  │ Routes: /api/research/stage_a, /api/strategy/stage_b...│ │
 │  │ Middleware: JWT Auth, CORS, Rate Limiting              │ │
 │  └────────────────────────────────────────────────────────┘ │
 └────────────┬────────────────────────────────────────────────┘
              │
       ┌──────┴──────┬──────────────┬──────────────┐
       ▼             ▼              ▼              ▼
-┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐
-│ Stage A  │  │ Stage B  │  │ Stage C  │  │Database  │
-│(Research)│  │(Strategy)│  │(Execute) │  │(MongoDB) │
-└──────────┘  └──────────┘  └──────────┘  └──────────┘
-      │             │              │
-      └──────────────┴──────────────┘
-             ▼
+┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────────┐
+│ Stage A  │  │ Stage B  │  │ Stage C  │  │ Database     │
+│(Research)│  │(Strategy)│  │(Execute) │  │ (MongoDB)    │
+└────┬─────┘  └────┬─────┘  └────┬─────┘  └──────────────┘
+     │             │              │
+     └──────────────┼──────────────┘
+                    ▼
 ┌─────────────────────────────────────────────────────────────┐
-│                    AI ORCHESTRATION LAYER                   │
+│                 AI CORE / LLM LAYER (Orchestrator)          │
+│  (LLM chính là bộ não điều phối, không cần layer riêng)     │
 │  ┌────────────────────────────────────────────────────────┐ │
-│  │  Supervisor Agent (ReAct + Chain of Thought)           │ │
-│  │  - Phân tích yêu cầu người dùng                        │ │
-│  │  - Lập kế hoạch (planning)                             │ │
-│  │  - Điều phối sub-agents                                │ │
+│  │  LLM (Llama) + Agentic Logic (ReAct / CoT / Function Call) │
+│  │  - Phân tích intent & Lập kế hoạch (Planning)          │ │
+│  │  - Tự động quyết định gọi Tool nào, tham số gì (Routing)│ │
+│  │  - Tổng hợp kết quả từ các Stage/Tools trả về API      │ │
 │  └────────────────────────────────────────────────────────┘ │
-└────────────┬────────────────────────────────────────────────┘
-             │
-      ┌──────┴──────┬──────────────┬──────────────┐
-      ▼             ▼              ▼              ▼
-┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐
-│ LLM      │  │ Tools    │  │ Memory   │  │ Logging  │
-│(Llama)   │  │(Function)│  │(Context) │  │(Tracing) │
-└──────────┘  └──────────┘  └──────────┘  └──────────┘
-      │             │              │
-      └──────────────┴──────────────┘
-             ▼
-┌─────────────────────────────────────────────────────────────┐
-│                    TOOLS/SERVICES LAYER                     │
-│  ┌─────────┐ ┌──────────┐ ┌──────────┐ ┌────────────┐      │
-│  │  Search │ │  Image   │ │ Content  │ │ Platforms  │      │
-│  │ (Tavily)│ │(DALL-E)  │ │Generator │ │(Facebook,  │      │
-│  │         │ │          │ │          │ │Shopee,...) │      │
-│  └─────────┘ └──────────┘ └──────────┘ └────────────┘      │
-└─────────────────────────────────────────────────────────────┘
+│           ▲                          ▲                       │
+│                                   │                         |
+│                                   │  [result]              |
+└───────────┼──────────────────────┼──────────────────────────┘
+            │ (Function Calling / API Requests)
+            ▼
+┌─────────────────────────────────────────────
+│                    TOOLS / SERVICES LAYER                   
+│  ┌─────────┐ ┌──────────┐ ┌────────────┐      
+│  │ Search  │ │  Image   │ │ Platforms  │      
+│  │(Tavily) │ │(diffusion)│ │(FB, Shopee)│      
+│  └─────────┘ └──────────┘ └────────────┘      
+└─────────────────────────────────────────────
 ```
 
 ### 2.2.2 Data Flow: Từ User Request đến Response
 
 ```
-1. USER SENDS REQUEST
-   ├─ Frontend: POST /api/chat
+1. USER SENDS REQUEST (Multiple Endpoints by Stage)
+   ├─ Frontend: POST /api/research/stage_a (hoặc /api/research/stage_a/marketing)
    │  {
-   │    "conversation_id": "abc123",
-   │    "message": "Lập chiến lược marketing cho iPhone 15",
-   │    "user_id": "user_001"
+   │    "user_prompt": "Lập chiến lược marketing cho iPhone 15",
+   │    "conversation_history": [...],
+   │    "llm_provider": "llama"
    │  }
    │
-   └─► Backend receives request
+   └─► Backend tiếp nhận yêu cầu theo đúng endpoint của giai đoạn tương ứng
 
 2. AUTHENTICATION & VALIDATION
-   ├─ Verify JWT token
-   ├─ Check user permissions
-   ├─ Validate message format
+   ├─ Verify JWT token (qua middleware @require_auth)
+   ├─ Trích xuất user_id từ request
    └─► Proceed if valid
 
-3. ROUTE TO APPROPRIATE STAGE
-   ├─ Supervisor analyzes message
-   ├─ Determines: Stage A (Research) / B (Strategy) / C (Execute)
-   └─► Route to appropriate agent
+3. INTENT RECOGNITION & SEMANTIC ROUTING (Xử lý tin nhắn text)
+   ├─ LLM phân tích "user_prompt" + "conversation_history"
+   ├─ Xác định Intent (chat, knowledge, research)
+   └─ Nếu Intent = research:
+      └─► Trả về trạng thái `show_marketing_form` để Frontend gợi ý người dùng mở form bắt đầu bắt đầu tiến trình nghiên cứu chuyên sâu
 
-4. AGENT PROCESSING (Example: Stage A Research)
-   ├─ LLM analyzes request
-   │  └─ "Người dùng muốn lập chiến lược cho iPhone 15"
-   ├─ LLM calls functions:
-   │  ├─ search_market(product="iPhone 15", market="Vietnam")
-   │  │  └─► Result: {...market data...}
-   │  ├─ analyze_competitors(market="Vietnam")
-   │  │  └─► Result: {...competitor data...}
-   │  └─ summarize_findings(...)
-   │     └─► Result: {...research report...}
-   └─► Collect results
+5. AGENT PROCESSING & TOOL EXECUTION (ReAct Loop)
+   ├─ LLM lập kế hoạch các bước cần thiết (planner_chain)
+   ├─ LLM chạy vòng lặp ReAct gọi Tools (run_react_loop):
+   │  ├─ Call: search_market / web_search
+   │  │  └─► Backend thực thi tool, thu thập chứng cứ (evidence)
+   │  └─ Lọc và chuẩn hóa dữ liệu thu thập được (normalize_and_filter_evidence)
+   └─► LLM có đủ thông tin chứng cứ (evidence_df) để xử lý tiếp
 
-5. RESPONSE GENERATION
-   ├─ LLM synthesizes findings
-   ├─ Formats response in Markdown
-   └─► Return to frontend
+6. RESPONSE GENERATION & SYNTHESIS
+   ├─ LLM tổng hợp (synthesize_stage_a_report) tạo báo cáo chuyên sâu
+   ├─ Format dữ liệu theo Pydantic model (StageAOutput)
+   └─► Lưu báo cáo và metadata vào Database (MongoDBManager)
 
 6. FRONTEND RECEIVES & DISPLAYS
-   ├─ Stream response token-by-token (SSE)
-   ├─ Update conversation history
-   ├─ Display formatted output
-   └─► User sees result
+   ├─ Backend stream response bằng NDJSON (application/x-ndjson) qua generator
+   ├─ Frontend nhận từng sự kiện JSON (status: progress, report_ready...)
+   ├─ Frontend render Markdown và cập nhật tiến trình (Progress UI)
+   └─► User nhận được báo cáo nghiên cứu hoàn chỉnh
 ```
 
 ---
@@ -833,25 +824,32 @@ Result: Trả lời không chính xác, quên thông tin ban đầu
 
 ### 2.5.3 Vấn đề 3: Streaming & Real-time Status
 
-**Giải pháp: Server-Sent Events (SSE)**
+**Giải pháp: NDJSON (Newline Delimited JSON) Streaming**
+
+Hệ thống sử dụng NDJSON `stream_with_context` của Flask để trả về liên tục các trạng thái của pipeline thay vì SSE đơn thuần, giúp frontend dễ dàng track progress của Agent.
 
 ```python
 # Flask endpoint
-@app.route('/api/chat', methods=['POST'])
-def chat():
+@app.route('/api/research/stage_a', methods=['POST'])
+def api_research_stage_a():
     def generate():
-        # Stream token-by-token
-        for token in llm.stream_generate(prompt):
-            yield f"data: {json.dumps({'token': token})}\n\n"
+        yield json.dumps({"status": "progress", "message": "Đang phân tích..."}) + "\n"
+        # Xử lý logic agent và yield các progress message
+        yield json.dumps({"status": "completed", "report": report_data}) + "\n"
     
-    return Response(generate(), mimetype='text/event-stream')
+    return Response(stream_with_context(generate()), content_type='application/x-ndjson')
 
-# Frontend
-const eventSource = new EventSource('/api/chat');
-eventSource.onmessage = (event) => {
-    const data = JSON.parse(event.data);
-    displayToken(data.token);
-};
+# Frontend (Fetch API + ReadableStream)
+const response = await fetch('/api/research/stage_a', { method: 'POST', body: ... });
+const reader = response.body.getReader();
+const decoder = new TextDecoder();
+// Đọc luồng dữ liệu stream liên tục
+while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    const chunk = decoder.decode(value);
+    // Parse từng dòng JSON (\n)
+}
 ```
 
 ### 2.5.4 Vấn đề 4: Giới hạn output length
