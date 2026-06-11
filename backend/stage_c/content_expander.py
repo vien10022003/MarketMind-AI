@@ -37,7 +37,7 @@ def expand_content_brief(llm, brief: dict, conversation_history: Optional[List[D
         new_caption = ""
         new_image_prompt = ""
         
-        if true:  # For simplicity, we will use the 2-prompt approach for all providers to ensure better quality and control
+        if True:  # For simplicity, we will use the 2-prompt approach for all providers to ensure better quality and control
             # ─── LOCAL LLAMA: 2 Prompts riêng biệt ───
             rprint(f"[dim]Sử dụng 2 prompts riêng cho LocalLlama[/dim]")
             
