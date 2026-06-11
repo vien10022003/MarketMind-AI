@@ -434,6 +434,81 @@ end
 @enduml
 
 
+### database
+
+
+@startuml
+title MarketMind AI - MongoDB Database Schema
+
+hide circle
+skinparam linetype ortho
+
+entity "users" as users {
+    * _id : ObjectId
+    --
+    username : string
+    password : string
+    role : string
+    created_at : datetime
+    api_keys : object
+}
+
+entity "conversations" as conversations {
+    * _id : ObjectId
+    --
+    conversation_id : string
+    user_id : string
+    title : string
+    messages : array
+    message_count : int
+    stage_a_data : object
+    stage_b_data : object
+    stage_c_data : object
+    created_at : datetime
+    updated_at : datetime
+}
+
+entity "stage_a_reports" as stageA {
+    * _id : ObjectId
+    --
+    user_id : string
+    timestamp : datetime
+    input_config : object
+    report : object
+    metrics : object
+}
+
+entity "stage_b_strategies" as stageB {
+    * _id : ObjectId
+    --
+    mongodb_stage_a_id : string
+    timestamp : datetime
+    strategy : object
+    approved_briefs : array
+}
+
+entity "campaign_logs" as campaign {
+    * _id : ObjectId
+    --
+    campaign_id : string
+    mongodb_stage_a_id : string
+    timestamp : datetime
+    status : string
+    total_posts : int
+    successful_posts : int
+    failed_posts : int
+    platform_results : object
+    errors : array
+}
+
+users ||--o{ conversations : owns
+users ||--o{ stageA : creates
+
+stageA ||--|| stageB : generates
+stageA ||--o{ campaign : tracks
+@enduml
+
+
 ## Đường dẫn ## 
 
 https://www.plantuml.com/plantuml/uml/SyfFKj2rKt3CoKnELR1Io4ZDoSa700002
