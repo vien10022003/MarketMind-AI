@@ -563,7 +563,7 @@ function App() {
   /**
    * Called when user clicks "Start Campaign" in the brief editor
    */
-  const handleStartCampaign = async (approvedBriefs: ContentBrief[]) => {
+  const handleStartCampaign = async (approvedBriefs: ContentBrief[], webhookUrl?: string) => {
     if (approvedBriefs.length === 0) {
       addMessage({ type: 'error', content: 'Không có brief nào được duyệt!' });
       return;
@@ -589,6 +589,7 @@ function App() {
       await researchService.callStageCCampaign(
         {
           approved_briefs: approvedBriefs,
+          webhook_url: webhookUrl,
           mongodb_stage_a_id: lastMongodbId,
           llm_provider: selectedLLMProvider,
         },

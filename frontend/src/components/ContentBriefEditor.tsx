@@ -1,11 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { ContentBrief } from '../types';
+import { apiKeyService, decryptValue } from '../services/apiKeyService';
 
 interface ContentBriefEditorProps {
   briefs: ContentBrief[];
   isLoading?: boolean;
   onApproveAll?: (briefs: ContentBrief[]) => void;
-  onStartCampaign?: (approvedBriefs: ContentBrief[]) => void;
+  onStartCampaign?: (approvedBriefs: ContentBrief[], webhookUrl?: string) => void;
 }
 
 export function ContentBriefEditor({
@@ -18,6 +19,20 @@ export function ContentBriefEditor({
     initialBriefs.map((b) => ({ ...b }))
   );
   const [editingId, setEditingId] = useState<string | null>(null);
+  
+  const [webhooks, setWebhooks] = useState<import('../services/apiKeyService').DiscordWebhook[]>([]);
+  const [selectedWebhookId, setSelectedWebhookId] = useState('default');
+  const [loadingWebhooks, setLoadingWebhooks] = useState(true);
+
+  useEffect(() => {
+    const load = async () => {
+      setLoadingWebhooks(true);
+      const whs = await apiKeyService.getDiscordWebhooks();
+      setWebhooks(whs);
+      setLoadingWebhooks(false);
+    };
+    load();
+  }, []);
 
   const updateBrief = (id: string, updates: Partial<ContentBrief>) => {
     setBriefs((prev) =>
@@ -48,11 +63,18 @@ export function ContentBriefEditor({
     onApproveAll?.(updated);
   };
 
-  const handleStartCampaign = () => {
+  const handleStartCampaign = async () => {
     const approved = briefs.filter(
       (b) => b.status === 'approved' || b.status === 'edited'
     );
-    onStartCampaign?.(approved);
+    let webhookUrl: string | undefined;
+    if (selectedWebhookId !== 'default') {
+      const selected = webhooks.find(w => w.id === selectedWebhookId);
+      if (selected?.url_encrypted) {
+        webhookUrl = await decryptValue(selected.url_encrypted);
+      }
+    }
+    onStartCampaign?.(approved, webhookUrl);
   };
 
   const approvedCount = briefs.filter(
@@ -73,6 +95,35 @@ export function ContentBriefEditor({
         <div className="briefs-header">
           <h3>📝 Content Briefs ({briefs.length})</h3>
           <p>Xem xét, chỉnh sửa và phê duyệt các bài đăng Discord.</p>
+          
+          {/* Webhook selector */}
+          {!loadingWebhooks && webhooks.length > 1 && (
+            <div style={{ margin: '15px 0 10px 0', display: 'flex', alignItems: 'center', gap: 8 }}>
+              <label style={{ fontSize: '0.85rem', color: 'var(--text-secondary, #aaa)', whiteSpace: 'nowrap' }}>📡 Đăng lên Webhook:</label>
+              <select
+                value={selectedWebhookId}
+                onChange={(e) => setSelectedWebhookId(e.target.value)}
+                style={{
+                  flex: 1,
+                  maxWidth: '300px',
+                  background: 'rgba(255,255,255,0.06)',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  borderRadius: 8,
+                  padding: '6px 10px',
+                  color: 'var(--text-primary, #eee)',
+                  fontSize: '0.85rem',
+                  outline: 'none',
+                }}
+              >
+                {webhooks.map(wh => (
+                  <option key={wh.id} value={wh.id}>
+                    {wh.name}{wh.is_default ? '' : ` (${wh.url_masked || 'custom'})`}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
           <div className="briefs-actions-top">
             <button
               className="btn btn--approve-all"

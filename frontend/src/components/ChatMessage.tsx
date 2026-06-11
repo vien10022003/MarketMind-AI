@@ -14,7 +14,7 @@ interface ChatMessageProps {
   isLoading?: boolean;
   onClarificationConfirm?: (overrides: Partial<ResearchRequest>) => void;
   onMarketingFormSubmit?: (formData: ResearchRequest) => void;
-  onStartCampaign?: (approvedBriefs: ContentBrief[]) => void;
+  onStartCampaign?: (approvedBriefs: ContentBrief[], webhookUrl?: string) => void;
   onAcceptStageBProposal?: (reportData: ResearchReport, mongodbId?: string) => void;
   onAcceptStageCProposal?: (briefs: ContentBrief[], webhookUrl?: string) => void;
   onAcceptStageCScheduleProposal?: (briefs: ContentBrief[], times: string[], mongodbId?: string, webhookUrl?: string) => void;
