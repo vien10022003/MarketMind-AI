@@ -16,12 +16,12 @@ def classify_intent_and_respond(
     conversation_history: Optional[List[Dict[str, str]]] = None
 ) -> Dict[str, Any]:
     """
-    Classifies the user's prompt into one of three intents:
+    Classifies the user's prompt into one of two intents:
       - "chat": casual greeting or simple conversation
       - "knowledge": hard/complex question that may need web search for accurate answer
-      - "research": marketing research / market analysis request
     
     If intent is "chat", generates a friendly response.
+    For "knowledge" intent, a research/marketing form will be suggested on the frontend.
     
     Args:
         llm: The LLM provider instance (LocalLlamaProvider or GeminiProvider)
@@ -54,7 +54,7 @@ def classify_intent_and_respond(
     rprint(raw)
     
     result = {
-        "intent": "research",
+        "intent": "knowledge",
         "response": "",
         "reasoning": ""
     }
@@ -66,10 +66,10 @@ def classify_intent_and_respond(
             parsed = normalize_tool_response(parsed)
             
             # Validate intent value
-            valid_intents = {"chat", "knowledge", "research"}
+            valid_intents = {"chat", "knowledge"}
             if parsed.get("intent") not in valid_intents:
-                rprint(f"[yellow]⚠️ Invalid intent '{parsed.get('intent')}', defaulting to research[/yellow]")
-                parsed["intent"] = "research"
+                rprint(f"[yellow]⚠️ Invalid intent '{parsed.get('intent')}', defaulting to knowledge[/yellow]")
+                parsed["intent"] = "knowledge"
             
             result.update(parsed)
             rprint(f"[green]✅ Intent Classification: {result.get('intent')}[/green]")
@@ -90,10 +90,10 @@ def classify_intent_and_respond(
             raw_lower = raw.lower()
             if "knowledge" in raw_lower and ("hoi" in raw_lower or "cau hoi" in raw_lower):
                 result["intent"] = "knowledge"
-            elif "research" in raw_lower or "chien luoc" in raw_lower or "phan tich thi truong" in raw_lower:
-                result["intent"] = "research"
             elif "chat" in raw_lower or "chao" in raw_lower:
                 result["intent"] = "chat"
+            else:
+                result["intent"] = "knowledge"  # Default to knowledge if uncertain
             rprint(f"[yellow]Fallback intent: {result['intent']}[/yellow]")
     else:
         rprint("[red]❌ No JSON block found in LLM response[/red]")

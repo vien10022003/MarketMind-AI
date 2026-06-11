@@ -29,6 +29,7 @@ function App() {
   // Conversation state
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
   const [selectedLLMProvider, setSelectedLLMProvider] = useState<'llama' | 'gemini-2.5' | 'gemini-3.1'>('llama');
+  const [isNewConversation, setIsNewConversation] = useState(true);
 
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
     {
@@ -138,6 +139,7 @@ function App() {
     setLastReportInput(null);
     setLastMongodbId(undefined);
     setLastStrategy(null);
+    setIsNewConversation(true);
     msgIdCounter = 0;
     messagesSaveBuffer.current = [];
 
@@ -151,6 +153,7 @@ function App() {
       if (conv && conv.messages) {
         setCurrentConversationId(conversationId);
         setChatMessages(conv.messages);
+        setIsNewConversation(false);
         messagesSaveBuffer.current = [];
       }
     } catch (err) {
@@ -225,6 +228,17 @@ function App() {
     // ─── Chat response ───
     if (streamMessage.status === 'chat_response') {
       addMessage({ type: 'assistant', content: streamMessage.message });
+      // Show research suggestion on new conversation
+      if (isNewConversation) {
+        addMessage({
+          type: 'research_suggestion',
+          content: 'Có vẻ bạn muốn nghiên cứu marketing — bấm vào đây để bắt đầu 🚀',
+          researchSuggestionData: {
+            buttonText: 'Bắt đầu Nghiên Cứu Marketing',
+          },
+        });
+        setIsNewConversation(false);
+      }
       setIsLoading(false);
 
     // ─── Knowledge path ───
@@ -237,6 +251,14 @@ function App() {
         knowledgeData: {
           answer: streamMessage.message,
           sources: streamMessage.sources || [],
+        },
+      });
+      // Show research suggestion button after knowledge response
+      addMessage({
+        type: 'research_suggestion',
+        content: 'Có vẻ bạn muốn nghiên cứu marketing — bấm vào đây để bắt đầu 🚀',
+        researchSuggestionData: {
+          buttonText: 'Bắt đầu Nghiên Cứu Marketing',
         },
       });
       setIsLoading(false);
@@ -606,6 +628,19 @@ function App() {
   };
 
   /**
+   * Called when user clicks the research suggestion button
+   */
+  const handleShowResearchForm = () => {
+    addMessage({
+      type: 'marketing_form',
+      content: 'Hãy cung cấp thông tin chi tiết để tôi có thể giúp bạn nghiên cứu marketing',
+      marketingFormData: {
+        detected_prompt: '',
+      },
+    });
+  };
+
+  /**
    * Called when user submits the marketing form.
    * Calls the dedicated /marketing endpoint that skips intent classification.
    */
@@ -646,6 +681,7 @@ function App() {
     authService.logout();
     setIsAuthenticated(false);
     setCurrentConversationId(null);
+    setIsNewConversation(true);
     setChatMessages([
       {
         id: 'welcome',
@@ -841,6 +877,7 @@ function App() {
                     isLoading={isLoading}
                     onClarificationConfirm={() => {}}
                     onMarketingFormSubmit={handleMarketingFormSubmit}
+                    onShowResearchForm={handleShowResearchForm}
                     onStartCampaign={handleStartCampaign}
                     onAcceptStageBProposal={handleAcceptStageBProposal}
                     onAcceptStageCProposal={handleAcceptStageCProposal}
@@ -855,6 +892,7 @@ function App() {
                   isLoading={isLoading}
                   onClarificationConfirm={() => {}}
                   onMarketingFormSubmit={handleMarketingFormSubmit}
+                  onShowResearchForm={handleShowResearchForm}
                   onStartCampaign={handleStartCampaign}
                   onAcceptStageBProposal={handleAcceptStageBProposal}
                   onAcceptStageCProposal={handleAcceptStageCProposal}

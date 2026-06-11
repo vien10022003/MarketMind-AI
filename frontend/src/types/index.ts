@@ -290,6 +290,7 @@ export type ChatMessageType =
   | 'completed'
   | 'knowledge'
   | 'marketing_form'
+  | 'research_suggestion'
   | 'stage_b_proposal'
   // Stage B
   | 'strategy'
@@ -321,6 +322,10 @@ export interface ChatMessage {
   // Marketing form path
   marketingFormData?: {
     detected_prompt: string;
+  };
+  // Research suggestion button
+  researchSuggestionData?: {
+    buttonText?: string;
   };
   // Stage B proposal
   stageBProposalData?: {

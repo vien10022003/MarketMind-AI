@@ -14,13 +14,14 @@ interface ChatMessageProps {
   isLoading?: boolean;
   onClarificationConfirm?: (overrides: Partial<ResearchRequest>) => void;
   onMarketingFormSubmit?: (formData: ResearchRequest) => void;
+  onShowResearchForm?: () => void;
   onStartCampaign?: (approvedBriefs: ContentBrief[], webhookUrl?: string) => void;
   onAcceptStageBProposal?: (reportData: ResearchReport, mongodbId?: string) => void;
   onAcceptStageCProposal?: (briefs: ContentBrief[], webhookUrl?: string) => void;
   onAcceptStageCScheduleProposal?: (briefs: ContentBrief[], times: string[], mongodbId?: string, webhookUrl?: string) => void;
 }
 
-export function ChatMessageBubble({ message, isLoading, onClarificationConfirm, onMarketingFormSubmit, onStartCampaign, onAcceptStageBProposal, onAcceptStageCProposal, onAcceptStageCScheduleProposal }: ChatMessageProps) {
+export function ChatMessageBubble({ message, isLoading, onClarificationConfirm, onMarketingFormSubmit, onShowResearchForm, onStartCampaign, onAcceptStageBProposal, onAcceptStageCProposal, onAcceptStageCScheduleProposal }: ChatMessageProps) {
   switch (message.type) {
     case 'user':
       return <UserBubble content={message.content} />;
@@ -30,6 +31,14 @@ export function ChatMessageBubble({ message, isLoading, onClarificationConfirm, 
       return <StatusMessage content={message.content} />;
     case 'knowledge':
       return <KnowledgeBubble content={message.content} sources={message.knowledgeData?.sources || []} />;
+    case 'research_suggestion':
+      return (
+        <ResearchSuggestionBubble
+          content={message.content}
+          buttonText={message.researchSuggestionData?.buttonText || 'Bắt đầu Nghiên Cứu Marketing'}
+          onShowForm={onShowResearchForm}
+        />
+      );
     case 'marketing_form':
       return (
         <MarketingFormBubble
@@ -528,6 +537,32 @@ function KnowledgeBubble({ content, sources }: { content: string; sources: Searc
             </div>
           </CollapsibleCard>
         )}
+      </div>
+    </div>
+  );
+}
+
+/* ────── Research Suggestion Bubble ────── */
+function ResearchSuggestionBubble({
+  content,
+  buttonText,
+  onShowForm,
+}: {
+  content: string;
+  buttonText: string;
+  onShowForm?: () => void;
+}) {
+  return (
+    <div className="chat-row chat-row--assistant">
+      <div className="chat-avatar chat-avatar--assistant">🎯</div>
+      <div className="chat-bubble chat-bubble--research-suggestion">
+        <p>{content}</p>
+        <button
+          className="research-suggestion-btn"
+          onClick={onShowForm}
+        >
+          {buttonText}
+        </button>
       </div>
     </div>
   );

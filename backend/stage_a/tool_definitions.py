@@ -50,11 +50,11 @@ def create_tool(
 INTENT_CLASSIFICATION_TOOLS = [
     create_tool(
         name="classify_intent",
-        description="Classify user prompt into one of three intents: chat, knowledge, or research. IMPORTANT: If intent is 'chat', provide a helpful response. For other intents, you can leave response empty.",
+        description="Classify user prompt into one of two intents: chat or knowledge. IMPORTANT: If intent is 'chat', provide a helpful response. For knowledge intent, you can leave response empty.",
         properties={
             "intent": {
                 "type": "string",
-                "enum": ["chat", "knowledge", "research"],
+                "enum": ["chat", "knowledge"],
                 "description": "The classified intent"
             },
             "response": {
@@ -291,10 +291,9 @@ SYSTEM_MESSAGE_ANALYST = "You are a precise market research analyst. Provide str
 
 # System message for intent classification
 SYSTEM_MESSAGE_INTENT_CLASSIFIER = """You are an intent classification system. You must always respond with valid JSON and never add extra text.
-Classify user prompts into exactly one of three categories:
+Classify user prompts into exactly one of two categories:
 1. "chat" - Casual greetings, simple conversation, thanking, asking about chatbot, common knowledge
-2. "knowledge" - Questions requiring current information or high accuracy (e.g., GDP 2024, currency rates)
-3. "research" - Marketing analysis, market research, competitive analysis, strategy questions
+2. "knowledge" - Questions requiring current information or high accuracy (e.g., GDP 2024, currency rates, marketing research questions)
 """
 
 # System message for input validation
