@@ -37,7 +37,7 @@ def expand_content_brief(llm, brief: dict, conversation_history: Optional[List[D
         new_caption = ""
         new_image_prompt = ""
         
-        if is_local_llama:
+        if true:  # For simplicity, we will use the 2-prompt approach for all providers to ensure better quality and control
             # ─── LOCAL LLAMA: 2 Prompts riêng biệt ───
             rprint(f"[dim]Sử dụng 2 prompts riêng cho LocalLlama[/dim]")
             
@@ -77,48 +77,48 @@ Create a concise, professional image generation prompt in English that clearly d
                 temperature=0.7
             )
             new_image_prompt = image_prompt_output.strip()
-        else:
-            # ─── GEMINI & Others: 1 Prompt kết hợp ───
-            rprint(f"[dim]Sử dụng 1 prompt kết hợp cho {provider_name}[/dim]")
+#         else:
+#             # ─── GEMINI & Others: 1 Prompt kết hợp ───
+#             rprint(f"[dim]Sử dụng 1 prompt kết hợp cho {provider_name}[/dim]")
             
-            prompt = f"""Dựa vào bản tóm tắt bài đăng (Content Brief) dưới đây, hãy hoàn thiện bài đăng quảng bá sản phẩm.
-Trả về với format sau:
+#             prompt = f"""Dựa vào bản tóm tắt bài đăng (Content Brief) dưới đây, hãy hoàn thiện bài đăng quảng bá sản phẩm.
+# Trả về với format sau:
 
-** Nội Dung Bài Đăng **
-[Nội dung bài đăng chi tiết, hấp dẫn, có emoji, quảng bá sản phẩm]
+# ** Nội Dung Bài Đăng **
+# [Nội dung bài đăng chi tiết, hấp dẫn, có emoji, quảng bá sản phẩm]
 
-** Image Prompt **
-[Image generation prompt in English for product-focused photos. CRITICAL: MUST be under 70 words (max 77 tokens)]
+# ** Image Prompt **
+# [Image generation prompt in English for product-focused photos. CRITICAL: MUST be under 70 words (max 77 tokens)]
 
-Sản phẩm/Yêu cầu quảng cáo: {product_context}
+# Sản phẩm/Yêu cầu quảng cáo: {product_context}
 
---- Bản tóm tắt ---
-Tiêu đề: {title}
-Thể loại: {content_type}
-Chủ đề chính: {pillar}
-Tóm tắt nội dung: {caption}
-Ý tưởng ảnh cơ bản: {image_prompt}"""
+# --- Bản tóm tắt ---
+# Tiêu đề: {title}
+# Thể loại: {content_type}
+# Chủ đề chính: {pillar}
+# Tóm tắt nội dung: {caption}
+# Ý tưởng ảnh cơ bản: {image_prompt}"""
             
-            messages = build_messages_from_history(prompt, conversation_history, max_history=2)
-            output = llm.generate(
-                messages=messages,
-                system_message="Bạn là một chuyên gia tạo nội dung Discord và prompt ảnh chuyên nghiệp. Hãy hoàn thiện nội dung theo format chỉ định.",
-                max_new_tokens=800,
-                temperature=0.7
-            )
+#             messages = build_messages_from_history(prompt, conversation_history, max_history=2)
+#             output = llm.generate(
+#                 messages=messages,
+#                 system_message="Bạn là một chuyên gia tạo nội dung Discord và prompt ảnh chuyên nghiệp. Hãy hoàn thiện nội dung theo format chỉ định.",
+#                 max_new_tokens=800,
+#                 temperature=0.7
+#             )
             
-            # Parse output dựa trên pattern ** .... **
-            output_clean = output.strip()
+#             # Parse output dựa trên pattern ** .... **
+#             output_clean = output.strip()
             
-            # Split bằng ** để lấy các phần
-            parts = output_clean.split("**")
-            # Format: ['...', 'tiêu đề 1', 'content 1', 'tiêu đề 2', 'content 2', ...]
+#             # Split bằng ** để lấy các phần
+#             parts = output_clean.split("**")
+#             # Format: ['...', 'tiêu đề 1', 'content 1', 'tiêu đề 2', 'content 2', ...]
             
-            if len(parts) >= 5:
-                # parts[2] = nội dung sau tiêu đề thứ nhất
-                # parts[4] = nội dung sau tiêu đề thứ hai
-                new_caption = parts[2].strip()
-                new_image_prompt = parts[4].strip()
+#             if len(parts) >= 5:
+#                 # parts[2] = nội dung sau tiêu đề thứ nhất
+#                 # parts[4] = nội dung sau tiêu đề thứ hai
+#                 new_caption = parts[2].strip()
+#                 new_image_prompt = parts[4].strip()
         
         # Cập nhật brief với kết quả mới
         if new_caption and len(new_caption) > 10:
