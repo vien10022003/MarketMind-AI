@@ -7,16 +7,17 @@ import { ContentBriefEditor } from './ContentBriefEditor';
 import { CampaignResultsBubble } from './CampaignResultsBubble';
 import { ScheduleEditor } from './ScheduleEditor';
 import { ScheduleManager } from './ScheduleManager';
+import { apiKeyService, decryptValue, type DiscordWebhook } from '../services/apiKeyService';
 
 interface ChatMessageProps {
   message: ChatMessage;
   isLoading?: boolean;
   onClarificationConfirm?: (overrides: Partial<ResearchRequest>) => void;
   onMarketingFormSubmit?: (formData: ResearchRequest) => void;
-  onStartCampaign?: (approvedBriefs: ContentBrief[]) => void;
+  onStartCampaign?: (approvedBriefs: ContentBrief[], webhookUrl?: string) => void;
   onAcceptStageBProposal?: (reportData: ResearchReport, mongodbId?: string) => void;
-  onAcceptStageCProposal?: (briefs: ContentBrief[]) => void;
-  onAcceptStageCScheduleProposal?: (briefs: ContentBrief[], times: string[], mongodbId?: string) => void;
+  onAcceptStageCProposal?: (briefs: ContentBrief[], webhookUrl?: string) => void;
+  onAcceptStageCScheduleProposal?: (briefs: ContentBrief[], times: string[], mongodbId?: string, webhookUrl?: string) => void;
 }
 
 export function ChatMessageBubble({ message, isLoading, onClarificationConfirm, onMarketingFormSubmit, onStartCampaign, onAcceptStageBProposal, onAcceptStageCProposal, onAcceptStageCScheduleProposal }: ChatMessageProps) {
@@ -679,17 +680,68 @@ function StageCProposalBubble({
 }: {
   content: string;
   briefs: ContentBrief[];
-  onAccept?: (briefs: ContentBrief[]) => void;
+  onAccept?: (briefs: ContentBrief[], webhookUrl?: string) => void;
 }) {
+  const [webhooks, setWebhooks] = useState<DiscordWebhook[]>([]);
+  const [selectedWebhookId, setSelectedWebhookId] = useState('default');
+  const [loadingWebhooks, setLoadingWebhooks] = useState(true);
+
+  useEffect(() => {
+    const load = async () => {
+      setLoadingWebhooks(true);
+      const whs = await apiKeyService.getDiscordWebhooks();
+      setWebhooks(whs);
+      setLoadingWebhooks(false);
+    };
+    load();
+  }, []);
+
+  const handleAccept = async () => {
+    let webhookUrl: string | undefined;
+    if (selectedWebhookId !== 'default') {
+      const selected = webhooks.find(w => w.id === selectedWebhookId);
+      if (selected?.url_encrypted) {
+        webhookUrl = await decryptValue(selected.url_encrypted);
+      }
+    }
+    onAccept?.(briefs, webhookUrl);
+  };
+
   return (
     <div className="chat-row chat-row--assistant">
       <div className="chat-avatar chat-avatar--assistant">🎯</div>
       <div className="chat-bubble chat-bubble--proposal">
         <p>{content}</p>
+        {/* Webhook selector */}
+        {!loadingWebhooks && webhooks.length > 1 && (
+          <div style={{ margin: '10px 0', display: 'flex', alignItems: 'center', gap: 8 }}>
+            <label style={{ fontSize: '0.82rem', color: 'var(--text-secondary, #aaa)', whiteSpace: 'nowrap' }}>📡 Webhook:</label>
+            <select
+              value={selectedWebhookId}
+              onChange={(e) => setSelectedWebhookId(e.target.value)}
+              style={{
+                flex: 1,
+                background: 'rgba(255,255,255,0.06)',
+                border: '1px solid rgba(255,255,255,0.1)',
+                borderRadius: 8,
+                padding: '6px 10px',
+                color: 'var(--text-primary, #eee)',
+                fontSize: '0.82rem',
+                outline: 'none',
+              }}
+            >
+              {webhooks.map(wh => (
+                <option key={wh.id} value={wh.id}>
+                  {wh.name}{wh.is_default ? '' : ` (${wh.url_masked || 'custom'})`}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
         <div className="proposal-actions">
           <button
             className="proposal-btn proposal-btn--accept"
-            onClick={() => onAccept?.(briefs)}
+            onClick={handleAccept}
           >
             🚀 Thực Thi Chiến Dịch
           </button>
@@ -712,12 +764,29 @@ function StageCScheduleProposalBubble({
   briefs: ContentBrief[];
   mongodbId?: string;
   isLoading?: boolean;
-  onAccept?: (briefs: ContentBrief[], times: string[], mongodbId?: string) => void;
+  onAccept?: (briefs: ContentBrief[], times: string[], mongodbId?: string, webhookUrl?: string) => void;
 }) {
   const [showScheduler, setShowScheduler] = useState(false);
+  const [webhooks, setWebhooks] = useState<DiscordWebhook[]>([]);
+  const [selectedWebhookId, setSelectedWebhookId] = useState('default');
 
-  const handleSchedule = (times: string[]) => {
-    onAccept?.(briefs, times, mongodbId);
+  useEffect(() => {
+    const load = async () => {
+      const whs = await apiKeyService.getDiscordWebhooks();
+      setWebhooks(whs);
+    };
+    load();
+  }, []);
+
+  const handleSchedule = async (times: string[]) => {
+    let webhookUrl: string | undefined;
+    if (selectedWebhookId !== 'default') {
+      const selected = webhooks.find(w => w.id === selectedWebhookId);
+      if (selected?.url_encrypted) {
+        webhookUrl = await decryptValue(selected.url_encrypted);
+      }
+    }
+    onAccept?.(briefs, times, mongodbId, webhookUrl);
     setShowScheduler(false);
   };
 
@@ -726,6 +795,32 @@ function StageCScheduleProposalBubble({
       <div className="chat-avatar chat-avatar--assistant">📅</div>
       <div className="chat-bubble chat-bubble--proposal">
         <p>{content}</p>
+        {/* Webhook selector */}
+        {webhooks.length > 1 && (
+          <div style={{ margin: '10px 0', display: 'flex', alignItems: 'center', gap: 8 }}>
+            <label style={{ fontSize: '0.82rem', color: 'var(--text-secondary, #aaa)', whiteSpace: 'nowrap' }}>📡 Webhook:</label>
+            <select
+              value={selectedWebhookId}
+              onChange={(e) => setSelectedWebhookId(e.target.value)}
+              style={{
+                flex: 1,
+                background: 'rgba(255,255,255,0.06)',
+                border: '1px solid rgba(255,255,255,0.1)',
+                borderRadius: 8,
+                padding: '6px 10px',
+                color: 'var(--text-primary, #eee)',
+                fontSize: '0.82rem',
+                outline: 'none',
+              }}
+            >
+              {webhooks.map(wh => (
+                <option key={wh.id} value={wh.id}>
+                  {wh.name}{wh.is_default ? '' : ` (${wh.url_masked || 'custom'})`}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
         {!showScheduler && (
           <div className="proposal-actions">
             <button

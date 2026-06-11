@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
-import { ChatMessageBubble, ConversationList, ModelSelector } from './components';
+import { ChatMessageBubble, ConversationList, ModelSelector, ApiKeySettings } from './components';
 import { ProcessLog, isProcessLogMessage } from './components/ProcessLog';
 import AuthPage from './components/AuthPage';
 import AdminPanel from './components/AdminPanel';
@@ -24,6 +24,7 @@ function App() {
   });
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showAdminPanel, setShowAdminPanel] = useState(false);
+  const [showApiKeySettings, setShowApiKeySettings] = useState(false);
 
   // Conversation state
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
@@ -466,7 +467,7 @@ function App() {
   /**
    * Called when user clicks "Thực Thi Chiến Dịch" from proposal
    */
-  const handleAcceptStageCProposal = async (briefs: ContentBrief[]) => {
+  const handleAcceptStageCProposal = async (briefs: ContentBrief[], webhookUrl?: string) => {
     if (briefs.length === 0) {
       addMessage({ type: 'error', content: 'Không có brief nào để thực thi!' });
       return;
@@ -492,6 +493,7 @@ function App() {
       await researchService.callStageCCampaign(
         {
           approved_briefs: briefs,
+          webhook_url: webhookUrl,
           mongodb_stage_a_id: lastMongodbId,
           llm_provider: selectedLLMProvider,
         },
@@ -510,7 +512,7 @@ function App() {
   /**
    * Called when user schedules campaign with specific times
    */
-  const handleAcceptStageCScheduleProposal = async (briefs: ContentBrief[], scheduledTimes: string[], mongodbId?: string) => {
+  const handleAcceptStageCScheduleProposal = async (briefs: ContentBrief[], scheduledTimes: string[], mongodbId?: string, webhookUrl?: string) => {
     if (briefs.length === 0) {
       addMessage({ type: 'error', content: 'Không có brief nào để thực thi!' });
       return;
@@ -542,6 +544,7 @@ function App() {
         {
           approved_briefs: briefs,
           scheduled_times: scheduledTimes,
+          webhook_url: webhookUrl,
           mongodb_stage_a_id: mongodbId || lastMongodbId,
           llm_provider: selectedLLMProvider,
         },
@@ -560,7 +563,7 @@ function App() {
   /**
    * Called when user clicks "Start Campaign" in the brief editor
    */
-  const handleStartCampaign = async (approvedBriefs: ContentBrief[]) => {
+  const handleStartCampaign = async (approvedBriefs: ContentBrief[], webhookUrl?: string) => {
     if (approvedBriefs.length === 0) {
       addMessage({ type: 'error', content: 'Không có brief nào được duyệt!' });
       return;
@@ -586,6 +589,7 @@ function App() {
       await researchService.callStageCCampaign(
         {
           approved_briefs: approvedBriefs,
+          webhook_url: webhookUrl,
           mongodb_stage_a_id: lastMongodbId,
           llm_provider: selectedLLMProvider,
         },
@@ -759,6 +763,14 @@ function App() {
             <button className="header-reset" onClick={handleReset} title="Cuộc hội thoại mới">
               Mới
             </button>
+            <button
+              className="header-icon-btn"
+              onClick={() => setShowApiKeySettings(true)}
+              title="Quản lý API Keys"
+              style={{ fontSize: '1.1rem' }}
+            >
+              ⚙️
+            </button>
             {isAdmin && (
               <button
                 className="header-reset"
@@ -917,6 +929,12 @@ function App() {
       {showAdminPanel && (
         <AdminPanel onClose={() => setShowAdminPanel(false)} />
       )}
+
+      {/* API Key Settings Modal */}
+      <ApiKeySettings
+        isOpen={showApiKeySettings}
+        onClose={() => setShowApiKeySettings(false)}
+      />
     </div>
   );
 }

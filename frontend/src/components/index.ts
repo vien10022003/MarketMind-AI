@@ -11,3 +11,4 @@ export { ScheduleManager } from './ScheduleManager';
 export { ConversationList } from './ConversationList';
 export { CampaignDashboard } from './CampaignDashboard';
 export { ModelSelector } from './ModelSelector';
+export { ApiKeySettings } from './ApiKeySettings';
