@@ -848,7 +848,15 @@ function App() {
                     <div><strong>Thực thi chiến dịch</strong><br />Đăng bài tự động lên Discord</div>
                   </div>
                 </div>
-                <p className="welcome-hero-hint">Thử hỏi một trong các câu gợi ý bên dưới</p>
+                <p className="welcome-hero-hint">
+                  Thử hỏi một trong các câu gợi ý bên dưới hoặc{' '}
+                  <span 
+                    onClick={handleShowResearchForm}
+                    style={{ color: 'var(--primary-color, #3b82f6)', textDecoration: 'underline', cursor: 'pointer', fontWeight: '500' }}
+                  >
+                    bấm vào đây để bắt đầu marketing ngay
+                  </span>
+                </p>
                 <div className="suggestion-chips">
                   {suggestionChips.map((chip, i) => (
                     <button
