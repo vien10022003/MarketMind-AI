@@ -106,18 +106,40 @@ export function ContentBriefEditor({
                 style={{
                   flex: 1,
                   maxWidth: '300px',
-                  background: 'rgba(255,255,255,0.06)',
-                  border: '1px solid rgba(255,255,255,0.1)',
-                  borderRadius: 8,
-                  padding: '6px 10px',
-                  color: 'var(--text-primary, #eee)',
-                  fontSize: '0.85rem',
+                  background: 'rgba(100, 100, 100, 0.3)',
+                  border: '1.5px solid rgba(255, 255, 255, 0.3)',
+                  borderRadius: 6,
+                  padding: '8px 12px',
+                  color: 'var(--text-primary, #fff)',
+                  fontSize: '0.9rem',
+                  fontWeight: 500,
                   outline: 'none',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.3)',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = 'rgba(100, 200, 255, 0.6)';
+                  e.currentTarget.style.background = 'rgba(100, 120, 150, 0.4)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+                  e.currentTarget.style.background = 'rgba(100, 100, 100, 0.3)';
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = 'rgba(100, 200, 255, 0.8)';
+                  e.currentTarget.style.background = 'rgba(100, 120, 150, 0.5)';
+                  e.currentTarget.style.boxShadow = '0 0 8px rgba(100, 200, 255, 0.4)';
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+                  e.currentTarget.style.background = 'rgba(100, 100, 100, 0.3)';
+                  e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,0,0,0.3)';
                 }}
               >
                 {webhooks.map(wh => (
-                  <option key={wh.id} value={wh.id}>
-                    {wh.name}{wh.is_default ? '' : ` (${wh.url_masked || 'custom'})`}
+                  <option key={wh.id} value={wh.id} style={{ background: '#222', color: '#fff' }}>
+                    {wh.name}
                   </option>
                 ))}
               </select>

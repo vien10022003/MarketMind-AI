@@ -280,7 +280,7 @@ def init_apikey_routes(mongo):
             if default_url:
                 webhooks.append({
                     'id': 'default',
-                    'name': '🏠 Mặc định (Hệ thống)',
+                    'name': 'Mặc định (Hệ thống)',
                     'url_masked': _mask_url(default_url),
                     'is_default': True,
                 })

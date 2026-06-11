@@ -286,7 +286,7 @@ export function ApiKeySettings({ isOpen, onClose }: ApiKeySettingsProps) {
                     {defaultWebhookMasked && (
                       <div className="apikey-webhook-item apikey-webhook-item--default">
                         <div className="apikey-webhook-header">
-                          <span className="apikey-webhook-name">🏠 Mặc định (Hệ thống)</span>
+                          <span className="apikey-webhook-name">Mặc định (Hệ thống)</span>
                           <span className="apikey-webhook-badge apikey-webhook-badge--default">Default</span>
                         </div>
                         <div className="apikey-webhook-url">{defaultWebhookMasked}</div>
